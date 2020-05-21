@@ -1,0 +1,15 @@
+/**
+ * 通过config.properties来读取字段
+ *
+ * @author hujunjie
+ */
+ext {
+    config = this.&readConfig()
+}
+def readConfig() {
+    Properties configProperties = new Properties()
+    file('config.properties').withInputStream {
+        configProperties.load(it)
+    }
+    configProperties
+}
