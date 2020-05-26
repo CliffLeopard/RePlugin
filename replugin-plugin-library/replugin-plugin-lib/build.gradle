@@ -16,8 +16,8 @@
 
 apply plugin: 'com.android.library'
 
-def repluginVersion = "2.3.3"
-def repluginVersionCode = 233
+def repluginVersion = "2.3.7"
+def repluginVersionCode = 237
 def repluginGroup = 'com.qihoo360.replugin'  // 组名
 
 def repluginMinminSdkVersion = 1
@@ -73,7 +73,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
