@@ -1242,7 +1242,7 @@ public class RePlugin {
             // 这里的参数类型PluginInfo是主程序ClassLoader中的PluginInfo
             try {
                 Class hostPluginInfo = classLoader.loadClass("com.qihoo360.replugin.model.PluginInfo");
-                preload2 = new MethodInvoker(classLoader, rePlugin, "preload", new Class<?>[]{PluginInfo.class});
+                preload2 = new MethodInvoker(classLoader, rePlugin, "preload", new Class<?>[]{hostPluginInfo});
             } catch (ClassNotFoundException e) {
                 //
             }
@@ -1251,7 +1251,7 @@ public class RePlugin {
             startActivity = new MethodInvoker(classLoader, rePlugin, "startActivity", new Class<?>[]{Context.class, Intent.class});
             startActivity2 = new MethodInvoker(classLoader, rePlugin, "startActivity", new Class<?>[]{Context.class, Intent.class, String.class, String.class});
             startActivityForResult = new MethodInvoker(classLoader, rePlugin, "startActivityForResult", new Class<?>[]{Activity.class, Intent.class, int.class});
-            startActivityForResult2 = new MethodInvoker(classLoader, rePlugin, "startActivityForResult", new Class<?>[]{Context.class, Intent.class, int.class, Bundle.class});
+            startActivityForResult2 = new MethodInvoker(classLoader, rePlugin, "startActivityForResult", new Class<?>[]{Activity.class, Intent.class, int.class, Bundle.class});
             createIntent = new MethodInvoker(classLoader, rePlugin, "createIntent", new Class<?>[]{String.class, String.class});
             createComponentName = new MethodInvoker(classLoader, rePlugin, "createComponentName", new Class<?>[]{String.class, String.class});
             isForDev = new MethodInvoker(classLoader, rePlugin, "isForDev", new Class<?>[]{});
