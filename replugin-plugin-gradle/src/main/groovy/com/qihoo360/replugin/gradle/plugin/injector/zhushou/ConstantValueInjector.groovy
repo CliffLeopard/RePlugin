@@ -23,6 +23,7 @@ import javassist.CtField
 
 import java.nio.file.*
 import java.nio.file.attribute.BasicFileAttributes
+import com.qihoo360.replugin.gradle.plugin.AppConstant
 
 /**
  * @author RePlugin Team
@@ -37,6 +38,15 @@ public class ConstantValueInjector extends BaseInjector {
             FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
                 String filePath = file.toString()
+                def projectConfig = project.extensions.getByName(AppConstant.USER_CONFIG)
+                def pluginName = project.android.defaultConfig.applicationId
+                if (projectConfig != null && projectConfig.pluginName != null) {
+                    pluginName = projectConfig.pluginName
+                } else {
+                    pluginName = project.android.defaultConfig.applicationId
+                }
+                println "${pluginName} config.pluginName ! "
+
                 if (filePath =~ /com[\\\/]qihoo[\\\/]appstore[\\\/]export[\\\/]proxy[\\\/]Constant\.class/) {
                     def ctCls
                     try {
@@ -44,7 +54,7 @@ public class ConstantValueInjector extends BaseInjector {
                         ctCls.addField(CtField.make(
                                 String.format(
                                         "public static final String PLUGIN_NAME = \"%s\";",
-                                        project.android.defaultConfig.applicationId
+                                        pluginName
                                 ),
                                 ctCls
                         ))
