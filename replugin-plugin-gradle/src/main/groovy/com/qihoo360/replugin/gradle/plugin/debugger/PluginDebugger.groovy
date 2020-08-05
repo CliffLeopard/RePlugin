@@ -40,21 +40,25 @@ class PluginDebugger {
         def variantData = this.variant.variantData
         def scope = variantData.scope
         def globalScope = scope.globalScope
-        def variantConfiguration = variantData.variantConfiguration
-        String archivesBaseName = globalScope.getArchivesBaseName();
-        String apkBaseName = archivesBaseName + "-" + variantConfiguration.getBaseName()
+        try {
+            def variantConfiguration = variantData.variantConfiguration
+            String archivesBaseName = globalScope.getArchivesBaseName();
+            String apkBaseName = archivesBaseName + "-" + variantConfiguration.getBaseName()
 
-        File apkDir = new File(globalScope.getBuildDir(), "outputs" + File.separator + "apk")
+            File apkDir = new File(globalScope.getBuildDir(), "outputs" + File.separator + "apk")
 
-        String unsigned = (variantConfiguration.getSigningConfig() == null
-                ? "-unsigned.apk"
-                : ".apk");
-        String apkName = apkBaseName + unsigned
+            String unsigned = (variantConfiguration.getSigningConfig() == null
+                    ? "-unsigned.apk"
+                    : ".apk");
+            String apkName = apkBaseName + unsigned
 
-        apkFile = new File(apkDir, apkName)
+            apkFile = new File(apkDir, apkName)
 
-        if (!apkFile.exists() || apkFile.length() == 0) {
-            apkFile = new File(apkDir, variantConfiguration.getBaseName() + File.separator + apkName)
+            if (!apkFile.exists() || apkFile.length() == 0) {
+                apkFile = new File(apkDir, variantConfiguration.getBaseName() + File.separator + apkName)
+            }
+        } catch(Exception e) {
+            apkFile = this.variant.outputs[0].outputFile
         }
 
         adbFile = ScopeCompat.getAdbExecutable(globalScope)

@@ -134,12 +134,15 @@ if ( pbBintayKey == null ){
     apply plugin: 'maven'
     final def theGroup = group // group will be reset to 'upload'
     uploadArchives {
-       repositories.mavenDeployer {
-           repository(url: "file://${System.getenv('HOME')}/.m2/repository")
-           pom.groupId = theGroup
-           pom.version = version
-           pom.artifactId = pbArtifactId
-       }
+       //repositories.mavenDeployer {
+       //    repository(url: "file://${System.getenv('HOME')}/.m2/repository")
+       //    pom.groupId = theGroup
+       //    pom.version = version
+       //    pom.artifactId = pbArtifactId
+       //}
+        repositories.mavenDeployer {
+            repository(url: "file:///Users/sheng/Developer/360/MobileAssist/zhushou/local-repo")
+        }
     }
 
     return

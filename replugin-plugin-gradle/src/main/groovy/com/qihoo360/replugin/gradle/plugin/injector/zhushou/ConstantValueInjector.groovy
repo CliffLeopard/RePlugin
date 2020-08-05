@@ -38,18 +38,15 @@ public class ConstantValueInjector extends BaseInjector {
             FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
                 String filePath = file.toString()
-                def projectConfig = project.extensions.getByName(AppConstant.USER_CONFIG)
-                def pluginName = project.android.defaultConfig.applicationId
-                if (projectConfig != null && projectConfig.pluginName != null) {
-                    pluginName = projectConfig.pluginName
-                } else {
-                    pluginName = project.android.defaultConfig.applicationId
-                }
-                println "${pluginName} config.pluginName ! "
-
                 if (filePath =~ /com[\\\/]qihoo[\\\/]appstore[\\\/]export[\\\/]proxy[\\\/]Constant\.class/) {
                     def ctCls
                     try {
+                        def projectConfig = project.extensions.getByName(AppConstant.USER_CONFIG)
+                        if (projectConfig != null && projectConfig.pluginName != null) {
+                            pluginName = projectConfig.pluginName
+                        } else {
+                            pluginName = project.android.defaultConfig.applicationId
+                        }
                         ctCls = pool.makeClass("com.qihoo.appstore.export.proxy.Constant");
                         ctCls.addField(CtField.make(
                                 String.format(

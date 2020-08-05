@@ -19,6 +19,7 @@ package com.qihoo360.replugin.gradle.plugin.manifest
 
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import qihoo360.replugin.gradle.utils.VersionHelper
 
 import java.util.regex.Pattern
 
@@ -49,6 +50,9 @@ public class ManifestAPI {
         }
         //println ">>> variantName:${variantName}"
 
+        // com.android.tools.build:gradle:4.0.0 开始删除了InstantRun
+        boolean isInstantRunSupport = VersionHelper.getAndroidBuildGradleVersion(project).major < 4
+
         //获取processManifestTask
         def processManifestTask = project.tasks.getByName("process${variantName}Manifest")
 
@@ -62,7 +66,9 @@ public class ManifestAPI {
             File instantRunManifestOutputFile = null
             try {
                 manifestOutputFile = processManifestTask.getManifestOutputFile()
-                instantRunManifestOutputFile = processManifestTask.getInstantRunManifestOutputFile()
+                if (isInstantRunSupport) {
+                    instantRunManifestOutputFile = processManifestTask.getInstantRunManifestOutputFile()
+                }
             } catch (Exception e) {
                 //manifestOutputFile = new File(processManifestTask.getManifestOutputDirectory(), "AndroidManifest.xml")
                 //instantRunManifestOutputFile = new File(processManifestTask.getInstantRunManifestOutputDirectory(), "AndroidManifest.xml")
@@ -72,11 +78,16 @@ public class ManifestAPI {
                 } else {
                     manifestOutputFile = new File(dir.getAsFile().get(), "AndroidManifest.xml")
                 }
-                dir = processManifestTask.getInstantRunManifestOutputDirectory()
-                if (dir instanceof File || dir instanceof String) {
-                    instantRunManifestOutputFile = new File(dir, "AndroidManifest.xml")
-                } else {
-                    instantRunManifestOutputFile = new File(dir.getAsFile().get(), "AndroidManifest.xml")
+                if (isInstantRunSupport) {
+                    try {
+                        dir = processManifestTask.getInstantRunManifestOutputDirectory()
+                        if (dir instanceof File || dir instanceof String) {
+                            instantRunManifestOutputFile = new File(dir, "AndroidManifest.xml")
+                        } else {
+                            instantRunManifestOutputFile = new File(dir.getAsFile().get(), "AndroidManifest.xml")
+                        }
+                    } catch (Exception ignored) {
+                    }
                 }
             }
 

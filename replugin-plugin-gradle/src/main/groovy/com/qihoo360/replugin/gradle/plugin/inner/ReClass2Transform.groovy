@@ -28,6 +28,7 @@ import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
 import org.gradle.api.GradleException
 import org.gradle.api.Project
+import qihoo360.replugin.gradle.utils.VersionHelper
 
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -54,10 +55,18 @@ public class ReClass2Transform extends Transform {
     public ReClass2Transform(Project p) {
         this.project = p
         def appPlugin = project.plugins.getPlugin(AppPlugin)
-        // taskManager 在 2.1.3 中为 protected 访问类型的，在之后的版本为 private 访问类型的，
-        // 使用反射访问
-        def taskManager = BasePlugin.metaClass.getProperty(appPlugin, "taskManager")
-        this.globalScope = taskManager.globalScope;
+
+        VersionHelper.Version version = VersionHelper.getAndroidBuildGradleVersion(p)
+        if (version.major < 4) {
+            // taskManager 在 2.1.3 中为 protected 访问类型的，在之后的版本为 private 访问类型的，
+            // 使用反射访问
+            def taskManager = BasePlugin.metaClass.getProperty(appPlugin, "taskManager")
+            this.globalScope = taskManager.globalScope
+        } else {
+            // 4.0.0开始 BasePlugin is Deprecated
+            def extension = project.extensions.getByName("android")
+            this.globalScope = extension.globalScope
+        }
     }
 
     @Override
@@ -144,10 +153,12 @@ public class ReClass2Transform extends Transform {
                 def clsDir = new File(destJar.parentFile, destJar.name.substring(0, destJar.name.lastIndexOf('.')))
                 FileUtils.copyFile(jarInput.file, destJar)
                 Util.unzip(jarInput.file.path, clsDir.path)
-                pool.appendClassPath(clsDir.path)
-                inputJars.put(destJar, clsDir)
-                visitor.setBaseDir(clsDir.path)
-                Files.walkFileTree(clsDir.toPath(), visitor)
+                if (clsDir.exists()) { // 如果jar是空的，目录不存在，直接跳过
+                    pool.appendClassPath(clsDir.path)
+                    inputJars.put(destJar, clsDir)
+                    visitor.setBaseDir(clsDir.path)
+                    Files.walkFileTree(clsDir.toPath(), visitor)
+                }
             }
         }
 
@@ -243,18 +254,18 @@ public class ReClass2Transform extends Transform {
         println '\n                    replugin-plugin-gradle'
         60.times { print '=' }
         println("""
-Add repluginPluginConfig to your build.gradle to enable this plugin:
-
-repluginPluginConfig {
-    // Name of 'App Module'，use '' if root dir is 'App Module'. ':app' as default.
-    appModule = ':app'
-
-    // Injectors ignored
-    // LoaderActivityInjector: Replace Activity to LoaderActivity
-    // ProviderInjector: Inject provider method call.
-    ignoredInjectors = ['LoaderActivityInjector']
-}""")
-        println('\n')
+//Add repluginPluginConfig to your build.gradle to enable this plugin:
+//
+//repluginPluginConfig {
+//    // Name of 'App Module'，use '' if root dir is 'App Module'. ':app' as default.
+//    appModule = ':app'
+//
+//    // Injectors ignored
+//    // LoaderActivityInjector: Replace Activity to LoaderActivity
+//    // ProviderInjector: Inject provider method call.
+//    ignoredInjectors = ['LoaderActivityInjector']
+//}""")
+//        println('\n')
     }
 
     @Override

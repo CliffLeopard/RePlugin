@@ -26,6 +26,7 @@ import com.qihoo360.replugin.gradle.host.handlemanifest.ComponentsGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.logging.LogLevel
+import org.gradle.api.provider.Property
 
 /**
  * @author RePlugin Team
@@ -58,9 +59,15 @@ public class Replugin implements Plugin<Project> {
                 }
 
                 def generateBuildConfigTask = VariantCompat.getGenerateBuildConfigTask(variant)
-                def appID = generateBuildConfigTask.appPackageName
+                String appID = ''
+                if (generateBuildConfigTask.appPackageName instanceof Property) {
+                    appID = generateBuildConfigTask.appPackageName.get()
+                } else {
+                    appID = generateBuildConfigTask.appPackageName
+                }
                 def newManifest = ComponentsGenerator.generateComponent(appID, config)
                 println "${TAG} countTask=${config.countTask}"
+                //println(newManifest)
 
                 def variantData = variant.variantData
                 def scope = variantData.scope
