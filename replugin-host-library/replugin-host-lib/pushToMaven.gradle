@@ -32,7 +32,15 @@ static void toDependencyImpl(def dependenciesNode, Configuration c) {
 // Added by Jiongxuan Zhang
 def isSnapshot = config.isSnapshot == "true"
 def repoUrl = isSnapshot ? config.repoSnapshot : config.repoPublish
-
+//打包main目录下代码和资源的 task
+task sourceJar(type: Jar) {
+    classifier = 'sources'
+    from android.sourceSets.main.java.srcDirs
+}
+//配置需要上传到maven仓库的文件
+artifacts {
+    archives sourceJar
+}
 publishing {
     repositories {
         maven {
@@ -59,12 +67,12 @@ publishing {
         }
         publish(MavenPublication) {
             groupId config.groupId
-            artifactId "$config.artifactId-publish"
+            artifactId "$config.artifactId"
             version android.defaultConfig.versionName
             // NOTE 不允许上传源代码和JavaDoc！！！
-            // artifact(sourceJar)
+             artifact(sourceJar)
             // artifact(javadocsJar)
-            artifact("$buildDir/outputs/aar/$artifactId-release.aar")
+            artifact("$buildDir/outputs/aar/$artifactId-publish-release.aar")
             // 默认情况下不会将Dependencies写入POM，这段代码负责写
             toDependency(getPom(), configurations.publishCompile);
         }

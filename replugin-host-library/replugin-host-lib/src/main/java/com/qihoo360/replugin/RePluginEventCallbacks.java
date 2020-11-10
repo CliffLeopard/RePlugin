@@ -113,6 +113,10 @@ public class RePluginEventCallbacks {
         // Nothing
     }
 
+    public void onLoadPluginFailed(String pluginName, String reason) {
+        // Nothing
+    }
+
     /**
      * release V5插件失败
      *

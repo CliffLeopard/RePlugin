@@ -133,7 +133,23 @@ if ( pbBintayKey == null ){
 
     apply plugin: 'maven'
     final def theGroup = group // group will be reset to 'upload'
+    def home = file(System.getProperty("user.home"));
+    print(home.absolutePath)
     uploadArchives {
+       repositories.mavenDeployer {
+           repository(url: "file://${home.absolutePath}/.m2/repository")
+           pom.groupId = theGroup
+           pom.version = version
+           pom.artifactId = pbArtifactId
+       }
+
+//        repositories {
+//            mavenDeployer{
+//                repository(url: "http://121.36.220.231:8083/repository/Replugin/") {
+//                    authentication(userName: 'wanghao-ms', password: 'admin123')
+//                }
+//            }
+//        }
        //repositories.mavenDeployer {
        //    repository(url: "file://${System.getenv('HOME')}/.m2/repository")
        //    pom.groupId = theGroup
