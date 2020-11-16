@@ -16,15 +16,10 @@
 
 apply plugin: 'com.android.library'
 
-def repluginVersion = "2.3.7"
-def repluginVersionCode = 237
-def repluginGroup = 'com.qihoo360.replugin'  // 组名
-
 def repluginMinminSdkVersion = 1
 def repluginTargetSdkVersion = 25
 def repluginCompileSdkVersion = 25
 def repluginBuildToolsVersion = '25.0.3'
-def repluginSupportVersion = '23.4.0'
 
 if (rootProject.ext.has('minSdkVersion')) {
     repluginMinminSdkVersion = rootProject.ext.minSdkVersion
@@ -38,16 +33,6 @@ if (rootProject.ext.has('targetSdkVersion')) {
 if (rootProject.ext.has('buildToolsVersion')) {
     repluginBuildToolsVersion = rootProject.ext.buildToolsVersion
 }
-if (rootProject.ext.has('supportVersion')) {
-    repluginSupportVersion = rootProject.ext.supportVersion
-} else if (rootProject.ext.has('SUPPORT_LIBRARY_VERSION')) {
-    repluginSupportVersion = rootProject.ext.SUPPORT_LIBRARY_VERSION
-}
-
-def useAndroidX = false
-if (rootProject.ext.has('useAndroidX')) {
-    useAndroidX = rootProject.ext.useAndroidX
-}
 
 android {
     compileSdkVersion repluginCompileSdkVersion
@@ -56,19 +41,9 @@ android {
     defaultConfig {
         minSdkVersion repluginMinminSdkVersion
         targetSdkVersion repluginTargetSdkVersion
-        versionCode repluginVersionCode
-        versionName repluginVersion
+        versionCode 1
+        versionName rootProject.ext.rpPluginLibCoreVersion
         consumerProguardFiles 'replugin-library-rules.pro'
-    }
-
-    sourceSets {
-        main {
-            if (useAndroidX) {
-                java.srcDirs = ['src/main/java', 'src/androidx/java']
-            } else {
-                java.srcDirs = ['src/main/java', 'src/support/java']
-            }
-        }
     }
 
     buildTypes {
@@ -85,16 +60,11 @@ android {
 
 dependencies {
     //compile fileTree(dir: 'libs', include: ['*.jar'])
-    if (useAndroidX) {
-        compileOnly "androidx.appcompat:appcompat:1.1.0"
-    } else {
-        compileOnly "com.android.support:appcompat-v7:$repluginSupportVersion"
-    }
 }
 
 //以下为生成jar包的脚本代码
-def SDK_BASENAME = "replugin-plugin-lib"
-def SDK_VERSION = "2.3.7"
+def SDK_BASENAME = "replugin-plugin-lib-core"
+def SDK_VERSION = rootProject.ext.rpPluginLibCoreVersion
 def sdkDestinationPath = "build"
 //def zipFile = file('build/intermediates/bundles/release/classes.jar')
 def zipFile = file('build/intermediates/packaged-classes/release/classes.jar')
@@ -111,5 +81,4 @@ task makeJar(type: Jar) {
 }
 makeJar.dependsOn(deleteBuild, assemble)
 
-apply from: 'config.gradle'
-apply from: 'pushToMaven.gradle'
+apply from: '../../rp-publish.gradle'

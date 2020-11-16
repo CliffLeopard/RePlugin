@@ -41,9 +41,14 @@ apply from: "${buildscript.sourceFile.parent}/rp-config.gradle"
 
 group = getPropertyExt('RP_GROUP')
 
-version = getPropertyExt('RP_VERSION')
+if (version == 'unspecified') {
+    version = getPropertyExt('RP_VERSION')
+}
+if (isAndroid()) {
+    version = android.defaultConfig.versionName
+}
 
-def pbArtifactId = getPropertyExt('RP_ARTIFACT_ID')
+def pbArtifactId = getPropertyExt('name')
 
 pbUpdateVariables()
 
@@ -133,32 +138,26 @@ if ( pbBintayKey == null ){
 
     apply plugin: 'maven'
     final def theGroup = group // group will be reset to 'upload'
-    def home = file(System.getProperty("user.home"));
-    print(home.absolutePath)
     uploadArchives {
-       repositories.mavenDeployer {
-           repository(url: "file://${home.absolutePath}/.m2/repository")
-           pom.groupId = theGroup
-           pom.version = version
-           pom.artifactId = pbArtifactId
+       repositories {
+           def mavenLocalRepo = mavenLocal().url.toString()
+           def publishKey = ""
+           def publishRemote = project.ext.has("RP_PUBLISH_KEY") && (publishKey = project.ext["RP_PUBLISH_KEY"]) != ''
+           def snapshotRepo = publishRemote ? project.ext["RP_SNAPSHOT_REPO"] : mavenLocalRepo
+           def repo = publishRemote ? project.ext["RP_REPO"] : mavenLocalRepo
+           println "Upload url: $mavenLocalRepo \n key: $publishKey \n snapshot: $snapshotRepo \n repo: $repo"
+           mavenDeployer {
+               snapshotRepository(url: snapshotRepo) {
+                   authentication(userName: project.ext.RP_USER, password: publishKey)
+               }
+               repository(url: repo) {
+                   authentication(userName: project.ext.RP_USER, password: publishKey)
+               }
+               pom.groupId = theGroup
+               pom.version = version
+               pom.artifactId = pbArtifactId
+           }
        }
-
-//        repositories {
-//            mavenDeployer{
-//                repository(url: "http://121.36.220.231:8083/repository/Replugin/") {
-//                    authentication(userName: 'wanghao-ms', password: 'admin123')
-//                }
-//            }
-//        }
-       //repositories.mavenDeployer {
-       //    repository(url: "file://${System.getenv('HOME')}/.m2/repository")
-       //    pom.groupId = theGroup
-       //    pom.version = version
-       //    pom.artifactId = pbArtifactId
-       //}
-        repositories.mavenDeployer {
-            repository(url: "file:///Users/sheng/Developer/360/MobileAssist/zhushou/local-repo")
-        }
     }
 
     return

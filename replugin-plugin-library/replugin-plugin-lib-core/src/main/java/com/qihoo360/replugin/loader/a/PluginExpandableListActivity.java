@@ -97,4 +97,9 @@ public abstract class PluginExpandableListActivity extends ExpandableListActivit
 
         super.startActivityForResult(intent, requestCode);
     }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
+    }
 }

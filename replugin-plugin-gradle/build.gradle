@@ -39,8 +39,8 @@ sourceSets {
 }
 
 dependencies {
-    //compile 'com.android.tools.build:gradle:2.1.3'
-    compile 'com.android.tools.build:gradle:4.0.1'
+    compile 'com.android.tools.build:gradle:3.3.2'
+//    compile 'com.android.tools.build:gradle:4.0.1'
     compile 'org.json:json:20180813'
     compile 'org.codehaus.groovy:groovy:2.4.7'
     compile 'com.squareup:javapoet:1.10.0'

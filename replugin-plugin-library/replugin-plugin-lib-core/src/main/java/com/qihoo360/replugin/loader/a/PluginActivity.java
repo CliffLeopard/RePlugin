@@ -16,23 +16,42 @@
 
 package com.qihoo360.replugin.loader.a;
 
-import android.app.ActivityGroup;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 
+import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.helper.LogRelease;
+import com.qihoo360.replugin.res.PluginResources;
 
 /**
+ * 插件内的BaseActivity，建议插件内所有的Activity都要继承此类
+ * 此类通过override方式来完成插件框架的相关工作
+ *
  * @author RePlugin Team
  */
-public abstract class PluginActivityGroup extends ActivityGroup {
+public abstract class PluginActivity extends Activity {
+
+    private Resources mPluginResources;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         newBase = RePluginInternal.createActivityContext(this, newBase);
+        if (RePlugin.isHostInitialized()) {
+            mPluginResources = new PluginResources(newBase.getResources());
+        }
         super.attachBaseContext(newBase);
+    }
+
+    @Override
+    public Resources getResources() {
+        if (mPluginResources != null) {
+            return mPluginResources;
+        }
+        return super.getResources();
     }
 
     @Override
@@ -73,7 +92,7 @@ public abstract class PluginActivityGroup extends ActivityGroup {
             // 1、可能无法恢复系统级View的保存的状态；
             // 2、如果自己代码处理不当，可能会出现异常。故自己代码一定要用SecExtraUtils来获取Bundle数据
             if (LogRelease.LOGR) {
-                LogRelease.e("PluginActivityGroup", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
+                LogRelease.e("PluginActivity", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
             }
         }
     }
@@ -82,6 +101,7 @@ public abstract class PluginActivityGroup extends ActivityGroup {
     public void startActivity(Intent intent) {
         //
         if (RePluginInternal.startActivity(this, intent)) {
+            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivity()
             return;
         }
 
@@ -92,9 +112,16 @@ public abstract class PluginActivityGroup extends ActivityGroup {
     public void startActivityForResult(Intent intent, int requestCode) {
         //
         if (RePluginInternal.startActivityForResult(this, intent, requestCode)) {
+            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivityForResult()
             return;
         }
 
         super.startActivityForResult(intent, requestCode);
+
+    }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
     }
 }

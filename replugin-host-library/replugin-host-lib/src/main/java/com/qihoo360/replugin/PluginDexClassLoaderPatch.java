@@ -25,7 +25,7 @@ public class PluginDexClassLoaderPatch {
      * @return
      */
     public static boolean need2LoadFromHost(String className) {
-        return isOkHttp3(className) || isApacheHttpLegacy(className) ;
+        return isApacheHttpLegacy(className) ;
     }
 
     /**

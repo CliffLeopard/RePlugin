@@ -76,10 +76,6 @@ public class GetIdentifierInjector extends BaseInjector {
                         it.instrument(editor)
                     }
 
-                    ctCls.getMethods().each {
-                        it.instrument(editor)
-                    }
-
                     ctCls.writeFile(dir)
                 } catch (Throwable t) {
                     println "    [Warning] $filePath --> ${t.toString()} : ${t.getCause().toString()}"

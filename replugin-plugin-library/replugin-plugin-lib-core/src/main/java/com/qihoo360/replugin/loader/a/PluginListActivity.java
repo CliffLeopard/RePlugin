@@ -16,7 +16,7 @@
 
 package com.qihoo360.replugin.loader.a;
 
-import android.app.TabActivity;
+import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,7 +27,7 @@ import com.qihoo360.replugin.helper.LogRelease;
 /**
  * @author RePlugin Team
  */
-public abstract class PluginTabActivity extends TabActivity {
+public abstract class PluginListActivity extends ListActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {
@@ -73,10 +73,11 @@ public abstract class PluginTabActivity extends TabActivity {
             // 1、可能无法恢复系统级View的保存的状态；
             // 2、如果自己代码处理不当，可能会出现异常。故自己代码一定要用SecExtraUtils来获取Bundle数据
             if (LogRelease.LOGR) {
-                LogRelease.e("PluginTabActivity", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
+                LogRelease.e("PluginListActivity", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
             }
         }
     }
+
 
     @Override
     public void startActivity(Intent intent) {
@@ -86,7 +87,9 @@ public abstract class PluginTabActivity extends TabActivity {
             return;
         }
 
+
         super.startActivity(intent);
+
     }
 
     @Override
@@ -98,5 +101,10 @@ public abstract class PluginTabActivity extends TabActivity {
         }
 
         super.startActivityForResult(intent, requestCode);
+    }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
     }
 }

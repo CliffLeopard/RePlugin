@@ -21,17 +21,17 @@ apply plugin: 'com.android.library'
 apply from: 'config.gradle'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion '25.0.2'
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
 
         consumerProguardFiles 'replugin-rules.pro'
 
         versionCode 2
-        versionName '2.3.7-beta'
+        versionName rootProject.ext.rpHostLibVersion
     }
 
     buildTypes {
@@ -39,15 +39,6 @@ android {
         }
 
         release {
-        }
-    }
-
-    productFlavors {
-        flavorDimensions 'devType'
-        dev {
-        }
-
-        publish {
         }
     }
 
@@ -68,5 +59,6 @@ dependencies {
 
 //apply from: 'bintray.gradle'
 
-// 支持打包成AAR再上传到Maven上（用公司的域名）
-apply from: 'pushToMaven.gradle'
+//// 支持打包成AAR再上传到Maven上（用公司的域名）
+//apply from: 'pushToMaven.gradle'
+apply from: '../../rp-publish.gradle'

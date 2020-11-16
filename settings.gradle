@@ -16,4 +16,6 @@
 include ':replugin-host-gradle'
 include ':replugin-host-library:replugin-host-lib'
 include ':replugin-plugin-gradle'
+include ':replugin-plugin-library:replugin-plugin-lib-core'
 include ':replugin-plugin-library:replugin-plugin-lib'
+include ':replugin-plugin-library:replugin-plugin-lib-androidx'

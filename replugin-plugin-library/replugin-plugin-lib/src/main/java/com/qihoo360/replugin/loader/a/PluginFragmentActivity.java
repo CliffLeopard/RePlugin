@@ -16,34 +16,38 @@
 
 package com.qihoo360.replugin.loader.a;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 
-import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.helper.LogRelease;
 import com.qihoo360.replugin.res.PluginResources;
 
+import java.lang.reflect.Field;
+
 /**
- * 插件内的BaseActivity，建议插件内所有的Activity都要继承此类
- * 此类通过override方式来完成插件框架的相关工作
- *
  * @author RePlugin Team
  */
-public abstract class PluginActivity extends Activity {
+public abstract class PluginFragmentActivity extends FragmentActivity {
 
     private Resources mPluginResources;
 
     @Override
     protected void attachBaseContext(Context newBase) {
         newBase = RePluginInternal.createActivityContext(this, newBase);
-        if (RePlugin.isHostInitialized()) {
-            mPluginResources = new PluginResources(newBase.getResources());
-        }
+        mPluginResources = new PluginResources(newBase.getResources());
         super.attachBaseContext(newBase);
+    }
+
+    @Override
+    public Context getBaseContext() {
+
+        return super.getBaseContext();
     }
 
     @Override
@@ -92,7 +96,7 @@ public abstract class PluginActivity extends Activity {
             // 1、可能无法恢复系统级View的保存的状态；
             // 2、如果自己代码处理不当，可能会出现异常。故自己代码一定要用SecExtraUtils来获取Bundle数据
             if (LogRelease.LOGR) {
-                LogRelease.e("PluginActivity", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
+                LogRelease.e("PluginFragmentActivity", "o r i s: p=" + getPackageCodePath() + "; " + e.getMessage(), e);
             }
         }
     }
@@ -101,7 +105,7 @@ public abstract class PluginActivity extends Activity {
     public void startActivity(Intent intent) {
         //
         if (RePluginInternal.startActivity(this, intent)) {
-            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivity()
+            // 这个地方不需要回调startActivityAfter，因为RePluginInternal最终还是会回调回来，最终还是要走super.startActivity()
             return;
         }
 
@@ -110,13 +114,68 @@ public abstract class PluginActivity extends Activity {
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode) {
+        startActivityForResult(intent, requestCode, null);
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, Bundle options) {
         //
-        if (RePluginInternal.startActivityForResult(this, intent, requestCode)) {
-            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivityForResult()
+        if (RePluginInternal.startActivityForResult(this, intent, requestCode, options)) {
             return;
         }
 
-        super.startActivityForResult(intent, requestCode);
+        if (Build.VERSION.SDK_INT >= 16) {
+            super.startActivityForResult(intent, requestCode, options);
+        } else {
+            super.startActivityForResult(intent, requestCode);
+        }
+    }
 
+    /**
+     * 这里的做法是支持Fragment中调用startActivityForResult特性
+     * <p>
+     * 由于卫士的插件需要hook住XXX-Activity的startActivity和startActivityForResult接口
+     * 但早期版本的support-v4在startActivityFromFragment中直接调用了super.startActivityForResult, 因此这里还需要hook住这个点
+     * 但新版的support-v4中Fragment最终的调用链还是会走到本XXX-Activity的startActivityForResult接口，因此不需要适配startActivityFromFragment(Fragment fragment, Intent intent, int requestCode, @Nullable Bundle options)接口
+     *
+     * @param fragment
+     * @param intent
+     * @param requestCode
+     */
+    @Override
+    public void startActivityFromFragment(Fragment fragment, Intent intent, int requestCode) {
+        if (requestCode == -1) {
+            startActivityForResult(intent, -1);
+        } else if ((requestCode & -65536) != 0) {
+            throw new IllegalArgumentException("Can only use lower 16 bits for requestCode");
+        } else {
+            int newRequestCode = -1;
+            try {
+                Field f = Fragment.class.getDeclaredField("mIndex");
+                boolean acc = f.isAccessible();
+                if (!acc) {
+                    f.setAccessible(true);
+                }
+                Object o = f.get(fragment);
+                if (!acc) {
+                    f.setAccessible(acc);
+                }
+                int index = (Integer) o;
+                newRequestCode = ((index + 1) << 16) + (requestCode & '\uffff');
+            } catch (Throwable e) {
+                // Do Noting
+            }
+            startActivityForResult(intent, newRequestCode);
+        }
+    }
+
+    @Override
+    public String getPackageCodePath() {
+        return super.getPackageCodePath();
+    }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
     }
 }
