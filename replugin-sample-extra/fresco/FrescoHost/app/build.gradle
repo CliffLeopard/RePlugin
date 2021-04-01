@@ -45,7 +45,8 @@ repluginHostConfig {
 }
 
 dependencies {
-    compile "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
+//    compile "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
+    compile project(':replugin-host-lib')
 
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
