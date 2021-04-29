@@ -28,7 +28,7 @@ import javax.xml.parsers.SAXParserFactory
  * 从manifest的xml中抽取PluginInfo信息
  * @author RePlugin Team
  */
-public class PluginInfoParser extends DefaultHandler {
+class PluginInfoParser extends DefaultHandler {
 
     private final String ANDROID_NAME = "android:name"
     private final String ANDROID_VALUE = "android:value"
@@ -42,7 +42,7 @@ public class PluginInfoParser extends DefaultHandler {
     private PluginInfo pluginInfo
 
 
-    public PluginInfoParser(File pluginFile, def config) {
+    PluginInfoParser(File pluginFile, def config) {
 
         pluginInfo = new PluginInfo()
 
@@ -63,17 +63,17 @@ public class PluginInfoParser extends DefaultHandler {
     }
 
 
-    public PluginInfo getPluginInfo() {
+    PluginInfo getPluginInfo() {
         return pluginInfo;
     }
 
 
     @Override
-    public void startDocument() throws SAXException {
+    void startDocument() throws SAXException {
     }
 
     @Override
-    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+    void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
 
         if ("meta-data" == qName) {
             switch (attributes.getValue(ANDROID_NAME)) {
@@ -102,12 +102,12 @@ public class PluginInfoParser extends DefaultHandler {
     }
 
     @Override
-    public void endElement(String uri, String localName, String qName)
+    void endElement(String uri, String localName, String qName)
             throws SAXException {
     }
 
     @Override
-    public void characters(char[] ch, int start, int length) throws SAXException {
+    void characters(char[] ch, int start, int length) throws SAXException {
     }
 
 }

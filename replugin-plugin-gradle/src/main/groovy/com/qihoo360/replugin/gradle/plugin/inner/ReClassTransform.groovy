@@ -17,38 +17,31 @@
 
 package com.qihoo360.replugin.gradle.plugin.inner
 
+import com.android.annotations.NonNull
 import com.android.build.api.transform.*
-import com.android.build.gradle.AppPlugin
-import com.android.build.gradle.BasePlugin
+import com.android.build.api.variant.VariantInfo
+import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
+import com.qihoo360.replugin.gradle.plugin.ReClassConfig
 import com.qihoo360.replugin.gradle.plugin.injector.IClassInjector
 import com.qihoo360.replugin.gradle.plugin.injector.Injectors
 import javassist.ClassPool
 import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils
-import org.gradle.api.GradleException
 import org.gradle.api.Project
-import java.util.regex.Pattern
 
 /**
  * @author RePlugin Team
  */
 public class ReClassTransform extends Transform {
-
     private Project project
-    private def globalScope
-
-    /* 需要处理的 jar 包 */
+    private AppExtension appExtension
     def includeJars = [] as Set
     def map = [:]
 
-    public ReClassTransform(Project p) {
+    public ReClassTransform(Project p, AppExtension appExtension) {
         this.project = p
-        def appPlugin = project.plugins.getPlugin(AppPlugin)
-        // taskManager 在 2.1.3 中为 protected 访问类型的，在之后的版本为 private 访问类型的，
-        // 使用反射访问
-        def taskManager = BasePlugin.metaClass.getProperty(appPlugin, "taskManager")
-        this.globalScope = taskManager.globalScope;
+        this.appExtension = appExtension
     }
 
     @Override
@@ -57,54 +50,33 @@ public class ReClassTransform extends Transform {
     }
 
     @Override
-    void transform(Context context,
-                   Collection<TransformInput> inputs,
-                   Collection<TransformInput> referencedInputs,
-                   TransformOutputProvider outputProvider,
-                   boolean isIncremental) throws IOException, TransformException, InterruptedException {
-
+    void transform(TransformInvocation transformInvocation) throws TransformException, InterruptedException, IOException {
         welcome()
-
-        /* 读取用户配置 */
-        def config = project.extensions.getByName('repluginPluginConfig')
-
-
-        File rootLocation = null
-        try {
-            rootLocation = outputProvider.rootLocation
-        } catch (Throwable e) {
-            //android gradle plugin 3.0.0+ 修改了私有变量，将其移动到了IntermediateFolderUtils中去
-            rootLocation = outputProvider.folderUtils.getRootFolder()
-        }
-        if (rootLocation == null) {
-            throw new GradleException("can't get transform root location")
-        }
-        println ">>> rootLocation: ${rootLocation}"
-        // Compatible with path separators for window and Linux, and fit split param based on 'Pattern.quote'
-        def variantDir = rootLocation.absolutePath.split(getName() + Pattern.quote(File.separator))[1]
-        println ">>> variantDir: ${variantDir}"
+        final TransformOutputProvider outputProvider = transformInvocation.getOutputProvider();
+        final ReClassConfig config = project.extensions.getByName('repluginPluginConfig')
+        final variantName = transformInvocation.context.variantName
+        def injectors = includedInjectors(config, variantName)
 
         CommonData.appModule = config.appModule
         CommonData.ignoredActivities = config.ignoredActivities
 
-        def injectors = includedInjectors(config, variantDir)
         if (injectors.isEmpty()) {
-            copyResult(inputs, outputProvider) // 跳过 reclass
+            copyResult(transformInvocation.inputs, outputProvider) // 跳过 reclass
         } else {
-            doTransform(inputs, outputProvider, config, injectors) // 执行 reclass
+            doTransform(transformInvocation.inputs, outputProvider, config, injectors) // 执行 reclass
         }
     }
 
     /**
      * 返回用户未忽略的注入器的集合
      */
-    def includedInjectors(def cfg, String variantDir) {
+    def includedInjectors(def cfg, String variantName) {
         def injectors = []
         Injectors.values().each {
             //设置project
             it.injector.setProject(project)
             //设置variant关键dir
-            it.injector.setVariantDir(variantDir)
+            it.injector.setVariantDir(variantName)
             if (!(it.nickName in cfg.ignoredInjectors)) {
                 injectors << it.nickName
             }
@@ -177,7 +149,7 @@ public class ReClassTransform extends Transform {
             String JarAfterzip = map.get(jar.getParent() + File.separatorChar + jar.getName())
             String dirAfterUnzip = JarAfterzip.replace('.jar', '')
             // println ">>> 压缩目录 $dirAfterUnzip"
-            
+
             Util.zipDir(dirAfterUnzip, JarAfterzip)
 
             // println ">>> 删除目录 $dirAfterUnzip"
@@ -211,7 +183,7 @@ public class ReClassTransform extends Transform {
         Util.newSection()
         def pool = new ClassPool(true)
         // 添加编译时需要引用的到类到 ClassPool, 同时记录要修改的 jar 到 includeJars
-        Util.getClassPaths(project, globalScope, inputs, includeJars, map).each {
+        Util.getClassPaths(project, appExtension, inputs, includeJars, map).each {
             println "    $it"
             pool.insertClassPath(it)
         }
@@ -240,7 +212,7 @@ public class ReClassTransform extends Transform {
             jar = new File(jarPath)
         }
 
-        if(!jar.exists()){
+        if (!jar.exists()) {
             return
         }
 

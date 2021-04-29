@@ -16,8 +16,9 @@
 
 package com.qihoo360.replugin.gradle.host.creator.impl.json
 
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.gradle.host.AppConstant
-import com.qihoo360.replugin.gradle.compat.VariantCompat
+import com.qihoo360.replugin.gradle.host.RePluginConfig
 import com.qihoo360.replugin.gradle.host.creator.IFileCreator
 import groovy.io.FileType
 import groovy.json.JsonOutput
@@ -25,21 +26,19 @@ import groovy.json.JsonOutput
 /**
  * @author RePlugin Team
  */
-public class PluginBuiltinJsonCreator implements IFileCreator {
+class PluginBuiltinJsonCreator implements IFileCreator {
 
-    def variant
-    def config
+    ApplicationVariantImpl variant
+    RePluginConfig config
     File fileDir
-    def fileName
+    String fileName
     def pluginInfos = []
 
-    def PluginBuiltinJsonCreator(def project, def variant, def cfg) {
+    PluginBuiltinJsonCreator(ApplicationVariantImpl variant, RePluginConfig cfg) {
         this.config = cfg
         this.variant = variant
-        // make sure processResources Task execute after mergeAssets Task, get real gradle task
-        // 在 com.android.tools.build:gradle:3.3.2 及之前 outputDir 为 File 类型。
-        // 但从 com.android.tools.build:gradle:3.4.1 开始 Google 将此类型改为 `Provider<Directory>`。
-        final def out = VariantCompat.getMergeAssetsTask(variant)?.outputDir
+
+        final def out = variant.mergeAssetsProvider.get()?.outputDir
         fileDir = File.class.isInstance(out) ? out : out?.get()?.getAsFile()
         fileName = config.builtInJsonFileName
     }
@@ -67,20 +66,20 @@ public class PluginBuiltinJsonCreator implements IFileCreator {
         new File(fileDir.getAbsolutePath() + File.separator + config.pluginDir)
                 .traverse(type: FileType.FILES, nameFilter: ~/.*\${config.pluginFilePostfix}/) {
 
-            PluginInfoParser parser = null
-            try {
-                parser = new PluginInfoParser(it.absoluteFile, config)
-            } catch (Exception e) {
-                if (config.enablePluginFileIllegalStopBuild) {
-                    System.err.println "${AppConstant.TAG} the plugin(${it.absoluteFile.absolutePath}) is illegal !!!"
-                    throw new Exception(e)
-                }
-            }
+                    PluginInfoParser parser = null
+                    try {
+                        parser = new PluginInfoParser(it.absoluteFile, config)
+                    } catch (Exception e) {
+                        if (config.enablePluginFileIllegalStopBuild) {
+                            System.err.println "${AppConstant.TAG} the plugin(${it.absoluteFile.absolutePath}) is illegal !!!"
+                            throw new Exception(e)
+                        }
+                    }
 
-            if (null != parser) {
-                pluginInfos << parser.pluginInfo
-            }
-        }
+                    if (null != parser) {
+                        pluginInfos << parser.pluginInfo
+                    }
+                }
 
         //插件为0个
         if (pluginInfos.isEmpty()) {

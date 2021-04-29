@@ -17,20 +17,31 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
-    { p, cfg = "rp-config.gradle" -> if (new File(p, cfg).exists()) apply from: "${p}/${cfg}" else if (p.exists()) call(p.parentFile) }(buildscript.sourceFile.parentFile)
-    ext.kotlin_version = '1.1.3'
+    {
+        p, cfg = "rp-config.gradle" ->
+            if (new File(p, cfg).exists())
+                apply from: "${p}/${cfg}"
+            else if (p.exists())
+                call(p.parentFile)
+    }(buildscript.sourceFile.parentFile)
+
     repositories {
+        google()
         jcenter()
         mavenCentral()
         mavenLocal()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
+
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.1'
-        classpath "com.qihoo360.replugin:replugin-host-gradle:${RP_VERSION}"
-        classpath "com.qihoo360.replugin:replugin-plugin-gradle:${RP_VERSION}"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.6'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.4.1'
+        classpath "com.android.tools.build:gradle:${GRADLE_PLUGIN}"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${KOTLIN_VERSION}"
+        if(SDK_PUBLISH == "false"){
+            classpath "com.qihoo360.replugin:replugin-host-gradle:${RP_VERSION}"
+            classpath "com.qihoo360.replugin:replugin-plugin-gradle:${RP_VERSION}"
+        }
     }
 }
 
@@ -40,6 +51,7 @@ project.ext {
 
 allprojects {
     repositories {
+        google()
         jcenter()
         mavenCentral()
         mavenLocal()
@@ -49,5 +61,4 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
 

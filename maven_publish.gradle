@@ -1,0 +1,61 @@
+apply plugin: 'maven-publish'
+if (project.hasProperty("android")) {
+    task androidJavadocs(type: Javadoc) {
+        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+        if (project.hasProperty("android")) {
+            android.libraryVariants.all { variant ->
+                if (variant.name == 'release') {
+                    owner.classpath += variant.javaCompileProvider.get().classpath
+                }
+            }
+            exclude '**/R.html', '**/R.*.html', '**/index.html'
+        }
+    }
+} else {
+    task androidJavadocs(type: Javadoc) {
+        source = sourceSets.main.allJava
+    }
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    archiveClassifier.set('javadoc')
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.hasProperty("android")) {
+        from android.sourceSets.main.java.srcDirs
+    } else {
+        from sourceSets.main.allSource
+    }
+}
+
+
+boolean useAndroidX = rootProject.properties.get("android.useAndroidX")  == "true"
+def VERSION_END = useAndroidX ? "androidx" : "support"
+
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                if (project.hasProperty("android")) {
+                    from components.getByName(VERSION_END+"Release")
+                }
+                artifact androidSourcesJar
+                artifact androidJavadocsJar
+
+                groupId = RP_GROUP
+                artifactId = project.name
+                version = RP_VERSION
+
+                pom.withXml {
+                    final root = asNode()
+                    root.appendNode('name', project.name)
+                    root.appendNode('scm').appendNode('url', RP_GIT_URL)
+                }
+            }
+        }
+    }
+}

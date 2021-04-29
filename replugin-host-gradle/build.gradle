@@ -14,93 +14,78 @@
  * the License.
  */
 
-apply plugin: 'java'
-apply plugin: 'groovy'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
-repositories {
-    jcenter()
-    mavenCentral()
-    maven() { url 'https://maven.google.com' }
-}
-
 buildscript {
     repositories {
+        google()
         jcenter()
         mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.0'
-        classpath 'com.github.dcendents:android-maven-plugin:1.2'
+        mavenLocal()
     }
 }
+
+plugins {
+    id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version "${PLUGIN_PUBLISH_VERSION}"
+    id 'groovy'
+    id 'signing'
+//    id 'com.github.johnrengelman.shadow' version '6.1.0'
+}
+
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+//sourceSets {
+//    main {
+//        groovy {
+//            srcDirs '../replugin-gradle-common/src/main/groovy/com/qihoo360/replugin/gradle/compat'
+//        }
+//    }
+//}
 
 dependencies {
-    compile 'com.android.tools.build:gradle:2.1.3' // >= 2.14.1
-//    compile 'com.android.tools.build:gradle:2.3.3' // gradle 3.3 <= {} < gradle-4.10
-//    compile 'com.android.tools.build:gradle:3.3.2' // >= gradle-4.10
-//    compile 'com.android.tools.build:gradle:3.4.1' // >= gradle-5.1.1
-    compile 'org.json:json:20160212'
-    compile 'org.codehaus.groovy:groovy:2.4.7'
-    compile 'com.squareup:javapoet:1.5.1'
+    implementation "com.android.tools.build:gradle:${GRADLE_PLUGIN}"
+    implementation "org.json:json:${JSON_VERSION}"
 
-    compile gradleApi()
-    compile localGroovy()
+    implementation "com.squareup:javapoet:${JAVAPOET_VERSION}"
+    implementation "net.dongliu:apk-parser:${APK_PARSER_VERSION}"
 
-    compile 'com.google.gradle:osdetector-gradle-plugin:1.2.1'
-    compile 'net.dongliu:apk-parser:2.2.0'
+    implementation gradleApi()
+    implementation localGroovy()
+
+//    implementation 'org.codehaus.groovy:groovy:3.0.7'
+//    implementation 'com.google.gradle:osdetector-gradle-plugin:1.7.0'
+//    implementation project(':replugin-gradle-common')
 }
 
-if (project.hasProperty("android")) { // Android libraries
-    task sourcesJar(type: Jar) {
-        classifier = 'sources'
-        from android.sourceSets.main.java.srcDirs
-    }
+//import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
+//
+//shadowJar {
+//    dependencies {
+//        exclude(dependency('com.android.tools.build:gradle:4.1.3'))
+//        exclude(dependency('org.json:json:20210307'))
+//        exclude(dependency('org.codehaus.groovy:groovy:3.0.7'))
+//        exclude(dependency('com.squareup:javapoet:1.13.0'))
+//        exclude(dependency('com.google.gradle:osdetector-gradle-plugin:1.7.0'))
+//        exclude(dependency('net.dongliu:apk-parser:2.6.10'))
+//
+////        exclude(localGroovy())
+////        exclude(gradleApi())
+////        exclude(dependency(localGroovy()))
+////        exclude(dependency(gradleApi()))
+//    }
+//}
+//
+//configurations.compile.dependencies.remove dependencies.gradleApi()
+//configurations.compile.dependencies.remove dependencies.localGroovy()
+//
+//task relocateShadowJar(type: ConfigureShadowRelocation) {
+//    target = tasks.shadowJar
+//}
+//
+//tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
-    task javadoc(type: Javadoc) {
-        source = android.sourceSets.main.java.srcDirs
-        classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    }
-} else { // Java libraries
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = 'sources'
-        from sourceSets.main.allSource
-    }
-}
-
-// 强制 Java/JavaDoc 等的编码为 UTF-8
-tasks.withType(JavaCompile) {
-    options.encoding = "UTF-8"
-}
-
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-
-
-// add javadoc/source jar tasks as artifacts
-artifacts {
-    archives sourcesJar, javadocJar
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            if (plugins.hasPlugin('war')) {
-                from components.web
-            } else {
-                from components.java
-            }
-
-            artifact sourcesJar
-            artifact javadocJar
-        }
-    }
-}
-
-project.ext.RP_ARTIFACT_ID = 'replugin-host-gradle'
-apply from: '../rp-publish.gradle'
+apply from: '../maven_publish_plugin.gradle'

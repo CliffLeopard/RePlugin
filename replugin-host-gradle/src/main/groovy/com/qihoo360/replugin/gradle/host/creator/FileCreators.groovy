@@ -16,9 +16,12 @@
 
 package com.qihoo360.replugin.gradle.host.creator
 
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.gradle.host.AppConstant
+import com.qihoo360.replugin.gradle.host.RePluginConfig
 import com.qihoo360.replugin.gradle.host.creator.impl.java.RePluginHostConfigCreator
 import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
+import org.gradle.api.Project
 
 /**
  * @author RePlugin Team
@@ -53,9 +56,9 @@ public class FileCreators {
     }
 
 
-    static def createBuiltinJson(project, variant, config) {
+    static def createBuiltinJson(ApplicationVariantImpl variant, RePluginConfig config) {
         if (config.autoManageBuiltInJsonFile) {
-            def creator = new PluginBuiltinJsonCreator(project, variant, config)
+            def creator = new PluginBuiltinJsonCreator(variant, config)
             create(creator)
         }
     }
