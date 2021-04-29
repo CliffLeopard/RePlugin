@@ -19,10 +19,10 @@ package com.qihoo360.replugin.gradle.plugin
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.qihoo360.replugin.gradle.compat.VariantCompat
 import com.qihoo360.replugin.gradle.plugin.debugger.PluginDebugger
 import com.qihoo360.replugin.gradle.plugin.inner.CommonData
 import com.qihoo360.replugin.gradle.plugin.inner.ReClassTransform
+import com.android.build.gradle.internal.api.ApplicationVariantImpl;
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -43,22 +43,15 @@ public class ReClassPlugin implements Plugin<Project> {
         if (isApp) {
 
             def config = project.extensions.getByName(AppConstant.USER_CONFIG)
-
             def android = project.extensions.getByType(AppExtension)
 
             def forceStopHostAppTask = null
             def startHostAppTask = null
             def restartHostAppTask = null
-
-            android.applicationVariants.all { variant ->
-                PluginDebugger pluginDebugger = new PluginDebugger(project, config, variant)
-
-                def variantData = variant.variantData
-                def scope = variantData.scope
-
-                def assembleTask = VariantCompat.getAssembleTask(variant)
-
-                def installPluginTaskName = scope.getTaskName(AppConstant.TASK_INSTALL_PLUGIN, "")
+            android.applicationVariants.all { ApplicationVariantImpl variant ->
+                PluginDebugger pluginDebugger = new PluginDebugger(android, config, variant)
+                def assembleTask = variant.getAssembleProvider().get()
+                def installPluginTaskName = getTaskName(AppConstant.TASK_INSTALL_PLUGIN, variant.name, "")
                 def installPluginTask = project.task(installPluginTaskName)
 
                 installPluginTask.doLast {
@@ -69,9 +62,7 @@ public class ReClassPlugin implements Plugin<Project> {
                     pluginDebugger.install()
                 }
                 installPluginTask.group = AppConstant.TASKS_GROUP
-
-
-                def uninstallPluginTaskName = scope.getTaskName(AppConstant.TASK_UNINSTALL_PLUGIN, "")
+                def uninstallPluginTaskName = getTaskName(AppConstant.TASK_UNINSTALL_PLUGIN, variant.name, "")
                 def uninstallPluginTask = project.task(uninstallPluginTaskName)
 
                 uninstallPluginTask.doLast {
@@ -114,14 +105,14 @@ public class ReClassPlugin implements Plugin<Project> {
                     installPluginTask.dependsOn assembleTask
                 }
 
-                def runPluginTaskName = scope.getTaskName(AppConstant.TASK_RUN_PLUGIN, "")
+                def runPluginTaskName = getTaskName(AppConstant.TASK_RUN_PLUGIN, variant.name, "")
                 def runPluginTask = project.task(runPluginTaskName)
                 runPluginTask.doLast {
                     pluginDebugger.run()
                 }
                 runPluginTask.group = AppConstant.TASKS_GROUP
 
-                def installAndRunPluginTaskName = scope.getTaskName(AppConstant.TASK_INSTALL_AND_RUN_PLUGIN, "")
+                def installAndRunPluginTaskName = getTaskName(AppConstant.TASK_INSTALL_AND_RUN_PLUGIN, variant.name, "")
                 def installAndRunPluginTask = project.task(installAndRunPluginTaskName)
                 installAndRunPluginTask.doLast {
                     pluginDebugger.run()
@@ -131,13 +122,19 @@ public class ReClassPlugin implements Plugin<Project> {
             }
 
             CommonData.appPackage = android.defaultConfig.applicationId
-
             println ">>> APP_PACKAGE " + CommonData.appPackage
-
-            def transform = new ReClassTransform(project)
-            // 将 transform 注册到 android
+            def transform = new ReClassTransform(project, android)
             android.registerTransform(transform)
+            println "RePlugin-Plugin-Gradle Add Transform3"
         }
+    }
+
+    private static String getTaskName(String prefix, String variantName, String tail) {
+        return prefix + toUpperCase(variantName) + tail
+    }
+
+    private static String toUpperCase(input) {
+        return input.substring(0, 1).toUpperCase() + input.substring(1)
     }
 }
 

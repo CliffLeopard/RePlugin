@@ -26,7 +26,7 @@ class AppConstant {
     def static final x = "FUCK You"
 
     /** 版本号 */
-    def static final VER = "2.3.4-SNAPSHOT"
+    def static final VER = "2.3.5-SNAPSHOT"
 
     /** 打印信息时候的前缀 */
     def static final TAG = "< replugin-host-v${VER} >"

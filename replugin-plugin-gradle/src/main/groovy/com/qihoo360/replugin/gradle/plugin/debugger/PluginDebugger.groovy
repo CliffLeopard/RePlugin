@@ -17,48 +17,26 @@
 
 package com.qihoo360.replugin.gradle.plugin.debugger
 
-import com.qihoo360.replugin.gradle.compat.ScopeCompat
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.gradle.plugin.AppConstant
 import com.qihoo360.replugin.gradle.plugin.util.CmdUtil
-import org.gradle.api.Project
 
 /**
  * @author RePlugin Team
  */
 class PluginDebugger {
-
-    def project
     def config
     def variant
     File apkFile
     File adbFile
 
-    public PluginDebugger(Project project, def config, def variant) {
-        this.project = project
+    public PluginDebugger(AppExtension extension, def config, ApplicationVariantImpl variant) {
         this.config = config
         this.variant = variant
-        def variantData = this.variant.variantData
-        def scope = variantData.scope
-        def globalScope = scope.globalScope
-        def variantConfiguration = variantData.variantConfiguration
-        String archivesBaseName = globalScope.getArchivesBaseName();
-        String apkBaseName = archivesBaseName + "-" + variantConfiguration.getBaseName()
 
-        File apkDir = new File(globalScope.getBuildDir(), "outputs" + File.separator + "apk")
-
-        String unsigned = (variantConfiguration.getSigningConfig() == null
-                ? "-unsigned.apk"
-                : ".apk");
-        String apkName = apkBaseName + unsigned
-
-        apkFile = new File(apkDir, apkName)
-
-        if (!apkFile.exists() || apkFile.length() == 0) {
-            apkFile = new File(apkDir, variantConfiguration.getBaseName() + File.separator + apkName)
-        }
-
-        adbFile = ScopeCompat.getAdbExecutable(globalScope)
-
+        adbFile = extension.adbExecutable
+        apkFile = extension.buildOutputs.getByName(variant.name).outputFile
     }
 
     /**

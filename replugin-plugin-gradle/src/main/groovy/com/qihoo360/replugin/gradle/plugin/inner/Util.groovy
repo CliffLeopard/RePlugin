@@ -20,9 +20,9 @@ package com.qihoo360.replugin.gradle.plugin.inner
 import com.android.build.api.transform.DirectoryInput
 import com.android.build.api.transform.JarInput
 import com.android.build.api.transform.TransformInput
+import com.android.build.gradle.AppExtension
 import com.google.common.base.Charsets
 import com.google.common.hash.Hashing
-import com.qihoo360.replugin.gradle.compat.ScopeCompat
 import org.apache.commons.io.FileUtils
 import org.gradle.api.Project
 
@@ -30,7 +30,7 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.zip.ZipFile
 
-import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
+import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 
 /**
  * @author RePlugin Team
@@ -38,12 +38,18 @@ import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES;
 public class Util {
 
     /** 生成 ClassPool 使用的 ClassPath 集合，同时将要处理的 jar 写入 includeJars */
-    def
-    static getClassPaths(Project project, def globalScope, Collection<TransformInput> inputs, Set<String> includeJars, Map<String, String> map) {
+    def static getClassPaths(Project project,
+                             AppExtension appExtension,
+                             Collection<TransformInput> inputs,
+                             Set<String> includeJars,
+                             Map<String, String> map) {
         def classpathList = []
 
         // android.jar
-        classpathList.add(getAndroidJarPath(globalScope))
+        appExtension.getBootClasspath().each {
+            println "BootClasspath:${it.getAbsolutePath()}"
+            classpathList.add(it.getAbsolutePath())
+        }
 
         // 原始项目中引用的 classpathList
         getProjectClassPath(project, inputs, includeJars, map).each {
@@ -116,21 +122,15 @@ public class Util {
         return classPath
     }
 
-    /**
-     * 编译环境中 android.jar 的路径
-     */
-    def static getAndroidJarPath(def globalScope) {
-        return ScopeCompat.getAndroidJar(globalScope)
-    }
 
     /**
      * 压缩 dirPath 到 zipFilePath
      */
     def static zipDir(String dirPath, String zipFilePath) {
         File dir = new File(dirPath)
-        if(dir.exists()){
+        if (dir.exists()) {
             new AntBuilder().zip(destfile: zipFilePath, basedir: dirPath)
-        }else{
+        } else {
             println ">>> Zip file is empty! Ignore"
         }
     }

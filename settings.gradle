@@ -13,34 +13,58 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-include ':replugin-plugin-lib'
-project(':replugin-plugin-lib').projectDir = new File(settingsDir, "replugin-plugin-library/replugin-plugin-lib")
+//include ':fresco-library'
+//include ':replugin-gradle-common'
 
+rootProject.name = 'replugin'
+include ':replugin-plugin-lib'
 include ':replugin-host-lib'
-project(':replugin-host-lib').projectDir = new File(settingsDir, "replugin-host-library/replugin-host-lib")
 
 include ':replugin-plugin-gradle'
 include ':replugin-host-gradle'
 
-include ':host-app', ':utils'
-project(':host-app').projectDir = new File(settingsDir, "replugin-sample/host/app")
-project(':utils').projectDir = new File(settingsDir, "replugin-sample/host/utils")
+if (SDK_PUBLISH == "false") {
+    include ':host-app'
+    include ':plugin-demo1'
+    include 'plugin-demo1-library'
+    include ':plugin-demo2'
+    include ':plugin-demo3-kotlin'
+    include ':plugin-webview'
+    include ':fresco-host-app'
+    include ':fresco-plugin'
+    include ':host-utils'
+}
 
 
-include ':plugin-demo1','library'
-project(':plugin-demo1').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo1/app")
-project(':library').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo1/library")
+//includeBuild('replugin-sample/host')
+//includeBuild('replugin-sample/plugin/plugin-demo1')
+//includeBuild('replugin-sample/plugin/plugin-demo2')
+//includeBuild('replugin-sample/plugin/plugin-demo3-kotlin')
+//includeBuild('replugin-sample/plugin/plugin-webview')
+//includeBuild('replugin-sample-extra/fresco/FrescoHost')
+//includeBuild('replugin-sample-extra/fresco/FrescoPlugin')
 
-include ':plugin-demo2'
-project(':plugin-demo2').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo2/app")
+//include ':host-app'
+//project(':host-app').projectDir = new File(settingsDir, "replugin-sample/host/app")
 
-include ':plugin-demo3-kotlin'
-project(':plugin-demo3-kotlin').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo3-kotlin/app")
+//include ':host-utils'
+//project(':utils').projectDir = new File(settingsDir, "replugin-sample/host/utils")
 
-include ':plugin-webview'
-project(':plugin-webview').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-webview/app")
+//include ':plugin-demo1'
+//project(':plugin-demo1').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo1/app")
+//include 'library'
+//project(':library').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo1/library")
 
-include ':fresco-host-app'
-project(':fresco-host-app').projectDir = new File(settingsDir, "replugin-sample-extra/fresco/FrescoHost/app")
-include ':fresco-plugin'
-project(':fresco-plugin').projectDir = new File(settingsDir, "replugin-sample-extra/fresco/FrescoPlugin/app")
+//include ':plugin-demo2'
+//project(':plugin-demo2').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo2/app")
+
+//include ':plugin-demo3-kotlin'
+//project(':plugin-demo3-kotlin').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-demo3-kotlin/app")
+
+//include ':plugin-webview'
+//project(':plugin-webview').projectDir = new File(settingsDir, "replugin-sample/plugin/plugin-webview/app")
+
+//include ':fresco-host-app'
+//project(':fresco-host-app').projectDir = new File(settingsDir, "replugin-sample-extra/fresco/FrescoHost/app")
+//include ':fresco-plugin'
+//project(':fresco-plugin').projectDir = new File(settingsDir, "replugin-sample-extra/fresco/FrescoPlugin/app")

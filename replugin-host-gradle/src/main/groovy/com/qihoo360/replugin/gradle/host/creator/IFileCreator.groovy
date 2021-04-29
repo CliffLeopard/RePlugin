@@ -19,7 +19,7 @@ package com.qihoo360.replugin.gradle.host.creator;
 /**
  * @author RePlugin Team
  */
-public interface IFileCreator {
+interface IFileCreator {
 
     /**
      * 要生成的文件所在目录

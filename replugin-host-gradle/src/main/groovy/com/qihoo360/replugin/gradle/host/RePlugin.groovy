@@ -18,7 +18,7 @@ package com.qihoo360.replugin.gradle.host
 
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
-import com.qihoo360.replugin.gradle.compat.VariantCompat
+import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.gradle.host.creator.FileCreators
 import com.qihoo360.replugin.gradle.host.creator.IFileCreator
 import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
@@ -30,43 +30,33 @@ import org.gradle.api.logging.LogLevel
 /**
  * @author RePlugin Team
  */
-public class Replugin implements Plugin<Project> {
+class Replugin implements Plugin<Project> {
 
     def static TAG = AppConstant.TAG
-    def project
-    def config
+    Project project
+    RePluginConfig config
 
     @Override
-    public void apply(Project project) {
+    void apply(Project project) {
         println "${TAG} Welcome to replugin world ! "
 
         this.project = project
-
-        /* Extensions */
-        project.extensions.create(AppConstant.USER_CONFIG, RepluginConfig)
-
+        project.extensions.create(AppConstant.USER_CONFIG, RePluginConfig)
         if (project.plugins.hasPlugin(AppPlugin)) {
-
-            def android = project.extensions.getByType(AppExtension)
-            android.applicationVariants.all { variant ->
-
+            AppExtension android = project.extensions.getByType(AppExtension)
+            android.applicationVariants.all { ApplicationVariantImpl variant ->
                 addShowPluginTask(variant)
-
                 if (config == null) {
                     config = project.extensions.getByName(AppConstant.USER_CONFIG)
                     checkUserConfig(config)
                 }
 
-                def generateBuildConfigTask = VariantCompat.getGenerateBuildConfigTask(variant)
-                def appID = generateBuildConfigTask.appPackageName
+                def generateBuildConfigTask = variant.generateBuildConfigProvider.get()
+                def appID = generateBuildConfigTask.appPackageName.get()
                 def newManifest = ComponentsGenerator.generateComponent(appID, config)
                 println "${TAG} countTask=${config.countTask}"
 
-                def variantData = variant.variantData
-                def scope = variantData.scope
-
-                //host generate task
-                def generateHostConfigTaskName = scope.getTaskName(AppConstant.TASK_GENERATE, "HostConfig")
+                def generateHostConfigTaskName = AppConstant.TASK_GENERATE + variant.name.capitalize() + "HostConfig"
                 def generateHostConfigTask = project.task(generateHostConfigTaskName)
 
                 generateHostConfigTask.doLast {
@@ -81,23 +71,22 @@ public class Replugin implements Plugin<Project> {
                 }
 
                 //json generate task
-                def generateBuiltinJsonTaskName = scope.getTaskName(AppConstant.TASK_GENERATE, "BuiltinJson")
+                def generateBuiltinJsonTaskName = AppConstant.TASK_GENERATE + variant.name.capitalize() + "BuiltinJson"
                 def generateBuiltinJsonTask = project.task(generateBuiltinJsonTaskName)
 
                 generateBuiltinJsonTask.doLast {
-                    FileCreators.createBuiltinJson(project, variant, config)
+                    FileCreators.createBuiltinJson(variant, config)
                 }
                 generateBuiltinJsonTask.group = AppConstant.TASKS_GROUP
-
-                //depends on mergeAssets Task
-                def mergeAssetsTask = VariantCompat.getMergeAssetsTask(variant)
+                def mergeAssetsTask = variant.mergeAssetsProvider.get()
                 if (mergeAssetsTask) {
-                    generateBuiltinJsonTask.dependsOn mergeAssetsTask
-                    mergeAssetsTask.finalizedBy generateBuiltinJsonTask
+                    generateBuiltinJsonTask.dependsOn(mergeAssetsTask)
+                    mergeAssetsTask.finalizedBy(generateBuiltinJsonTask)
+                    project.getTasksByName("compress${variant.name.capitalize()}Assets",false).find().dependsOn(generateBuiltinJsonTask)
                 }
 
                 variant.outputs.each { output ->
-                    VariantCompat.getProcessManifestTask(output).doLast {
+                    output.processManifestProvider.get().doLast {
                         println "${AppConstant.TAG} processManifest: ${it.outputs.files}"
                         it.outputs.files.each { File file ->
                             updateManifest(file, newManifest)
@@ -131,22 +120,19 @@ public class Replugin implements Plugin<Project> {
         }
     }
 
-    def appendManifest(def file, def content) {
+    static def appendManifest(def file, def content) {
         if (file == null || !file.exists()) return
         println "${AppConstant.TAG} appendManifest: ${file}"
         def updatedContent = file.getText("UTF-8").replaceAll("</application>", content + "</application>")
         file.write(updatedContent, 'UTF-8')
     }
 
-    // 添加 【查看所有插件信息】 任务
-    def addShowPluginTask(def variant) {
-        def variantData = variant.variantData
-        def scope = variantData.scope
-        def showPluginsTaskName = scope.getTaskName(AppConstant.TASK_SHOW_PLUGIN, "")
+    def addShowPluginTask(ApplicationVariantImpl variant) {
+        def showPluginsTaskName = getTaskName(AppConstant.TASK_SHOW_PLUGIN, variant.name, "")
         def showPluginsTask = project.task(showPluginsTaskName)
 
         showPluginsTask.doLast {
-            IFileCreator creator = new PluginBuiltinJsonCreator(project, variant, config)
+            IFileCreator creator = new PluginBuiltinJsonCreator(variant, config)
             def dir = creator.getFileDir()
 
             if (!dir.exists()) {
@@ -163,15 +149,14 @@ public class Replugin implements Plugin<Project> {
             new File(dir, creator.getFileName()).write(fileContent, 'UTF-8')
         }
         showPluginsTask.group = AppConstant.TASKS_GROUP
-
-        //get mergeAssetsTask name, get real gradle task
-        def mergeAssetsTask = VariantCompat.getMergeAssetsTask(variant)
-
-        //depend on mergeAssetsTask so that assets have been merged
+        def mergeAssetsTask = variant.mergeAssetsProvider.get()
         if (mergeAssetsTask) {
             showPluginsTask.dependsOn mergeAssetsTask
         }
+    }
 
+    private static String getTaskName(String prefix, String variantName, String tail) {
+        return prefix + variantName.capitalize() + tail
     }
 
     /**
@@ -234,7 +219,7 @@ public class Replugin implements Plugin<Project> {
     }
 }
 
-class RepluginConfig {
+class RePluginConfig {
 
     /** 自定义进程的数量(除 UI 和 Persistent 进程) */
     def countProcess = 3

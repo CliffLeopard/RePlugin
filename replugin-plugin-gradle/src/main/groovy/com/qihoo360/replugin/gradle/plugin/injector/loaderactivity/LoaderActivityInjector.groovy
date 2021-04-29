@@ -43,6 +43,8 @@ public class LoaderActivityInjector extends BaseInjector {
             'android.app.TabActivity'                 : 'com.qihoo360.replugin.loader.a.PluginTabActivity',
             'android.app.ListActivity'                : 'com.qihoo360.replugin.loader.a.PluginListActivity',
             'android.app.ActivityGroup'               : 'com.qihoo360.replugin.loader.a.PluginActivityGroup',
+            'androidx.fragment.app.FragmentActivity'  : 'com.qihoo360.replugin.loader.a.PluginFragmentActivity',
+            'androidx.appcompat.app.AppCompatActivity': 'com.qihoo360.replugin.loader.a.PluginAppCompatActivity',
             'android.support.v4.app.FragmentActivity' : 'com.qihoo360.replugin.loader.a.PluginFragmentActivity',
             'android.support.v7.app.AppCompatActivity': 'com.qihoo360.replugin.loader.a.PluginAppCompatActivity',
             'android.preference.PreferenceActivity'   : 'com.qihoo360.replugin.loader.a.PluginPreferenceActivity',
@@ -55,7 +57,7 @@ public class LoaderActivityInjector extends BaseInjector {
 
         /* 遍历程序中声明的所有 Activity */
         //每次都new一下，否则多个variant一起构建时只会获取到首个manifest
-        new ManifestAPI().getActivities(project, variantDir).each {
+        new ManifestAPI().getActivities(project, variantName).each {
             // 处理没有被忽略的 Activity
             if (!(it in CommonData.ignoredActivities)) {
                 handleActivity(pool, it, dir)
