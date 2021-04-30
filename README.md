@@ -28,6 +28,7 @@
 * 运行Demo项目:
     * `gradle.properties`中修改配置`SDK_PUBLISH=false`
     * 运行工程目录下的`publish_plugin_install_to_host.sh`
+    * fresco-sample:运行工程目录下的`build_fresco_host.sh`
     
 * 本工程的Demo项目已经全部更改为依赖`androix`,所以运行demo请保证一下配置
     * 项目已经发布到本地maven
