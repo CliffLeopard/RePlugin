@@ -14,6 +14,15 @@
  * the License.
  */
 
+/**
+ * @author RePlugin Team
+ */
+
+plugins {
+    id 'maven-publish'
+    id 'signing'
+}
+
 apply plugin: 'com.android.library'
 
 android {
@@ -26,9 +35,8 @@ android {
 
         versionCode RP_VERSION_CODE
         versionName RP_VERSION
-        consumerProguardFiles 'replugin-library-rules.pro'
+        consumerProguardFiles 'replugin-rules.pro'
     }
-
 
     flavorDimensions "support-version"
     productFlavors {
@@ -43,13 +51,6 @@ android {
         }
     }
 
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-        }
-    }
-
     lintOptions {
         abortOnError false
     }
@@ -57,11 +58,13 @@ android {
 }
 
 dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     if(rootProject.properties.get("android.useAndroidX")=="true"){
-        androidxCompileOnly "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
+        androidxCompileOnly "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_VERSION}"
     }else {
         supportCompileOnly  "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     }
+//    compileOnly "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_VERSION}"
 }
 
-apply from: '../maven_publish.gradle'
+apply from: '../../maven_publish.gradle'

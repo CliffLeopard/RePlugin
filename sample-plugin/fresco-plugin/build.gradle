@@ -38,7 +38,7 @@ repluginPluginConfig {
 
 dependencies {
 //    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
-    implementation project(':replugin-plugin-lib')
+    implementation project(':replugin-lib:replugin-plugin-lib')
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
-    implementation 'com.facebook.fresco:fresco:2.4.0'
+    implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
 }

@@ -17,20 +17,21 @@
 //include ':replugin-gradle-common'
 
 rootProject.name = 'replugin'
-include ':replugin-plugin-lib'
-include ':replugin-host-lib'
+include ':replugin-lib:replugin-plugin-lib'
+include ':replugin-lib:replugin-host-lib'
 
-include ':replugin-plugin-gradle'
-include ':replugin-host-gradle'
+include ':replugin-gradle:replugin-plugin-gradle'
+include ':replugin-gradle:replugin-host-gradle'
 
 if (SDK_PUBLISH == "false") {
-    include ':host-app'
-    include ':plugin-demo1'
-    include 'plugin-demo1-library'
-    include ':plugin-demo2'
-    include ':plugin-demo3-kotlin'
-    include ':plugin-webview'
-    include ':fresco-host-app'
-    include ':fresco-plugin'
-    include ':host-utils'
+    include ':sample-host:host-app'
+    include ':sample-host:host-utils'
+    include ':sample-host:fresco-host-app'
+
+    include ':sample-plugin:plugin-demo1'
+    include ':sample-plugin:plugin-demo1-library'
+    include ':sample-plugin:plugin-demo2'
+    include ':sample-plugin:plugin-demo3-kotlin'
+    include ':sample-plugin:plugin-webview'
+    include ':sample-plugin:fresco-plugin'
 }

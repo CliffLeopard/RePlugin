@@ -60,4 +60,4 @@ dependencies {
 //    implementation project(':replugin-gradle-common')
 }
 
-apply from: '../maven_publish_plugin.gradle'
+apply from: '../../maven_publish_plugin.gradle'

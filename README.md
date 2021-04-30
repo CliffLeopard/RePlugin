@@ -3,6 +3,7 @@
 ### 说明
 
 * 本项目Fork自[Qihoo360/Replugin](https://github.com/Qihoo360/RePlugin)
+* 进行了一系列更新
 
 ### 更新内容
 
@@ -28,6 +29,9 @@
     * `gradle.properties`中修改配置`SDK_PUBLISH=false`
     * 运行工程目录下的`publish_plugin_install_to_host.sh`
     
-* 本工程的Demo项目已经全部更改为依赖`androix`
+* 本工程的Demo项目已经全部更改为依赖`androix`,所以运行demo请保证一下配置
+    * 项目已经发布到本地maven
+    * `gradle.properties`中修改配置`SDK_PUBLISH=false`
+    * `gradle.properties`中修改配置`android.useAndroidX=true` `android.enableJetifier=true`
     
     

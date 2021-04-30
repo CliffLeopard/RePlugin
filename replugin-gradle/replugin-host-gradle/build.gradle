@@ -88,4 +88,4 @@ dependencies {
 //
 //tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
-apply from: '../maven_publish_plugin.gradle'
+apply from: '../../maven_publish_plugin.gradle'

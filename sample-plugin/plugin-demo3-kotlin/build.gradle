@@ -19,7 +19,11 @@
  *
  * @author RePlugin Team
  */
-apply plugin: 'com.android.application'
+
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
 
 android {
     compileSdkVersion RP_CompileSdkVersion
@@ -29,11 +33,10 @@ android {
         minSdkVersion RP_MinSdkVersion
         targetSdkVersion RP_TargetSdkVersion
 
-        applicationId "com.qihoo360.replugin.sample.webview"
+        applicationId "com.qihoo360.replugin.sample.demo3"
 
-        versionName "1.1"
+        versionName "1.0"
         versionCode 100
-        multiDexEnabled false
     }
 
     buildTypes {
@@ -53,17 +56,23 @@ android {
     }
 }
 
+
+dependencies {
+//    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:${KOTLIN_VERSION}"
+    implementation project(':replugin-lib:replugin-plugin-lib')
+//    compileOnly files('libs/fragment.jar')
+}
+
 // 这个plugin需要放在android配置之后，因为需要读取android中的配置项
 apply plugin: 'replugin-plugin-gradle'
 repluginPluginConfig {
-    pluginName = "webview"
+
+    //插件名
+    pluginName = "demo3"
+    //宿主app的包名
     hostApplicationId = "com.qihoo360.replugin.sample.host"
+    //宿主app的启动activity
     hostAppLauncherActivity = "com.qihoo360.replugin.sample.host.MainActivity"
 }
 
-dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
-//    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
-    implementation project(':replugin-plugin-lib')
-}

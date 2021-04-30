@@ -16,6 +16,7 @@ project.ext{
 	JAVAPOET_VERSION		= 	'1.13.0'
 	APK_PARSER_VERSION		= 	'2.6.10'
 	PLUGIN_PUBLISH_VERSION  = 	'0.14.0'
+	FRESCO_VERSION			=   '2.4.0'
 
 	RP_CompileSdkVersion 	= 	30
 	RP_BuildToolsVersion 	= 	'30.0.3'
