@@ -26,7 +26,9 @@ import javassist.expr.MethodCall
  */
 public class LocalBroadcastExprEditor extends ExprEditor {
 
-    static def TARGET_CLASS = 'android.support.v4.content.LocalBroadcastManager'
+    static def TARGET_CLASS = ""
+    static def ANDROIDX_LBM = 'androidx.localbroadcastmanager.content.LocalBroadcastManager'
+    static def SUPPORT_LBM = 'android.support.v4.content.LocalBroadcastManager'
     static def PROXY_CLASS = 'com.qihoo360.replugin.loader.b.PluginLocalBroadcastManager'
 
     /** 处理以下方法 */
@@ -41,12 +43,11 @@ public class LocalBroadcastExprEditor extends ExprEditor {
 
     @Override
     void edit(MethodCall call) throws CannotCompileException {
-        if (call.getClassName().equalsIgnoreCase(TARGET_CLASS)) {
+        if (containClassName(call.getClassName())) {
             if (!(call.getMethodName() in includeMethodCall)) {
                 // println "Skip $methodName"
                 return
             }
-
             replaceStatement(call)
         }
     }
@@ -67,5 +68,16 @@ public class LocalBroadcastExprEditor extends ExprEditor {
         }
 
         println ">>> Replace: ${filePath} <line:${call.lineNumber}> ${TARGET_CLASS}.${method}() <With> ${PROXY_CLASS}.${method}()\n"
+    }
+
+    private static boolean containClassName(String className) {
+        if (className.equalsIgnoreCase(ANDROIDX_LBM)) {
+            TARGET_CLASS = ANDROIDX_LBM
+        } else if (className.equalsIgnoreCase(SUPPORT_LBM)) {
+            TARGET_CLASS = SUPPORT_LBM
+        } else {
+            return false
+        }
+        return true
     }
 }

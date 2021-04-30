@@ -47,7 +47,7 @@ public abstract class PluginAppCompatActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        if (pluginResource != null){
+        if (pluginResource != null) {
             return pluginResource;
         }
         return super.getResources();

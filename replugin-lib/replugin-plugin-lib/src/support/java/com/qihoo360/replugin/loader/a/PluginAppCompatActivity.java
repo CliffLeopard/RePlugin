@@ -21,7 +21,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
-
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 
@@ -47,7 +46,7 @@ public abstract class PluginAppCompatActivity extends AppCompatActivity {
 
     @Override
     public Resources getResources() {
-        if (pluginResource != null){
+        if (pluginResource != null) {
             return pluginResource;
         }
         return super.getResources();

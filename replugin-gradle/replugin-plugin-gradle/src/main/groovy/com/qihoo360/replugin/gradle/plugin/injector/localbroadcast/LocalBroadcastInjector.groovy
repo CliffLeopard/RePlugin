@@ -69,6 +69,11 @@ public class LocalBroadcastInjector extends BaseInjector {
                         return super.visitFile(file, attrs)
                     }
 
+                    if (filePath.contains('androidx/localbroadcastmanager/content/LocalBroadcastManager')) {
+                        println "Ignore ${filePath}"
+                        return super.visitFile(file, attrs)
+                    }
+
                     stream = new FileInputStream(filePath)
                     ctCls = pool.makeClass(stream);
 

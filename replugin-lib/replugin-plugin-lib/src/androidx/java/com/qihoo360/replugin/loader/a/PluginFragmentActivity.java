@@ -21,6 +21,7 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
@@ -46,7 +47,7 @@ public abstract class PluginFragmentActivity extends FragmentActivity {
 
     @Override
     public Resources getResources() {
-        if (pluginResource != null){
+        if (pluginResource != null) {
             return pluginResource;
         }
         return super.getResources();

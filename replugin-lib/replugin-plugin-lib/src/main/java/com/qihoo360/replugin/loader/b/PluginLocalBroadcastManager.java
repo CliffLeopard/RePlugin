@@ -28,6 +28,7 @@ import android.util.Log;
 import com.qihoo360.replugin.MethodInvoker;
 import com.qihoo360.replugin.RePluginEnv;
 import com.qihoo360.replugin.RePluginFramework;
+import com.qihoo360.replugin.loader.a.LocalBroadcastCenter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -390,7 +391,7 @@ public class PluginLocalBroadcastManager {
 
         public static void initLocked(final ClassLoader classLoader) {
             // 填充LocalBroadcastManager各方法
-            final String localBroadcastManager = "android.support.v4.content.LocalBroadcastManager";
+            final String localBroadcastManager = LocalBroadcastCenter.LBM_CLASS_NAME;
             getInstance = new MethodInvoker(classLoader, localBroadcastManager, "getInstance", new Class<?>[]{Context.class});
             registerReceiver = new MethodInvoker(classLoader, localBroadcastManager, "registerReceiver", new Class<?>[]{BroadcastReceiver.class, IntentFilter.class});
             unregisterReceiver = new MethodInvoker(classLoader, localBroadcastManager, "unregisterReceiver", new Class<?>[]{BroadcastReceiver.class});
