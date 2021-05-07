@@ -13,7 +13,7 @@ rm ./sample-host/host-app/src/main/assets/plugins/webview.jar
 rm ./sample-host/host-app/src/main/assets/external/demo3.apk
 
 
-startTime=`date '+%s'`
+startTime=$(date '+%s')
 
 ./gradlew :sample-host:host-app:clean
 ./gradlew :sample-plugin:plugin-demo1:assembleDebug   #--info
@@ -30,7 +30,7 @@ cp ./sample-plugin/plugin-demo3-kotlin/build/outputs/apk/debug/plugin-demo3-kotl
 #主程序编译
 ./gradlew :sample-host:host-app:assembleDebug #--info
 
-endTime=`date '+%s'`
+endTime=$(date '+%s')
 timeGap=$[endTime-startTime]
 echo "startTime:$startTime"
 echo "endTime:$endTime"
