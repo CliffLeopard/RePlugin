@@ -32,7 +32,7 @@ import com.qihoo360.replugin.sample.demo1.webview.WebPageProxy;
  */
 public class WebViewActivity extends Activity {
 
-    static final String testUrl = "https://github.com/Qihoo360/RePlugin";
+    static final String testUrl = "https://github.com/CliffLeopard/RePlugin";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

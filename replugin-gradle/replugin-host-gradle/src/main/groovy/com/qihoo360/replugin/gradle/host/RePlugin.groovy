@@ -20,8 +20,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.AppPlugin
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.gradle.host.creator.FileCreators
-import com.qihoo360.replugin.gradle.host.creator.IFileCreator
-import com.qihoo360.replugin.gradle.host.creator.impl.json.PluginBuiltinJsonCreator
 import com.qihoo360.replugin.gradle.host.handlemanifest.ComponentsGenerator
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -45,7 +43,6 @@ class Replugin implements Plugin<Project> {
         if (project.plugins.hasPlugin(AppPlugin)) {
             AppExtension android = project.extensions.getByType(AppExtension)
             android.applicationVariants.all { ApplicationVariantImpl variant ->
-                addShowPluginTask(variant)
                 if (config == null) {
                     config = project.extensions.getByName(AppConstant.USER_CONFIG)
                     checkUserConfig(config)
@@ -82,7 +79,7 @@ class Replugin implements Plugin<Project> {
                 if (mergeAssetsTask) {
                     generateBuiltinJsonTask.dependsOn(mergeAssetsTask)
                     mergeAssetsTask.finalizedBy(generateBuiltinJsonTask)
-                    project.getTasksByName("compress${variant.name.capitalize()}Assets",false).find().dependsOn(generateBuiltinJsonTask)
+                    project.getTasksByName("compress${variant.name.capitalize()}Assets", false).find().dependsOn(generateBuiltinJsonTask)
                 }
 
                 variant.outputs.each { output ->
@@ -125,34 +122,6 @@ class Replugin implements Plugin<Project> {
         println "${AppConstant.TAG} appendManifest: ${file}"
         def updatedContent = file.getText("UTF-8").replaceAll("</application>", content + "</application>")
         file.write(updatedContent, 'UTF-8')
-    }
-
-    def addShowPluginTask(ApplicationVariantImpl variant) {
-        def showPluginsTaskName = getTaskName(AppConstant.TASK_SHOW_PLUGIN, variant.name, "")
-        def showPluginsTask = project.task(showPluginsTaskName)
-
-        showPluginsTask.doLast {
-            IFileCreator creator = new PluginBuiltinJsonCreator(variant, config)
-            def dir = creator.getFileDir()
-
-            if (!dir.exists()) {
-                println "${AppConstant.TAG} The ${dir.absolutePath} does not exist "
-                println "${AppConstant.TAG} pluginsInfo=null"
-                return
-            }
-
-            String fileContent = creator.getFileContent()
-            if (null == fileContent) {
-                return
-            }
-
-            new File(dir, creator.getFileName()).write(fileContent, 'UTF-8')
-        }
-        showPluginsTask.group = AppConstant.TASKS_GROUP
-        def mergeAssetsTask = variant.mergeAssetsProvider.get()
-        if (mergeAssetsTask) {
-            showPluginsTask.dependsOn mergeAssetsTask
-        }
     }
 
     private static String getTaskName(String prefix, String variantName, String tail) {

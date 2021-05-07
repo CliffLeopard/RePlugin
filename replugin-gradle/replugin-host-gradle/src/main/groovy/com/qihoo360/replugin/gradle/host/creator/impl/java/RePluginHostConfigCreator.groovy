@@ -37,9 +37,6 @@ class RePluginHostConfigCreator implements IFileCreator {
         this.project = project
         this.variant = variant;
         this.config = cfg
-
-        //make it generated in buildConfig output dir so that we don't need to hook anything
-
         File buildConfigGeneratedDir = this.variant.variantData.paths.buildConfigSourceOutputDir
         fileName = HOST_CONFIG_NAME;
         fileDir = new File(buildConfigGeneratedDir, HOST_CONFIG_PATH)

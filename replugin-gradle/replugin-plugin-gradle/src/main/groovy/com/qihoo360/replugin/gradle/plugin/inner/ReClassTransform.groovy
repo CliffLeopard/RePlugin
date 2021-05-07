@@ -17,9 +17,8 @@
 
 package com.qihoo360.replugin.gradle.plugin.inner
 
-import com.android.annotations.NonNull
+
 import com.android.build.api.transform.*
-import com.android.build.api.variant.VariantInfo
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.pipeline.TransformManager
 import com.qihoo360.replugin.gradle.plugin.ReClassConfig
