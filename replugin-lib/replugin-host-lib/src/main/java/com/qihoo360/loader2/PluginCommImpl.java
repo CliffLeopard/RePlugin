@@ -396,7 +396,6 @@ public class PluginCommImpl {
      * 加载插件Activity，在startActivity之前调用
      * @param intent
      * @param plugin 插件名
-     * @param target 目标Service名，如果传null，则取获取到的第一个
      * @param process 是否在指定进程中启动
      * @return
      */
