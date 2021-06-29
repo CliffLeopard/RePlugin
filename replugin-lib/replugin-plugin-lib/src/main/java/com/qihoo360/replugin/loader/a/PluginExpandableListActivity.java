@@ -35,14 +35,14 @@ public abstract class PluginExpandableListActivity extends ExpandableListActivit
 
     @Override
     protected void attachBaseContext(Context newBase) {
-        newBase = RePluginInternal.createActivityContext(this, newBase);
-        pluginResource = new PluginResource(newBase.getResources());
+        Context context = RePluginInternal.createActivityContext(this, newBase);
+        pluginResource = new PluginResource(context == null ? newBase : context);
         super.attachBaseContext(newBase);
     }
 
     @Override
     public Resources getResources() {
-        if (pluginResource != null){
+        if (pluginResource != null) {
             return pluginResource;
         }
         return super.getResources();
