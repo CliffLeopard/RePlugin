@@ -33,7 +33,7 @@ import javassist.expr.MethodCall
  *
  * @author RePlugin Team
  */
-public class LoaderActivityInjector extends BaseInjector {
+class LoaderActivityInjector extends BaseInjector {
 
     def private static LOADER_PROP_FILE = 'loader_activities.properties'
 

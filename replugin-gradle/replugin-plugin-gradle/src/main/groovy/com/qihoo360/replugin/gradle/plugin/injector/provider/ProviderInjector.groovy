@@ -17,8 +17,8 @@
 
 package com.qihoo360.replugin.gradle.plugin.injector.provider
 
-import com.qihoo360.replugin.gradle.plugin.inner.Util
 import com.qihoo360.replugin.gradle.plugin.injector.BaseInjector
+import com.qihoo360.replugin.gradle.plugin.inner.Util
 import javassist.ClassPool
 
 import java.nio.file.*
@@ -27,7 +27,7 @@ import java.nio.file.attribute.BasicFileAttributes
 /**
  * @author RePlugin Team
  */
-public class ProviderInjector extends BaseInjector {
+class ProviderInjector extends BaseInjector {
 
     // 处理以下方法
     public static def includeMethodCall = ['query',
@@ -36,7 +36,7 @@ public class ProviderInjector extends BaseInjector {
                                            'bulkInsert',
                                            'delete',
                                            'update',
-            /// 以下方法 replugin plugin lib 暂未支持，导致字节码修改失败。
+                                           /// 以下方法 replugin plugin lib 暂未支持，导致字节码修改失败。
                                            'openInputStream',
                                            'openOutputStream',
                                            'openFileDescriptor',

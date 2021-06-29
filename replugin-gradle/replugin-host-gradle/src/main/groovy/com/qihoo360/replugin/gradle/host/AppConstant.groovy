@@ -21,15 +21,11 @@ package com.qihoo360.replugin.gradle.host
  * @author RePlugin Team
  */
 class AppConstant {
-
-    /** 版本号 */
-    def static final x = "FUCK You"
-
-    /** 版本号 */
-    def static final VER = "2.3.5-SNAPSHOT"
+    /** 版本号:不要手动修改,当发布时，会根据rp-config.gradle中的RP_VERSION自动替换*/
+    def static VER = "2.3.6-SNAPSHOT-androidx"
 
     /** 打印信息时候的前缀 */
-    def static final TAG = "< replugin-host-v${VER} >"
+    def static TAG = "< replugin-host-$VER >"
 
     /** 外部用户配置信息 */
     def static final USER_CONFIG = "repluginHostConfig"

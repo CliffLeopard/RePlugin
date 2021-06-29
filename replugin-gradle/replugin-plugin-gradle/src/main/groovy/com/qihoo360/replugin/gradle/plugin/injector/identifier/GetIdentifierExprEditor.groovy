@@ -25,7 +25,7 @@ import javassist.expr.MethodCall
 /**
  * @author RePlugin Team
  */
-public class GetIdentifierExprEditor extends ExprEditor {
+class GetIdentifierExprEditor extends ExprEditor {
 
     public def filePath
 

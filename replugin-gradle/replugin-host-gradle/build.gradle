@@ -17,7 +17,6 @@
 buildscript {
     repositories {
         google()
-        jcenter()
         mavenCentral()
         mavenLocal()
     }
@@ -29,7 +28,6 @@ plugins {
     id 'com.gradle.plugin-publish' version "${PLUGIN_PUBLISH_VERSION}"
     id 'groovy'
     id 'signing'
-//    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
 
@@ -37,14 +35,6 @@ java {
     withJavadocJar()
     withSourcesJar()
 }
-
-//sourceSets {
-//    main {
-//        groovy {
-//            srcDirs '../replugin-gradle-common/src/main/groovy/com/qihoo360/replugin/gradle/compat'
-//        }
-//    }
-//}
 
 dependencies {
     implementation "com.android.tools.build:gradle:${GRADLE_PLUGIN}"
@@ -55,37 +45,6 @@ dependencies {
 
     implementation gradleApi()
     implementation localGroovy()
-
-//    implementation 'org.codehaus.groovy:groovy:3.0.7'
-//    implementation 'com.google.gradle:osdetector-gradle-plugin:1.7.0'
-//    implementation project(':replugin-gradle-common')
 }
-
-//import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-//
-//shadowJar {
-//    dependencies {
-//        exclude(dependency('com.android.tools.build:gradle:4.1.3'))
-//        exclude(dependency('org.json:json:20210307'))
-//        exclude(dependency('org.codehaus.groovy:groovy:3.0.7'))
-//        exclude(dependency('com.squareup:javapoet:1.13.0'))
-//        exclude(dependency('com.google.gradle:osdetector-gradle-plugin:1.7.0'))
-//        exclude(dependency('net.dongliu:apk-parser:2.6.10'))
-//
-////        exclude(localGroovy())
-////        exclude(gradleApi())
-////        exclude(dependency(localGroovy()))
-////        exclude(dependency(gradleApi()))
-//    }
-//}
-//
-//configurations.compile.dependencies.remove dependencies.gradleApi()
-//configurations.compile.dependencies.remove dependencies.localGroovy()
-//
-//task relocateShadowJar(type: ConfigureShadowRelocation) {
-//    target = tasks.shadowJar
-//}
-//
-//tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 apply from: '../../maven_publish_plugin.gradle'

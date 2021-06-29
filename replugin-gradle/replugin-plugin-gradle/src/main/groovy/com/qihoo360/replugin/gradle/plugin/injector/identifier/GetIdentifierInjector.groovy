@@ -27,7 +27,7 @@ import java.nio.file.attribute.BasicFileAttributes
 /**
  * @author RePlugin Team
  */
-public class GetIdentifierInjector extends BaseInjector {
+class GetIdentifierInjector extends BaseInjector {
 
     // 表达式编辑器
     def editor

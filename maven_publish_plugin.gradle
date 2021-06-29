@@ -1,6 +1,7 @@
 def static replaceVariables(File file, String key, String value) {
     if (!file.exists()) return
-    def regex = '\\$\\{' + key + '\\}'
+    // 正则匹配:(?<=VER\s*=\s*\")\S*(?=\")
+    def regex = "(?<=${key}\\s{0,5}=\\s{0,5}\\\")\\S*(?=\\\")"
     file.write((file.text =~ /${regex}/).replaceAll(value))
 }
 
@@ -9,7 +10,7 @@ def pbUpdateVariables() {
             "src/main/groovy/com/qihoo360/replugin/gradle/host/AppConstant.groovy",
             "src/main/groovy/com/qihoo360/replugin/gradle/plugin/AppConstant.groovy"
     ].forEach {
-        replaceVariables(project.file(it), "RP_VERSION", RP_VERSION)
+        replaceVariables(project.file(it), "VER", RP_VERSION)
     }
 }
 

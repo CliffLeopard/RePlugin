@@ -37,7 +37,6 @@ class Replugin implements Plugin<Project> {
     @Override
     void apply(Project project) {
         println "${TAG} Welcome to replugin world ! "
-
         this.project = project
         project.extensions.create(AppConstant.USER_CONFIG, RePluginConfig)
         if (project.plugins.hasPlugin(AppPlugin)) {
@@ -66,22 +65,7 @@ class Replugin implements Plugin<Project> {
                     generateHostConfigTask.dependsOn generateBuildConfigTask
                     generateBuildConfigTask.finalizedBy generateHostConfigTask
                 }
-
-                //json generate task
-                def generateBuiltinJsonTaskName = AppConstant.TASK_GENERATE + variant.name.capitalize() + "BuiltinJson"
-                def generateBuiltinJsonTask = project.task(generateBuiltinJsonTaskName)
-
-                generateBuiltinJsonTask.doLast {
-                    FileCreators.createBuiltinJson(variant, config)
-                }
-                generateBuiltinJsonTask.group = AppConstant.TASKS_GROUP
-                def mergeAssetsTask = variant.mergeAssetsProvider.get()
-                if (mergeAssetsTask) {
-                    generateBuiltinJsonTask.dependsOn(mergeAssetsTask)
-                    mergeAssetsTask.finalizedBy(generateBuiltinJsonTask)
-                    project.getTasksByName("compress${variant.name.capitalize()}Assets", false).find().dependsOn(generateBuiltinJsonTask)
-                }
-
+                addBuildInJsonTask(variant)
                 variant.outputs.each { output ->
                     output.processManifestProvider.get().doLast {
                         println "${AppConstant.TAG} processManifest: ${it.outputs.files}"
@@ -91,6 +75,39 @@ class Replugin implements Plugin<Project> {
                     }
                 }
             }
+        }
+    }
+    /**
+     * 在 mergeAssetsTask 执行完之后，继续执行生成保存内置插件信息的 plugins-builtin.json
+     * @param variant
+     */
+    private void addBuildInJsonTask(ApplicationVariantImpl variant) {
+        variant.mergeAssetsProvider.get().doLast {
+            FileCreators.createBuiltinJson(variant, config)
+        }
+    }
+
+    /**
+     * 旧版生成plugins-builtin.json的方案
+     * 以debug为例：
+     * 在mergeDebugAssets 和 compressDebugAssets之间插入自定义的task:rpGenerateDebugBuiltinJson
+     * 在rpGenerateDebugBuiltinJson中生成plugins-builtin.json
+     * 但是这种方案在gradle-4.2.1中无效。
+     * 但是 gradle-4.2.1的构建序列确实是 mergeDebugAssets，compressDebugAssets 顺序执行。所以问题比较诡异
+     * 所以使用了 `addBuildInJsonTask` 新方式，直接在 `mergeDebugAssets`task内加入构建逻辑
+     * @param variant
+     */
+    private void oldVersionBuildInJsonTask(ApplicationVariantImpl variant) {
+        def generateBuiltinJsonTaskName = AppConstant.TASK_GENERATE + variant.name.capitalize() + "BuiltinJson"
+        def generateBuiltinJsonTask = project.task(generateBuiltinJsonTaskName)
+        generateBuiltinJsonTask.doFirst {
+            FileCreators.createBuiltinJson(variant, config)
+        }
+        generateBuiltinJsonTask.group = AppConstant.TASKS_GROUP
+        if (mergeAssetsTask) {
+            generateBuiltinJsonTask.dependsOn(mergeAssetsTask)
+            mergeAssetsTask.finalizedBy(generateBuiltinJsonTask)
+            project.getTasksByName("compress${variant.name.capitalize()}Assets", false).find().dependsOn(generateBuiltinJsonTask)
         }
     }
 
@@ -155,9 +172,7 @@ class Replugin implements Plugin<Project> {
         doCheckConfig("countTask", config.countTask)
 
         println '--------------------------------------------------------------------------'
-//        println "${TAG} appID=${appID}"
         println "${TAG} useAppCompat=${config.useAppCompat}"
-        // println "${TAG} persistentName=${config.persistentName}"
         println "${TAG} countProcess=${config.countProcess}"
 
         println "${TAG} countTranslucentStandard=${config.countTranslucentStandard}"
@@ -168,7 +183,6 @@ class Replugin implements Plugin<Project> {
         println "${TAG} countNotTranslucentSingleTop=${config.countNotTranslucentSingleTop}"
         println "${TAG} countNotTranslucentSingleTask=${config.countNotTranslucentSingleTask}"
         println "${TAG} countNotTranslucentSingleInstance=${config.countNotTranslucentSingleInstance}"
-
         println "${TAG} countTask=${config.countTask}"
         println '--------------------------------------------------------------------------'
     }
@@ -186,59 +200,4 @@ class Replugin implements Plugin<Project> {
             System.exit(0)
         }
     }
-}
-
-class RePluginConfig {
-
-    /** 自定义进程的数量(除 UI 和 Persistent 进程) */
-    def countProcess = 3
-
-    /** 是否使用常驻进程？ */
-    def persistentEnable = true
-
-    /** 常驻进程名称（也就是上面说的 Persistent 进程，开发者可自定义）*/
-    def persistentName = ':GuardService'
-
-    /** 背景不透明的坑的数量 */
-    def countNotTranslucentStandard = 6
-    def countNotTranslucentSingleTop = 2
-    def countNotTranslucentSingleTask = 3
-    def countNotTranslucentSingleInstance = 2
-
-    /** 背景透明的坑的数量 */
-    def countTranslucentStandard = 2
-    def countTranslucentSingleTop = 2
-    def countTranslucentSingleTask = 2
-    def countTranslucentSingleInstance = 3
-
-    /** 宿主中声明的 TaskAffinity 的组数 */
-    def countTask = 2
-
-    /**
-     * 是否使用 AppCompat 库
-     * com.android.support:appcompat-v7:28.0.0
-     * androidx.appcompat
-     */
-    def useAppCompat = false
-
-    /** HOST 向下兼容的插件版本 */
-    def compatibleVersion = 10
-
-    /** HOST 插件版本 */
-    def currentVersion = 12
-
-    /** plugins-builtin.json 文件名自定义,默认是 "plugins-builtin.json" */
-    def builtInJsonFileName = "plugins-builtin.json"
-
-    /** 是否自动管理 plugins-builtin.json 文件,默认自动管理 */
-    def autoManageBuiltInJsonFile = true
-
-    /** assert目录下放置插件文件的目录自定义,默认是 assert 的 "plugins" */
-    def pluginDir = "plugins"
-
-    /** 插件文件的后缀自定义,默认是".jar" 暂时支持 jar 格式*/
-    def pluginFilePostfix = ".jar"
-
-    /** 当发现插件目录下面有不合法的插件 jar (有可能是特殊定制 jar)时是否停止构建,默认是 true */
-    def enablePluginFileIllegalStopBuild = true
 }

@@ -64,7 +64,6 @@ dependencies {
     }else {
         supportCompileOnly  "com.android.support:appcompat-v7:${SUPPORT_VERSION}"
     }
-//    compileOnly "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_VERSION}"
 }
 
 apply from: '../../maven_publish.gradle'

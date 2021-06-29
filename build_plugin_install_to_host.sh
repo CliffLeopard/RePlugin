@@ -31,7 +31,7 @@ cp ./sample-plugin/plugin-demo3-kotlin/build/outputs/apk/debug/plugin-demo3-kotl
 ./gradlew :sample-host:host-app:assembleDebug #--info
 
 endTime=$(date '+%s')
-timeGap=$[endTime-startTime]
+timeGap=$((endTime-startTime))
 echo "startTime:$startTime"
 echo "endTime:$endTime"
 echo "timeGap:$timeGap"

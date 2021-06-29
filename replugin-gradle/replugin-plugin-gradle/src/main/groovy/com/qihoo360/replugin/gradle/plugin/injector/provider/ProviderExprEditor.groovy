@@ -24,7 +24,7 @@ import javassist.expr.MethodCall
 /**
  * @author RePlugin Team
  */
-public class ProviderExprEditor extends ExprEditor {
+class ProviderExprEditor extends ExprEditor {
 
     static def PROVIDER_CLASS = 'com.qihoo360.replugin.loader.p.PluginProviderClient'
 

@@ -29,7 +29,7 @@ import org.gradle.api.Project
 /**
  * @author RePlugin Team
  */
-public class ReClassPlugin implements Plugin<Project> {
+class ReClassPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {

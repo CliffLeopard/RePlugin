@@ -18,7 +18,6 @@
 buildscript {
     repositories {
         google()
-        jcenter()
         mavenCentral()
     }
 }
@@ -36,28 +35,12 @@ java {
     withSourcesJar()
 }
 
-group = 'com.qihoo360.replugin'  // 组名
-
-String classPath = ".src.main.groovy.com.qihoo360.replugin.gradle.plugin.AppConstant".replace(".", File.separator)
-String verPath = "${project.projectDir}" + classPath + ".groovy"
-String verLine = new File(verPath).filterLine { it =~ /def static final VER =/ }
-version = "${verLine.split("\"")[1]}" // 版本
-//红色醒目打印显示版本号
-System.err.println "version=${version}"
-
 dependencies {
     implementation "com.android.tools.build:gradle:${GRADLE_PLUGIN}"
     implementation "org.json:json:${JSON_VERSION}"
-//    implementation "org.codehaus.groovy:groovy:${GROOVY_VERSION}"
     implementation "com.squareup:javapoet:${JAVAPOET_VERSION}"
     implementation "org.javassist:javassist:${JAVA_ASSISTANT}"
-
-//    implementation gradleApi()
     implementation localGroovy()
-
-//    implementation 'com.android.tools.build:transform-api:2.0.0-deprecated-use-gradle-api'
-//    implementation 'com.google.gradle:osdetector-gradle-plugin:1.7.0'
-//    implementation project(':replugin-gradle-common')
 }
 
 apply from: '../../maven_publish_plugin.gradle'

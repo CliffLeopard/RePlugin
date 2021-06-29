@@ -20,7 +20,7 @@ package com.qihoo360.replugin.gradle.plugin.manifest;
 /**
  * @author RePlugin Team
  */
-public interface IManifest {
+interface IManifest {
 
     /**
      * 获取 AndroidManifest 中声明的所有 Activity

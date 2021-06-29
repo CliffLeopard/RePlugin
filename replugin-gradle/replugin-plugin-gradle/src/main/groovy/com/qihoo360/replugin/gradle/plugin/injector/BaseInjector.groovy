@@ -22,22 +22,22 @@ import org.gradle.api.Project
 /**
  * @author RePlugin Team
  */
-public abstract class BaseInjector implements IClassInjector {
+abstract class BaseInjector implements IClassInjector {
 
     protected Project project
 
     protected String variantName
 
     @Override
-    public Object name() {
+    Object name() {
         return getClass().getSimpleName()
     }
 
-    public void setProject(Project project) {
+    void setProject(Project project) {
         this.project = project;
     }
 
-    public void setVariantDir(String variantName) {
+    void setVariantDir(String variantName) {
         this.variantName = variantName;
     }
 }

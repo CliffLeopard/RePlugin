@@ -35,7 +35,7 @@ import static com.android.builder.model.AndroidProject.FD_INTERMEDIATES
 /**
  * @author RePlugin Team
  */
-public class Util {
+class Util {
 
     /** 生成 ClassPool 使用的 ClassPath 集合，同时将要处理的 jar 写入 includeJars */
     def static getClassPaths(Project project,

@@ -32,13 +32,13 @@ import org.gradle.api.Project
 /**
  * @author RePlugin Team
  */
-public class ReClassTransform extends Transform {
+class ReClassTransform extends Transform {
     private Project project
     private AppExtension appExtension
     def includeJars = [] as Set
     def map = [:]
 
-    public ReClassTransform(Project p, AppExtension appExtension) {
+    ReClassTransform(Project p, AppExtension appExtension) {
         this.project = p
         this.appExtension = appExtension
     }

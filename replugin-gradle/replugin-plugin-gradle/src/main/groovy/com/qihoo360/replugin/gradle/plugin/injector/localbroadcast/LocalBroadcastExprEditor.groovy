@@ -24,7 +24,7 @@ import javassist.expr.MethodCall
 /**
  * @author RePlugin Team
  */
-public class LocalBroadcastExprEditor extends ExprEditor {
+class LocalBroadcastExprEditor extends ExprEditor {
 
     static def TARGET_CLASS = ""
     static def ANDROIDX_LBM = 'androidx.localbroadcastmanager.content.LocalBroadcastManager'

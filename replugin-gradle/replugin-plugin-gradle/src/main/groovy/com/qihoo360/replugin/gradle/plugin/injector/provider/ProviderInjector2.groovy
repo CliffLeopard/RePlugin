@@ -27,7 +27,7 @@ import java.nio.file.attribute.BasicFileAttributes
 /**
  * @author RePlugin Team
  */
-public class ProviderInjector2 extends BaseInjector {
+class ProviderInjector2 extends BaseInjector {
 
     // 处理以下方法
     public static def includeMethodCall = ['query', 'update']

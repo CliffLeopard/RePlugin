@@ -7,8 +7,8 @@
 
 ### 更新内容
 
-* gradle-plugin 更新至4.1.3
-* gradle 更新至6.5
+* gradle-plugin 更新至4.2.1
+* gradle 更新至6.7.1
 * 支持AndroidX
 
 ### 配置
@@ -16,13 +16,13 @@
 * 将支持`AndroidX`的项目发布到本地:
     * `gradle.properties`中修改配置`SDK_PUBLISH=true`
     * `gradle.properties`中修改配置`android.useAndroidX=true` `android.enableJetifier=true`
-    * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.5-SNAPSHOT-androix`
+    * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.6-SNAPSHOT-androix`
     * 执行工程Task的`publishToMavenLocal`
     
 * 将支持`support`的项目发布到本地:
     * `gradle.properties`中修改配置`SDK_PUBLISH=true`
     * `gradle.properties`中修改配置`android.useAndroidX=false` `android.enableJetifier=false`
-    * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.5-SNAPSHOT-support`
+    * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.6-SNAPSHOT-support`
     * 执行工程Task的`publishToMavenLocal`
     
 * 运行Demo项目:
