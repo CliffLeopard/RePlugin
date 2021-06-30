@@ -1,7 +1,7 @@
 project.ext{
 
 	GRADLE_PLUGIN		 	= 	'4.2.1'
-	KOTLIN_VERSION		 	= 	'1.5.10'
+	KOTLIN_VERSION		 	= 	'1.5.20'
 	GROOVY_VERSION		 	= 	'3.0.7'
 	JAVA_ASSISTANT 	     	= 	'3.27.0-GA'
 	JUNIT_VERSION		 	= 	'4.13.2'
@@ -30,8 +30,8 @@ project.ext{
 
 	RP_USER 				= 	'replugin'
 	RP_REPO 				= 	'replugin'
-	RP_USERORG 				= 	'qihoo360' // unset this if you an't belong to any orgnization
-	//
+	RP_USERORG 				= 	'qihoo360'
+
 	RP_SITE 				= 	'https://github.com/Qihoo360/Replugin'
 	RP_DESC 				= 	'RePlugin - A flexible, stable, easy-to-use Android Plug-in Framework'
 	RP_EMAIL 				= 	'replugin@gmail.com'
