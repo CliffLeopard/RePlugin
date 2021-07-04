@@ -23,7 +23,7 @@ package com.qihoo360.replugin.gradle.plugin
 class AppConstant {
 
     /** 版本号:不要手动修改,当发布时，会根据rp-config.gradle中的RP_VERSION自动替换*/
-    def static final VER = "2.3.6-SNAPSHOT-androidx"
+    def static final VER = "2.3.5-SNAPSHOT-androidx"
 
     /** 打印信息时候的前缀 */
     def static final TAG = "< replugin-plugin-$VER >"

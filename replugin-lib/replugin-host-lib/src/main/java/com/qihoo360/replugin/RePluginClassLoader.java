@@ -17,13 +17,14 @@
 package com.qihoo360.replugin;
 
 import android.os.Build;
+import android.util.Log;
 
-import com.qihoo360.replugin.utils.ReflectUtils;
 import com.qihoo360.loader.utils.StringUtils;
 import com.qihoo360.loader2.PMF;
 import com.qihoo360.replugin.base.IPC;
 import com.qihoo360.replugin.helper.LogDebug;
 import com.qihoo360.replugin.helper.LogRelease;
+import com.qihoo360.replugin.utils.ReflectUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -35,6 +36,7 @@ import dalvik.system.PathClassLoader;
 
 import static com.qihoo360.replugin.helper.LogDebug.LOG;
 import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
+import static com.qihoo360.replugin.helper.LogDebug.i;
 import static com.qihoo360.replugin.helper.LogRelease.LOGR;
 
 /**
@@ -142,26 +144,31 @@ public class RePluginClassLoader extends PathClassLoader {
 
     @Override
     protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
-        //
         Class<?> c = null;
-        c = PMF.loadClass(className, resolve);
-        if (c != null) {
-            return c;
-        }
-        //
         try {
-            c = mOrig.loadClass(className);
-            // 只有开启“详细日志”才会输出，防止“刷屏”现象
-            if (LogDebug.LOG && RePlugin.getConfig().isPrintDetailLog()) {
-                LogDebug.d(TAG, "loadClass: load other class, cn=" + className);
+            c = PMF.loadClass(className, resolve);
+
+            if (c == null)
+                c = super.loadClass(className, resolve);
+
+            if (c != null && c.getClassLoader() == mOrig) {
+                ReflectUtils.writeField(c, "classloader", this);
             }
-            return c;
+
+            if (c != null && c.getClassLoader() != this) {
+                Log.e(TAG, "Fuck: className:" + className + "  classLoader:" + c.getClassLoader() + "   me:" + this);
+            }
         } catch (Throwable e) {
-            //
+            try {
+                c = mOrig.loadClass(className);
+                Log.e(TAG, "loadClass: load other class, cn=" + className);
+            } catch (Throwable throwable) {
+                LogDebug.d(TAG, "can't find class, cn=" + className);
+            }
         }
-        //
-        return super.loadClass(className, resolve);
+        return c;
     }
+
 
     @Override
     protected Class<?> findClass(String className) throws ClassNotFoundException {

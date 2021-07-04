@@ -1,6 +1,6 @@
 project.ext{
 
-	GRADLE_PLUGIN		 	= 	'4.2.1'
+	GRADLE_PLUGIN		 	= 	'4.2.2'
 	KOTLIN_VERSION		 	= 	'1.5.20'
 	GROOVY_VERSION		 	= 	'3.0.7'
 	JAVA_ASSISTANT 	     	= 	'3.27.0-GA'
@@ -24,7 +24,7 @@ project.ext{
 	RP_TargetSdkVersion  	= 	30
 
 	RP_GROUP 				= 	'com.qihoo360.replugin'
-	RP_VERSION_HEAD			= 	'2.3.6-SNAPSHOT'
+	RP_VERSION_HEAD			= 	'2.3.5-SNAPSHOT'
 	RP_VERSION 				=  	RP_VERSION_HEAD + '-' + (rootProject.properties.get('android.useAndroidX') == "true" ? "androidx":"support")
 	RP_VERSION_CODE     	=  	256
 

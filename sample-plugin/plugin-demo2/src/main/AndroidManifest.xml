@@ -15,6 +15,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.qihoo360.replugin.sample.demo2">
 
     <application
@@ -34,7 +35,7 @@
             android:name=".MainActivity"
             android:configChanges="keyboard|keyboardHidden|orientation"
             android:exported="false"
-            android:screenOrientation="portrait">
+            android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="com.qihoo360.replugin.sample.demo2.action.theme_fullscreen_2" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -50,16 +51,18 @@
             android:name=".activity.appcompat.AppCompatActivityDemo"
             android:exported="false"
             android:theme="@style/Theme.AppCompat"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="fullSensor" />
         <!-- receivers -->
-        <receiver android:name=".receivers.PluginDemo2Receiver">
+        <receiver android:name=".receivers.PluginDemo2Receiver"
+            tools:ignore="ExportedReceiver">
             <intent-filter>
                 <action android:name="com.qihoo360.repluginapp.receiver.ACTION1" />
             </intent-filter>
         </receiver>
 
         <!-- service -->
-        <service android:name=".service.PluginDemo2Service">
+        <service android:name=".service.PluginDemo2Service"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="com.qihoo360.replugin.sample.demo2.service.action" />
             </intent-filter>

@@ -9,8 +9,12 @@ public class PluginDexClassLoaderPatch {
 
     // org.apache.http.legacy.jar 中的包
     private static final String[] APACHE_HTTP_LEGACY_PACKAGES = {
-            "android.net.http", "android.net.compatibility", "com.android.internal.http.multipart",
-            "org.apache.commons.codec", "org.apache.commons.logging", "org.apache.http"
+            "android.net.http",
+            "android.net.compatibility",
+            "com.android.internal.http.multipart",
+            "org.apache.commons.codec",
+            "org.apache.commons.logging",
+            "org.apache.http"
     };
 
     // OkHttp3 中的包
@@ -25,7 +29,7 @@ public class PluginDexClassLoaderPatch {
      * @return
      */
     public static boolean need2LoadFromHost(String className) {
-        return isOkHttp3(className) || isApacheHttpLegacy(className) ;
+        return isOkHttp3(className) || isApacheHttpLegacy(className);
     }
 
     /**
