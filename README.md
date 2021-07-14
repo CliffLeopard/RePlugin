@@ -7,7 +7,7 @@
 
 ### 更新内容
 
-* gradle-plugin 更新至4.2.1
+* gradle-plugin 更新至4.2.2
 * gradle 更新至6.7.1
 * 支持AndroidX
 

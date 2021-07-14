@@ -17,7 +17,6 @@
 package com.qihoo360.replugin;
 
 import android.os.Build;
-import android.util.Log;
 
 import com.qihoo360.loader.utils.StringUtils;
 import com.qihoo360.loader2.PMF;
@@ -147,21 +146,11 @@ public class RePluginClassLoader extends PathClassLoader {
         Class<?> c = null;
         try {
             c = PMF.loadClass(className, resolve);
-
             if (c == null)
                 c = super.loadClass(className, resolve);
-
-            if (c != null && c.getClassLoader() == mOrig) {
-                ReflectUtils.writeField(c, "classloader", this);
-            }
-
-            if (c != null && c.getClassLoader() != this) {
-                Log.e(TAG, "Fuck: className:" + className + "  classLoader:" + c.getClassLoader() + "   me:" + this);
-            }
         } catch (Throwable e) {
             try {
                 c = mOrig.loadClass(className);
-                Log.e(TAG, "loadClass: load other class, cn=" + className);
             } catch (Throwable throwable) {
                 LogDebug.d(TAG, "can't find class, cn=" + className);
             }
