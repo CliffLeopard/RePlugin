@@ -157,7 +157,7 @@ public class MainActivity extends Activity {
         mItems.add(new TestItem("Activity: Open in Application", new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context app = v.getContext().getApplicationContext();
+                Context app = RePlugin.getPluginContext();
                 Intent intent = new Intent(app, ThemeDialogActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 app.startActivity(intent);
