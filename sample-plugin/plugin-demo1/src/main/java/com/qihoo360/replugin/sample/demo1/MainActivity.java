@@ -68,7 +68,7 @@ import static com.qihoo360.replugin.sample.demo1.support.NotifyUtils.TAG;
  */
 public class MainActivity extends Activity {
 
-    private List<TestItem> mItems = new ArrayList<>();
+    private final List<TestItem> mItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +81,7 @@ public class MainActivity extends Activity {
 
         initData();
 
-        ListView lv = (ListView) findViewById(R.id.list_view);
+        ListView lv = findViewById(R.id.list_view);
         lv.setAdapter(new TestAdapter());
     }
 
@@ -90,179 +90,115 @@ public class MainActivity extends Activity {
         // =========
         // Activity
         // =========
-        mItems.add(new TestItem("Jump 2 Host", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 打开宿主Activity
-                Intent intent = new Intent();
-                intent.setClassName("com.qihoo360.replugin.sample.host", "com.qihoo360.replugin.sample.host.PluginFragmentActivity");
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Jump 2 Host", v -> {
+            // 打开宿主Activity
+            Intent intent = new Intent();
+            intent.setClassName("com.qihoo360.replugin.sample.host", "com.qihoo360.replugin.sample.host.PluginFragmentActivity");
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Standard", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), StandardActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Standard", v -> {
+            Intent intent = new Intent(v.getContext(), StandardActivity.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Theme BlackNoTitleBar", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ThemeBlackNoTitleBarActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Theme BlackNoTitleBar", v -> {
+            Intent intent = new Intent(v.getContext(), ThemeBlackNoTitleBarActivity.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Theme BlackNoTitleBarFullscreen", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ThemeBlackNoTitleBarFullscreenActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Theme BlackNoTitleBarFullscreen", v -> {
+            Intent intent = new Intent(v.getContext(), ThemeBlackNoTitleBarFullscreenActivity.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Theme Dialog", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ThemeDialogActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Theme Dialog", v -> {
+            Intent intent = new Intent(v.getContext(), ThemeDialogActivity.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: AppCompat (to Demo2)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RePlugin.startActivity(v.getContext(), new Intent(), "demo2", "com.qihoo360.replugin.sample.demo2.activity.appcompat.AppCompatActivityDemo");
-            }
+        mItems.add(new TestItem("Activity: AppCompat (to Demo2)", v -> RePlugin.startActivity(v.getContext(), new Intent(), "demo2", "com.qihoo360.replugin.sample.demo2.activity.appcompat.AppCompatActivityDemo")));
+        mItems.add(new TestItem("Activity: SingleTop", v -> {
+            Intent intent = new Intent(v.getContext(), SingleTopActivity1.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: SingleTop", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SingleTopActivity1.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: SingleInstance", v -> {
+            Intent intent = new Intent(v.getContext(), TIActivity1.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: SingleInstance", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TIActivity1.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Task Affinity", v -> {
+            Intent intent = new Intent(v.getContext(), TAActivity1.class);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Task Affinity", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), TAActivity1.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: Open in Application", v -> {
+            Context app = RePlugin.getPluginContext();
+            Intent intent = new Intent(app, ThemeDialogActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            app.startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: Open in Application", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Context app = RePlugin.getPluginContext();
-                Intent intent = new Intent(app, ThemeDialogActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                app.startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: By Intent Filter", v -> {
+            Intent intent = new Intent("android.intent.action.demo1");
+            intent.addCategory("category_demo");
+            //Factory.startActivity(context, intent, "", "", IPluginManager.PROCESS_AUTO);
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: By Intent Filter", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("android.intent.action.demo1");
-                intent.addCategory("category_demo");
-                //Factory.startActivity(context, intent, "", "", IPluginManager.PROCESS_AUTO);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: DataBinding (to Demo2)", v -> RePlugin.startActivity(v.getContext(), new Intent(), "demo2", "com.qihoo360.replugin.sample.demo2.databinding.DataBindingActivity")));
+        mItems.add(new TestItem("Activity: startForResult (to Demo2)", v -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName("demo2", "com.qihoo360.replugin.sample.demo2.activity.for_result.ForResultActivity"));
+            MainActivity.this.startActivityForResult(intent, REQUEST_CODE_DEMO2);
+            // 也可以这么用
+            // RePlugin.startActivityForResult(MainActivity.this, intent, REQUEST_CODE_DEMO2);
         }));
-        mItems.add(new TestItem("Activity: DataBinding (to Demo2)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                RePlugin.startActivity(v.getContext(), new Intent(), "demo2", "com.qihoo360.replugin.sample.demo2.databinding.DataBindingActivity");
-            }
+        mItems.add(new TestItem("Activity: By Action", v -> {
+            Intent intent = new Intent();
+            intent.setAction("com.qihoo360.replugin.sample.demo1.action.theme_fullscreen");
+            /*
+                若 Intent 中声明 category, manifest 中未声明，则无法找到 Activity;
+                若 manifest 中声明 category, Intent 中未声明，则可以找到 Activity;
+            */
+            intent.addCategory("com.qihoo360.repluginapp.replugin.demo1.CATEGORY1");
+            v.getContext().startActivity(intent);
         }));
-        mItems.add(new TestItem("Activity: startForResult (to Demo2)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName("demo2", "com.qihoo360.replugin.sample.demo2.activity.for_result.ForResultActivity"));
-                MainActivity.this.startActivityForResult(intent, REQUEST_CODE_DEMO2);
-                // 也可以这么用
-                // RePlugin.startActivityForResult(MainActivity.this, intent, REQUEST_CODE_DEMO2);
-            }
+        mItems.add(new TestItem("Activity: By Action (to Demo2)", v -> {
+            Intent intent = new Intent("com.qihoo360.replugin.sample.demo2.action.theme_fullscreen_2");
+            RePlugin.startActivity(v.getContext(), intent, "demo2", null);
         }));
-        mItems.add(new TestItem("Activity: By Action", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("com.qihoo360.replugin.sample.demo1.action.theme_fullscreen");
-                /*
-                    若 Intent 中声明 category, manifest 中未声明，则无法找到 Activity;
-                    若 manifest 中声明 category, Intent 中未声明，则可以找到 Activity;
-                */
-                intent.addCategory("com.qihoo360.repluginapp.replugin.demo1.CATEGORY1");
-                v.getContext().startActivity(intent);
-            }
-        }));
-        mItems.add(new TestItem("Activity: By Action (to Demo2)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent("com.qihoo360.replugin.sample.demo2.action.theme_fullscreen_2");
-                RePlugin.startActivity(v.getContext(), intent, "demo2", null);
-            }
-        }));
-        mItems.add(new TestItem("Activity: start Host activity(Main)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setComponent(new ComponentName(RePlugin.getHostContext().getPackageName(), "com.qihoo360.replugin.sample.host.MainActivity"));
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                MainActivity.this.startActivity(intent);
-            }
+        mItems.add(new TestItem("Activity: start Host activity(Main)", v -> {
+            Intent intent = new Intent();
+            intent.setComponent(new ComponentName(RePlugin.getHostContext().getPackageName(), "com.qihoo360.replugin.sample.host.MainActivity"));
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            MainActivity.this.startActivity(intent);
         }));
 
         // =========
         // Other Components
         // =========
-        mItems.add(new TestItem("Broadcast: Send (to All)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setAction("com.qihoo360.repluginapp.replugin.receiver.ACTION1");
-                intent.putExtra("name", "jerry");
-                v.getContext().sendBroadcast(intent);
-            }
+        mItems.add(new TestItem("Broadcast: Send (to All)", v -> {
+            Intent intent = new Intent();
+            intent.setAction("com.qihoo360.repluginapp.replugin.receiver.ACTION1");
+            intent.putExtra("name", "jerry");
+            v.getContext().sendBroadcast(intent);
         }));
-        mItems.add(new TestItem("Service: Start (at :p0 process)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), PluginDemoService1.class);
-                intent.setAction("action1");
-                v.getContext().startService(intent);
-            }
+        mItems.add(new TestItem("Service: Start (at :p0 process)", v -> {
+            Intent intent = new Intent(v.getContext(), PluginDemoService1.class);
+            intent.setAction("action1");
+            v.getContext().startService(intent);
         }));
-        mItems.add(new TestItem("Service: Implicit Start (at :UI process)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setPackage("com.qihoo360.replugin.sample.demo1");
-                intent.setAction("com.qihoo360.replugin.sample.demo1.action.XXXX");
-                v.getContext().startService(intent);
-            }
+        mItems.add(new TestItem("Service: Implicit Start (at :UI process)", v -> {
+            Intent intent = new Intent();
+            intent.setPackage("com.qihoo360.replugin.sample.demo1");
+            intent.setAction("com.qihoo360.replugin.sample.demo1.action.XXXX");
+            v.getContext().startService(intent);
         }));
-        mItems.add(new TestItem("Provider: Query (at UI process)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Uri uri = Uri.parse("content://com.qihoo360.replugin.sample.demo1.provider2/" + "test");
+        mItems.add(new TestItem("Provider: Query (at UI process)", v -> {
+            Uri uri = Uri.parse("content://com.qihoo360.replugin.sample.demo1.provider2/" + "test");
 
-                ContentValues cv = new ContentValues();
-                cv.put("name", "RePlugin Team");
-                cv.put("address", "beijing");
+            ContentValues cv = new ContentValues();
+            cv.put("name", "RePlugin Team");
+            cv.put("address", "beijing");
 
-                Uri urii = v.getContext().getContentResolver().insert(uri, cv);
-                Log.d("a4", "result=" + urii);
-                if (urii != null) {
-                    Toast.makeText(v.getContext(), urii.toString(), Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(v.getContext(), "null", Toast.LENGTH_SHORT).show();
-                }
+            Uri urii = v.getContext().getContentResolver().insert(uri, cv);
+            Log.d("a4", "result=" + urii);
+            if (urii != null) {
+                Toast.makeText(v.getContext(), urii.toString(), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(v.getContext(), "null", Toast.LENGTH_SHORT).show();
             }
         }));
 
@@ -284,66 +220,54 @@ public class MainActivity extends Activity {
 //                }
 //            }
 //        }));
-        mItems.add(new TestItem("Use Demo2 Method: Reflection (Recommend)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // 这是RePlugin的推荐玩法：反射调用Demo2，这样"天然的"做好了"版本控制"
-                // 避免出现我们当年2013年的各种问题
-                ClassLoader cl = RePlugin.fetchClassLoader("demo2");
-                if (cl == null) {
-                    Toast.makeText(v.getContext(), "Not install Demo2", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+        mItems.add(new TestItem("Use Demo2 Method: Reflection (Recommend)", v -> {
+            // 这是RePlugin的推荐玩法：反射调用Demo2，这样"天然的"做好了"版本控制"
+            // 避免出现我们当年2013年的各种问题
+            ClassLoader cl = RePlugin.fetchClassLoader("demo2");
+            if (cl == null) {
+                Toast.makeText(v.getContext(), "Not install Demo2", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                try {
-                    Class clz = cl.loadClass("com.qihoo360.replugin.sample.demo2.MainApp");
-                    Method m = clz.getDeclaredMethod("helloFromDemo1", Context.class, String.class);
-                    m.invoke(null, v.getContext(), "Demo1");
-                } catch (Exception e) {
-                    // 有可能Demo2根本没有这个类，也有可能没有相应方法（通常出现在"插件版本升级"的情况）
-                    Toast.makeText(v.getContext(), "", Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
+            try {
+                Class clz = cl.loadClass("com.qihoo360.replugin.sample.demo2.MainApp");
+                Method m = clz.getDeclaredMethod("helloFromDemo1", Context.class, String.class);
+                m.invoke(null, v.getContext(), "Demo1");
+            } catch (Exception e) {
+                // 有可能Demo2根本没有这个类，也有可能没有相应方法（通常出现在"插件版本升级"的情况）
+                Toast.makeText(v.getContext(), "", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
             }
         }));
-        mItems.add(new TestItem("Resources: Use demo2's layout", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LinearLayout contentView = RePlugin.fetchViewByLayoutName("demo2", "from_demo1", null);
-                if (contentView == null) {
-                    Toast.makeText(v.getContext(), "from_demo1 Not Found", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                Dialog d = new Dialog(v.getContext());
-                d.setContentView(contentView);
-                d.show();
+        mItems.add(new TestItem("Resources: Use demo2's layout", v -> {
+            LinearLayout contentView = RePlugin.fetchViewByLayoutName("demo2", "from_demo1", null);
+            if (contentView == null) {
+                Toast.makeText(v.getContext(), "from_demo1 Not Found", Toast.LENGTH_SHORT).show();
+                return;
             }
+            Dialog d = new Dialog(v.getContext());
+            d.setContentView(contentView);
+            d.show();
         }));
-        mItems.add(new TestItem("Binder: Fast-Fetch (to Demo2)", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IBinder b = RePlugin.fetchBinder("demo2", "demo2test");
-                if (b == null) {
-                    return;
-                }
-                IDemo2 demo2 = IDemo2.Stub.asInterface(b);
-                try {
-                    demo2.hello("helloooooooooooo");
-                } catch (RemoteException e) {
-                    e.printStackTrace();
-                }
+        mItems.add(new TestItem("Binder: Fast-Fetch (to Demo2)", v -> {
+            IBinder b = RePlugin.fetchBinder("demo2", "demo2test");
+            if (b == null) {
+                return;
+            }
+            IDemo2 demo2 = IDemo2.Stub.asInterface(b);
+            try {
+                demo2.hello("helloooooooooooo");
+            } catch (RemoteException e) {
+                e.printStackTrace();
             }
         }));
 
         // =========
         // aar
         // =========
-        mItems.add(new TestItem("AAR Activity: Standard", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), LibMainActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("AAR Activity: Standard", v -> {
+            Intent intent = new Intent(v.getContext(), LibMainActivity.class);
+            v.getContext().startActivity(intent);
         }));
 
         // dump
@@ -369,39 +293,25 @@ public class MainActivity extends Activity {
 //        }));
 
         // PreferenceActivity
-        mItems.add(new TestItem("Preference Activity", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), PrefActivity2.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("Preference Activity", v -> {
+            Intent intent = new Intent(v.getContext(), PrefActivity2.class);
+            v.getContext().startActivity(intent);
         }));
 
         // WebView
-        mItems.add(new TestItem("WebView Activity", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), WebViewActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("WebView Activity", v -> {
+            Intent intent = new Intent(v.getContext(), WebViewActivity.class);
+            v.getContext().startActivity(intent);
         }));
 
         // FileProvider
-        mItems.add(new TestItem("FileProvider Activity", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), FileProviderActivity.class);
-                v.getContext().startActivity(intent);
-            }
+        mItems.add(new TestItem("FileProvider Activity", v -> {
+            Intent intent = new Intent(v.getContext(), FileProviderActivity.class);
+            v.getContext().startActivity(intent);
         }));
 
         // Notification
-        mItems.add(new TestItem("Send Notification", new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                NotifyUtils.sendNotification(v.getContext().getApplicationContext());
-            }
-        }));
+        mItems.add(new TestItem("Send Notification", v -> NotifyUtils.sendNotification(v.getContext().getApplicationContext())));
     }
 
     private static final int REQUEST_CODE_DEMO2 = 0x021;
