@@ -32,16 +32,43 @@ task androidSourcesJar(type: Jar) {
 }
 
 
-boolean useAndroidX = rootProject.properties.get("android.useAndroidX")  == "true"
+boolean useAndroidX = rootProject.properties.get("android.useAndroidX") == "true"
 def VERSION_END = useAndroidX ? "androidx" : "support"
 
+
+def getLocalProperties() {
+    Properties localProperties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+    localProperties.load(inputStream)
+    return localProperties
+}
+
+def getReleaseRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('RELEASE_REPOSITORY_URL') ? localProperties.get("RELEASE_REPOSITORY_URL") : ""
+}
+
+def getSnapshotRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SNAPSHOT_REPOSITORY_URL') ? localProperties.get("SNAPSHOT_REPOSITORY_URL") : ""
+}
+
+def getRepositoryUsername() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_USERNAME') ? localProperties.get("SONATYPE_NEXUS_USERNAME") : ""
+}
+
+def getRepositoryPassword() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_PASSWORD') ? localProperties.get("SONATYPE_NEXUS_PASSWORD") : ""
+}
 
 afterEvaluate {
     publishing {
         publications {
             release(MavenPublication) {
                 if (project.hasProperty("android")) {
-                    from components.getByName(VERSION_END+"Release")
+                    from components.getByName(VERSION_END + "Release")
                 }
                 artifact androidSourcesJar
                 artifact androidJavadocsJar
@@ -54,6 +81,16 @@ afterEvaluate {
                     final root = asNode()
                     root.appendNode('name', project.name)
                     root.appendNode('scm').appendNode('url', RP_GIT_URL)
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url getReleaseRepositoryUrl()
+                credentials {
+                    username getRepositoryUsername()
+                    password getRepositoryPassword()
                 }
             }
         }

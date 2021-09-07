@@ -24,7 +24,15 @@
     * `gradle.properties`中修改配置`android.useAndroidX=false` `android.enableJetifier=false`
     * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.6-SNAPSHOT-support`
     * 执行工程Task的`publishToMavenLocal`
-    
+
+* 发布到个人部署的Maven仓库:
+    * `local.properties`中添加以下配置
+        * SONATYPE_NEXUS_USERNAME
+        * SONATYPE_NEXUS_PASSWORD
+        * RELEASE_REPOSITORY_URL
+        * SNAPSHOT_REPOSITORY_URL
+    * 执行 `publishReleasePublicationToMavenRepository`:四个组件一起发布
+
 * 运行Demo项目:
     * `gradle.properties`中修改配置`SDK_PUBLISH=false`
     * 运行工程目录下的`publish_plugin_install_to_host.sh`
