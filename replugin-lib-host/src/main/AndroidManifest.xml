@@ -1,0 +1,65 @@
+<!--
+  ~ Copyright (C) 2005-2017 Qihoo 360 Inc.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not
+  ~ use this file except in compliance with the License. You may obtain a copy of
+  ~ the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed To in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
+  ~ License for the specific language governing permissions and limitations under
+  ~ the License.
+  -->
+
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.qihoo360.mobilesafe.core">
+
+    <application>
+
+        <!-- 注意：此文件不要写入与'坑位'配置相关的组件（Activity、Provider），它们由 gradle 插件自动生成） -->
+        <!-- 注意：此文件不要写入与'坑位'配置相关的组件（Activity、Provider），它们由 gradle 插件自动生成） -->
+        <!-- 注意：此文件不要写入与'坑位'配置相关的组件（Activity、Provider），它们由 gradle 插件自动生成） -->
+
+        <!-- ======================================================================== -->
+        <!-- 开始：插件stub -->
+        <!-- Activity坑中的screenSize属性 7.3.0以上才支持 -->
+
+        <provider
+            android:name="com.qihoo360.replugin.component.process.ProcessPitProviderUI"
+            android:authorities="${applicationId}.loader.p.mainN1"
+            android:exported="false" />
+
+        <provider
+            android:name="com.qihoo360.replugin.component.process.ProcessPitProviderLoader0"
+            android:authorities="${applicationId}.loader.p.main0"
+            android:exported="false"
+            android:process=":loader0" />
+
+        <provider
+            android:name="com.qihoo360.replugin.component.process.ProcessPitProviderLoader1"
+            android:authorities="${applicationId}.loader.p.main1"
+            android:exported="false"
+            android:process=":loader1" />
+
+
+        <provider
+            android:name="com.qihoo360.replugin.component.provider.PluginPitProviderUI"
+            android:authorities="${applicationId}.Plugin.NP.UIP"
+            android:exported="false" />
+
+
+        <!-- 结束：插件stub -->
+        <!-- ======================================================================== -->
+
+        <!-- 在UI进程中安装插件。请参见类的说明 -->
+        <provider
+            android:name="com.qihoo360.replugin.packages.PluginFastInstallProvider"
+            android:authorities="${applicationId}.loader.p.pip"
+            android:exported="false" >
+        </provider>
+
+    </application>
+</manifest>

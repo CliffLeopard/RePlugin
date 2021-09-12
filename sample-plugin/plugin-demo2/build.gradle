@@ -80,7 +80,7 @@ dependencies {
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
 //    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 //    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
-    implementation project(':replugin-lib:replugin-plugin-lib')
+    implementation project(':replugin-lib-plugin')
 }
 
 if (android.defaultConfig.multiDexEnabled) {

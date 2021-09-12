@@ -1,37 +1,24 @@
-/*
- * Copyright (C) 2005-2017 Qihoo 360 Inc.
- *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed To in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
- */
-//include ':fresco-library'
-//include ':replugin-gradle-common'
-
 rootProject.name = 'replugin'
-include ':replugin-lib:replugin-plugin-lib'
-include ':replugin-lib:replugin-host-lib'
 
-include ':replugin-gradle:replugin-plugin-gradle'
-include ':replugin-gradle:replugin-host-gradle'
+include ':replugin-gradle'
+include ':replugin-lib-base'
+include ':replugin-lib-host'
+include ':replugin-lib-plugin'
 
 if (SDK_PUBLISH == "false") {
-    include ':sample-host:host-app'
-    include ':sample-host:host-utils'
-    include ':sample-host:fresco-host-app'
+    include ':sample:sample-host'
+    include ':sample:sample-plugin'
 
-    include ':sample-plugin:plugin-demo1'
-    include ':sample-plugin:plugin-demo1-library'
-    include ':sample-plugin:plugin-demo2'
-    include ':sample-plugin:plugin-demo3-kotlin'
-    include ':sample-plugin:plugin-webview'
-    include ':sample-plugin:fresco-plugin'
+    if (SHOW_DEMOS == "true") {
+        include ':sample-host:host-app'
+        include ':sample-host:host-utils'
+        include ':sample-host:fresco-host-app'
+
+        include ':sample-plugin:plugin-demo1'
+        include ':sample-plugin:plugin-demo1-library'
+        include ':sample-plugin:plugin-demo2'
+        include ':sample-plugin:plugin-demo3-kotlin'
+        include ':sample-plugin:plugin-webview'
+        include ':sample-plugin:fresco-plugin'
+    }
 }

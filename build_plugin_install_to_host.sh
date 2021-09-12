@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-chmod a+x gradlew
-
+#chmod a+x gradlew
+#
 rm -rvf ./sample-plugin/plugin-demo1/build
 rm -rvf ./sample-plugin/plugin-demo2/build
 rm -rvf ./sample-plugin/plugin-webview/build

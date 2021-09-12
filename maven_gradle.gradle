@@ -1,0 +1,51 @@
+def static replaceVariables(File file, String key, String value) {
+    if (!file.exists()) return
+    // 正则匹配:(?<=VER\s*=\s*\")\S*(?=\")
+    def regex = "(?<=${key}\\s{0,5}=\\s{0,5}\\\")\\S*(?=\\\")"
+    file.write((file.text =~ /${regex}/).replaceAll(value))
+}
+
+def pbUpdateVariables() {
+    [
+            "src/main/kotlin/com/qihoo360/replugin/Constants.kt"
+    ].forEach {
+        replaceVariables(project.file(it), "VER", RP_VERSION)
+    }
+}
+pbUpdateVariables()
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from(components['java'])
+            groupId = rootProject.ext['RP_GROUP']
+            artifactId = project.name
+            version = rootProject.ext['RP_VERSION']
+        }
+    }
+}
+
+signing {
+    sign publishing.publications.mavenJava
+}
+
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
+
+group = rootProject.ext.RP_GROUP
+version = rootProject.ext.RP_VERSION
+
+pluginBundle {
+    website = rootProject.ext.RP_SITE
+    vcsUrl = rootProject.ext.RP_GIT_URL
+    tags = ['Android', 'plugin', 'pluggable', '360']
+}
+

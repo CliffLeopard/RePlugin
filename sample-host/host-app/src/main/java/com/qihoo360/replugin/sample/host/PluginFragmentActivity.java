@@ -23,9 +23,8 @@ public class PluginFragmentActivity extends FragmentActivity {
         boolean isBuiltIn = true;
         String pluginName = isBuiltIn ? "demo1" : "com.qihoo360.replugin.sample.demo1";
         RePlugin.registerHookingClass("com.qihoo360.replugin.sample.demo1.fragment.DemoFragment", RePlugin.createComponentName(pluginName, "com.qihoo360.replugin.sample.demo1.fragment.DemoFragment"), null);
-
-        setContentView(R.layout.activity_plugin_fragment);
         ClassLoader d1ClassLoader = RePlugin.fetchClassLoader(pluginName);
+        setContentView(R.layout.activity_plugin_fragment2);
         try {
             Class<?> demoFragmentClass = d1ClassLoader.loadClass("com.qihoo360.replugin.sample.demo1.fragment.DemoFragment");
             Fragment fragment = demoFragmentClass.asSubclass(Fragment.class).newInstance();

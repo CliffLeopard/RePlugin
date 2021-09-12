@@ -62,7 +62,7 @@ repluginPluginConfig {
 }
 
 dependencies {
-    implementation project(':replugin-lib:replugin-plugin-lib')
+    implementation project(':replugin-lib-plugin')
 //    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
     implementation project(':sample-plugin:plugin-demo1-library')
     compileOnly "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_VERSION}"

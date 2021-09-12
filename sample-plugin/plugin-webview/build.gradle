@@ -65,5 +65,5 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
 //    implementation "com.qihoo360.replugin:replugin-plugin-lib:${RP_VERSION}"
-    implementation project(':replugin-lib:replugin-plugin-lib')
+    implementation project(':replugin-lib-plugin')
 }

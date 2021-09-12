@@ -33,7 +33,7 @@ repluginHostConfig {
 
 dependencies {
 //    implementation "com.qihoo360.replugin:replugin-host-lib:${RP_VERSION}"
-    implementation project(':replugin-lib:replugin-host-lib')
+    implementation project(':replugin-lib-host')
 //    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "com.facebook.fresco:fresco:${FRESCO_VERSION}"
     implementation "androidx.legacy:legacy-support-v4:${ANDROIDX_LEGACY_VERSION}"
