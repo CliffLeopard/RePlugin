@@ -41,7 +41,7 @@ public abstract class PluginAppCompatActivity extends AppCompatActivity {
     protected void attachBaseContext(Context newBase) {
         newBase = RePluginInternal.createActivityContext(this, newBase);
         pluginResource = new PluginResource(newBase.getResources());
-        super.attachBaseContext(newBase);
+        super.attachBaseContext(context == null ? newBase : context);
     }
 
     @Override

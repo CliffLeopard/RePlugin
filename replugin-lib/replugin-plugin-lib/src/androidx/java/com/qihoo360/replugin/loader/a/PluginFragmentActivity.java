@@ -42,7 +42,7 @@ public abstract class PluginFragmentActivity extends FragmentActivity {
     protected void attachBaseContext(Context newBase) {
         Context context = RePluginInternal.createActivityContext(this, newBase);
         pluginResource = new PluginResource(context == null ? newBase : context);
-        super.attachBaseContext(newBase);
+        super.attachBaseContext(context == null ? newBase : context);
     }
 
     @Override
