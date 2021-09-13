@@ -1,0 +1,46 @@
+plugins {
+    id 'java-gradle-plugin'
+    id 'org.jetbrains.kotlin.jvm'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.gradle.plugin-publish' version "${PLUGIN_PUBLISH_VERSION}"
+}
+
+dependencies {
+    implementation platform('org.jetbrains.kotlin:kotlin-bom')
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    implementation "com.android.tools.build:gradle:$GRADLE_PLUGIN"
+    implementation "net.dongliu:apk-parser:${APK_PARSER_VERSION}"
+    implementation  "org.redundent:kotlin-xml-builder:1.7.3"
+    implementation "org.ow2.asm:asm:$ASM_VERSION"
+    implementation "org.ow2.asm:asm-tree:$ASM_VERSION"
+    implementation "org.ow2.asm:asm-util:$ASM_VERSION"
+    implementation "org.ow2.asm:asm-analysis:$ASM_VERSION"
+    implementation "org.ow2.asm:asm-commons:$ASM_VERSION"
+
+    testImplementation 'org.jetbrains.kotlin:kotlin-test'
+    testImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+}
+
+tasks.named('clean') {
+    delete rootProject.buildDir
+}
+
+gradlePlugin {
+    plugins {
+        'replugin-host-gradle' {
+            id = 'replugin-host-gradle'
+            displayName = 'replugin-host-gradle'
+            description = rootProject.ext.RP_DESC
+            implementationClass = 'com.qihoo360.replugin.host.HostPlugin'
+        }
+        'replugin-plugin-gradle' {
+            id = 'replugin-plugin-gradle'
+            displayName = 'replugin-plugin-gradle'
+            description = rootProject.ext.RP_DESC
+            implementationClass = 'com.qihoo360.replugin.plugin.PluginPlugin'
+        }
+    }
+}
+
+apply from: '../maven_gradle.gradle'

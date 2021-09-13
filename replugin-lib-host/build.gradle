@@ -1,0 +1,48 @@
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'maven-publish'
+    id 'signing'
+}
+
+android {
+    compileSdkVersion RP_CompileSdkVersion
+    buildToolsVersion RP_BuildToolsVersion
+
+    defaultConfig {
+        minSdkVersion       RP_MinSdkVersion
+        targetSdkVersion    RP_TargetSdkVersion
+        versionCode         RP_VERSION_CODE
+        versionName         RP_VERSION
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+    implementation project(':replugin-lib-base')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX}"
+    implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"
+    implementation "com.google.android.material:material:${GOOGLE_MATERIAL}"
+    testImplementation "junit:junit:${JUNIT_VERSION}"
+    androidTestImplementation "androidx.test.ext:junit:${ANDROIDX_JUNIT}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${ANDROIDX_ESPRESSO}"
+}
+
+apply from: '../maven_publish.gradle'

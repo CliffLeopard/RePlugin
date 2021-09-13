@@ -1,0 +1,88 @@
+task androidJavadocs(type: Javadoc) {
+
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+    android.libraryVariants.all { variant ->
+        if (variant.name == 'release') {
+            owner.classpath += variant.javaCompileProvider.get().classpath
+        }
+    }
+    exclude '**/R.html', '**/R.*.html', '**/index.html'
+}
+
+task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
+    archiveClassifier.set('javadoc')
+    from androidJavadocs.destinationDir
+}
+
+task androidSourcesJar(type: Jar) {
+    archiveClassifier.set('sources')
+    if (project.hasProperty("android")) {
+        from android.sourceSets.main.java.srcDirs
+    } else {
+        from sourceSets.main.allSource
+    }
+}
+
+
+def getLocalProperties() {
+    Properties localProperties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+    localProperties.load(inputStream)
+    return localProperties
+}
+
+def getReleaseRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('RELEASE_REPOSITORY_URL') ? localProperties.get("RELEASE_REPOSITORY_URL") : ""
+}
+
+def getSnapshotRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SNAPSHOT_REPOSITORY_URL') ? localProperties.get("SNAPSHOT_REPOSITORY_URL") : ""
+}
+
+def getRepositoryUsername() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_USERNAME') ? localProperties.get("SONATYPE_NEXUS_USERNAME") : ""
+}
+
+def getRepositoryPassword() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_PASSWORD') ? localProperties.get("SONATYPE_NEXUS_PASSWORD") : ""
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            release(MavenPublication) {
+                from components.release
+
+                artifact androidJavadocsJar
+                artifact androidSourcesJar
+
+                groupId = rootProject.ext["RP_GROUP"]
+                artifactId = project.name
+                version = rootProject.ext["RP_VERSION"]
+            }
+        }
+        repositories {
+            maven {
+                url getSnapshotRepositoryUrl()
+                credentials {
+                    username getRepositoryUsername()
+                    password getRepositoryPassword()
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.release
+    }
+//    javadoc {
+
+//    }
+}

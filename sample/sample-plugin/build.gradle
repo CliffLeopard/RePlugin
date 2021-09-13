@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion RP_CompileSdkVersion
+    buildToolsVersion RP_BuildToolsVersion
+
+    defaultConfig {
+        applicationId       "com.cleo.sample_plugin"
+        minSdkVersion       RP_MinSdkVersion
+        targetSdkVersion    RP_TargetSdkVersion
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+apply plugin: 'replugin-plugin-gradle'
+
+repluginPluginConfig {
+    pluginName = "sample-plugin"
+    hostApplicationId = "com.cleo.sample_host"
+    hostAppLauncherActivity = "com.cleo.sample_host.MainActivity"
+}
+
+dependencies {
+
+    implementation project(':replugin-lib-plugin')
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
+    implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
+    implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
+    implementation "com.google.android.material:material:$GOOGLE_MATERIAL"
+    implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAIN"
+    testImplementation "junit:junit:$JUNIT_VERSION"
+    androidTestImplementation "androidx.test.ext:junit:$ANDROIDX_JUNIT"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$ANDROIDX_ESPRESSO"
+}
