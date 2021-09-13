@@ -26,6 +26,34 @@ task androidSourcesJar(type: Jar) {
     }
 }
 
+
+def getLocalProperties() {
+    Properties localProperties = new Properties()
+    InputStream inputStream = project.rootProject.file('local.properties').newDataInputStream();
+    localProperties.load(inputStream)
+    return localProperties
+}
+
+def getReleaseRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('RELEASE_REPOSITORY_URL') ? localProperties.get("RELEASE_REPOSITORY_URL") : ""
+}
+
+def getSnapshotRepositoryUrl() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SNAPSHOT_REPOSITORY_URL') ? localProperties.get("SNAPSHOT_REPOSITORY_URL") : ""
+}
+
+def getRepositoryUsername() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_USERNAME') ? localProperties.get("SONATYPE_NEXUS_USERNAME") : ""
+}
+
+def getRepositoryPassword() {
+    Properties localProperties = getLocalProperties()
+    return localProperties.containsKey('SONATYPE_NEXUS_PASSWORD') ? localProperties.get("SONATYPE_NEXUS_PASSWORD") : ""
+}
+
 afterEvaluate {
     publishing {
         publications {
@@ -38,6 +66,15 @@ afterEvaluate {
                 groupId = rootProject.ext["RP_GROUP"]
                 artifactId = project.name
                 version = rootProject.ext["RP_VERSION"]
+            }
+        }
+        repositories {
+            maven {
+                url getSnapshotRepositoryUrl()
+                credentials {
+                    username getRepositoryUsername()
+                    password getRepositoryPassword()
+                }
             }
         }
     }
