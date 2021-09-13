@@ -42,7 +42,7 @@ object ClassReWriter {
         val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
         classReader.accept(
             identifierClassVisitor,
-            ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES
+            ClassReader.EXPAND_FRAMES
         )
         return if (context.classModified) {
             Log.i(
