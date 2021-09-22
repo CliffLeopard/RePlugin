@@ -9,7 +9,24 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Replugin">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".activity.DealActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.BroadcastActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.ProviderActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.IdentifyActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.CFragmentActivity"
+            android:exported="true" />
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

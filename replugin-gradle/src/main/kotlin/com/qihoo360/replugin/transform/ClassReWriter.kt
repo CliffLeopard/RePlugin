@@ -40,8 +40,10 @@ object ClassReWriter {
         val broadCastVisitor = LocalBroadcastClassVisitor(activityVisitor, context)
         val providerVisitor = ProviderClassClassVisitor(broadCastVisitor, context)
         val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
+        val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor,context)
+
         classReader.accept(
-            identifierClassVisitor,
+            constantClassVisitor,
             ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES
         )
         return if (context.classModified) {

@@ -48,6 +48,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
     implementation "com.google.android.material:material:$GOOGLE_MATERIAL"
     implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAIN"
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
     testImplementation "junit:junit:$JUNIT_VERSION"
     androidTestImplementation "androidx.test.ext:junit:$ANDROIDX_JUNIT"
     androidTestImplementation "androidx.test.espresso:espresso-core:$ANDROIDX_ESPRESSO"

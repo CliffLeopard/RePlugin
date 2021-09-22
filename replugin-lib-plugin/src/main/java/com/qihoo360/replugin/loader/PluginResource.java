@@ -421,7 +421,7 @@ public class PluginResource extends Resources {
                 //当defPackage不是插件包名，也不是宿主包名时，比如android，vivo等，
                 // 此时需要用宿主的resources进行加载
                 //plugin gradle会替换getIdentifier的defPackage，所以此处用反射方式进行处理
-                if (!TextUtils.equals(RePlugin.getPluginContext().getPackageName(), defPackage)
+                if (!TextUtils.equals(RePlugin.getPluginContext().getApplicationInfo().packageName, defPackage)
                         && !TextUtils.equals(RePlugin.getHostContext().getPackageName(), defPackage)) {
                     return Integer.parseInt(String.valueOf(ReflectUtils.invokeMethod(mHostResources.getClass().getClassLoader(),
                             "android.content.res.Resources", "getIdentifier", mHostResources,

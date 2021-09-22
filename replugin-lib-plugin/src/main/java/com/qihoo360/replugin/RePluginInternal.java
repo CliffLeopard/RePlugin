@@ -16,6 +16,8 @@
 
 package com.qihoo360.replugin;
 
+import static com.qihoo360.replugin.helper.LogDebug.TAG;
+
 import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
@@ -24,11 +26,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.qihoo360.replugin.helper.LogDebug;
 import com.qihoo360.replugin.i.IPluginManager;
 import com.qihoo360.replugin.library.BuildConfig;
-
-import static com.qihoo360.replugin.helper.LogDebug.TAG;
 
 /**
  * 对框架暴露的一些通用的接口。
@@ -188,6 +191,48 @@ public class RePluginInternal {
         return startActivityForResultCompat(activity, intent, requestCode, options);
     }
 
+    public static boolean startActivityFromChild(@NonNull Activity originActivity, @NonNull Activity child, Intent intent, int requestCode) {
+        return startActivityFromChild(originActivity, child, intent, requestCode, null);
+    }
+
+    public static boolean startActivityFromChild(@NonNull Activity originActivity, @NonNull Activity child, Intent intent, int requestCode, @Nullable Bundle options) {
+        if (!RePluginFramework.mHostInitialized) {
+            return false;
+        }
+        try {
+            Object obj = ProxyRePluginInternalVar.startActivityFromChild.call(null, originActivity, child, intent, requestCode, options);
+            if (obj != null) {
+                return (Boolean) obj;
+            }
+        } catch (Exception e) {
+            if (LogDebug.LOG) {
+                e.printStackTrace();
+            }
+        }
+        return startActivityForResultCompat(originActivity, intent, requestCode, options);
+    }
+
+    public static boolean startActivityFromFragment(@NonNull Activity originActivity, @NonNull android.app.Fragment fragment, Intent intent, int requestCode) {
+        return startActivityFromFragment(originActivity, fragment, intent, requestCode, null);
+    }
+
+    public static boolean startActivityFromFragment(@NonNull Activity originActivity, @NonNull android.app.Fragment fragment, Intent intent, int requestCode, @Nullable Bundle options) {
+        if (!RePluginFramework.mHostInitialized) {
+            return false;
+        }
+        try {
+            Object obj = ProxyRePluginInternalVar.startActivityFromFragment.call(null, originActivity, fragment, intent, requestCode, options);
+            if (obj != null) {
+                return (Boolean) obj;
+            }
+        } catch (Exception e) {
+            if (LogDebug.LOG) {
+                e.printStackTrace();
+            }
+        }
+        return startActivityForResultCompat(originActivity, intent, requestCode, options);
+    }
+
     /**
      * 如果 replugin-host-lib 版本小于 2.1.3，使用此 compat 方法。
      */
@@ -222,6 +267,7 @@ public class RePluginInternal {
         }
         return true;
     }
+
 
     /**
      * 加载插件Activity，在startActivity之前调用
@@ -280,6 +326,9 @@ public class RePluginInternal {
 
         private static MethodInvoker startActivityForResult;
 
+        private static MethodInvoker startActivityFromChild;
+        private static MethodInvoker startActivityFromFragment;
+
         private static MethodInvoker loadPluginActivity;
 
         static void initLocked(final ClassLoader classLoader) {
@@ -295,6 +344,8 @@ public class RePluginInternal {
             handleRestoreInstanceState = new MethodInvoker(classLoader, factory2, "handleRestoreInstanceState", new Class<?>[]{Activity.class, Bundle.class});
             startActivity = new MethodInvoker(classLoader, factory2, "startActivity", new Class<?>[]{Activity.class, Intent.class});
             startActivityForResult = new MethodInvoker(classLoader, factory2, "startActivityForResult", new Class<?>[]{Activity.class, Intent.class, int.class, Bundle.class});
+            startActivityFromChild = new MethodInvoker(classLoader, factory2, "startActivityFromChild", new Class<?>[]{Activity.class, Activity.class, Intent.class, int.class, Bundle.class});
+            startActivityFromFragment = new MethodInvoker(classLoader, factory2, "startActivityFromFragment", new Class<?>[]{Activity.class, android.app.Fragment.class, Intent.class, int.class, Bundle.class});
 
             // 初始化Factory相关方法
             loadPluginActivity = new MethodInvoker(classLoader, factory, "loadPluginActivity", new Class<?>[]{Intent.class, String.class, String.class, int.class});
