@@ -118,6 +118,10 @@
     public protected *;
 }
 
+-keep class com.qihoo360.replugin.IHostBinderFetcher {
+public protected *;
+}
+
 # ------------ keep 以下类，以防卫士主程序 AOP DEBUG 失败 ------------
 -keep class com.qihoo360.replugin.component.activity.ActivityInjector { *;}
 
