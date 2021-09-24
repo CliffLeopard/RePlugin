@@ -355,4 +355,10 @@ class PluginProcessPer extends IPluginClient.Stub {
     public String dumpActivities() {
         return mACM.dump();
     }
+
+    @Override
+    public String resolveActivity(String pit) throws RemoteException {
+        final PluginContainers.ActivityState state = mACM.lookupByContainer(pit);
+        return state != null ? state.activity : null;
+    }
 }

@@ -41,4 +41,9 @@ interface IPluginClient {
      * dump插件化框架中存储的详细Activity坑位映射表
      */
     String dumpActivities();
+
+     /**
+      * 获取当前坑位对应的插件中的真实 Activity 名
+      */
+    String resolveActivity(String pit);
 }

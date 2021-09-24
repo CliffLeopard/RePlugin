@@ -67,6 +67,8 @@ public class PluginInfoList implements Iterable<PluginInfo> {
         try {
             // 1. 读出字符串
             final File f = getFile(context);
+            if(!f.exists())
+                return false;
             final String result = FileUtils.readFileToString(f, Charsets.UTF_8);
             if (TextUtils.isEmpty(result)) {
                 if (LogDebug.LOG) {

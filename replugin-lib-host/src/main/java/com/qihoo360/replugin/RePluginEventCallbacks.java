@@ -104,6 +104,30 @@ public class RePluginEventCallbacks {
     }
 
     /**
+     * load插件失败
+     *
+     * @param pluginName
+     * @param pluginVer
+     */
+    public void onLoadPluginFailed(String pluginName, int pluginVer) {
+        // Nothing
+    }
+
+    public void onLoadPluginFailed(String pluginName, String reason) {
+        // Nothing
+    }
+
+    /**
+     * release V5插件失败
+     *
+     * @param pluginName
+     * @param pluginVer
+     */
+    public void onReleaseV5FileFailed(String pluginName, int pluginVer) {
+        // Nothing
+    }
+
+    /**
      * 插件安装结果值
      */
     public enum InstallResult {

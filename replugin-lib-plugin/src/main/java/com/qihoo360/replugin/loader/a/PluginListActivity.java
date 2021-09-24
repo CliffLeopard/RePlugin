@@ -155,4 +155,9 @@ public abstract class PluginListActivity extends ListActivity {
         if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode, options))
             super.startActivityFromFragment(fragment, intent, requestCode, options);
     }
+
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
+    }
 }

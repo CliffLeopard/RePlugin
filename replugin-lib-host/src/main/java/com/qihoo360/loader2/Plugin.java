@@ -786,6 +786,7 @@ class Plugin {
                     if (LOGR) {
                         LogRelease.e(PLUGIN_TAG, "p u v f t f " + mInfo);
                     }
+                    RePlugin.getConfig().getEventCallbacks().onReleaseV5FileFailed(mInfo.getName(), mInfo.getVersion());
                     return false;
                 }
                 // 检查是否改变了？

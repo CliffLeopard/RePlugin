@@ -143,21 +143,26 @@ public class RePluginClassLoader extends PathClassLoader {
 
     @Override
     protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
+        //
         Class<?> c = null;
-        try {
-            c = PMF.loadClass(className, resolve);
-            if (c == null)
-                c = super.loadClass(className, resolve);
-        } catch (Throwable e) {
-            try {
-                c = mOrig.loadClass(className);
-            } catch (Throwable throwable) {
-                LogDebug.d(TAG, "can't find class, cn=" + className);
-            }
+        c = PMF.loadClass(className, resolve);
+        if (c != null) {
+            return c;
         }
-        return c;
+        //
+        try {
+            c = mOrig.loadClass(className);
+            // 只有开启“详细日志”才会输出，防止“刷屏”现象
+            if (LogDebug.LOG && RePlugin.getConfig().isPrintDetailLog()) {
+                LogDebug.d(TAG, "loadClass: load other class, cn=" + className);
+            }
+            return c;
+        } catch (Throwable e) {
+            //
+        }
+        //
+        return super.loadClass(className, resolve);
     }
-
 
     @Override
     protected Class<?> findClass(String className) throws ClassNotFoundException {
