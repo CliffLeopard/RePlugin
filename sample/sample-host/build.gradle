@@ -8,9 +8,9 @@ android {
     buildToolsVersion RP_BuildToolsVersion
 
     defaultConfig {
-        applicationId       "com.cleo.sample_host"
-        minSdkVersion       RP_MinSdkVersion
-        targetSdkVersion    RP_TargetSdkVersion
+        applicationId "com.cleo.sample_host"
+        minSdkVersion RP_MinSdkVersion
+        targetSdkVersion RP_TargetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -35,11 +35,10 @@ android {
 apply plugin: 'replugin-host-gradle'
 
 repluginHostConfig {
-    useAppCompat = true
+    useAppCompat = false
 }
 
 dependencies {
-
     implementation project(':replugin-lib-host')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"

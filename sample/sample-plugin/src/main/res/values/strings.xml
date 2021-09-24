@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">sample-plugin</string>
+    <string name="main_item">Test Item</string>
 </resources>

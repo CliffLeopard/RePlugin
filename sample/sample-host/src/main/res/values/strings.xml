@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">sample-host</string>
+    <string name="main_item">Test Item</string>
 </resources>

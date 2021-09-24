@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.helper.LogRelease;
 import com.qihoo360.replugin.loader.PluginResource;
@@ -115,5 +117,16 @@ public abstract class PluginActivity extends Activity {
 
         super.startActivityForResult(intent, requestCode);
 
+    }
+
+    @Override
+    public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
+        //
+        if (RePluginInternal.startActivityForResult(this, intent, requestCode,options)) {
+            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivityForResult()
+            return;
+        }
+
+        super.startActivityForResult(intent, requestCode, options);
     }
 }
