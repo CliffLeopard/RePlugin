@@ -53,13 +53,20 @@ class JarTransformTask(
                         if (!entry.isDirectory && entry.name.endsWith(".class")) {
                             val name = entry.name.removeSuffix(".class")
                             val separatorIndex = entry.name.lastIndexOf(File.separatorChar)
-                            val packageName = entry.name
-                                .substring(0, separatorIndex)
-                                .removePrefix(File.separator)
-                                .removeSuffix(File.separator)
+                            val packageName =
+                                if (separatorIndex > -1)
+                                    entry.name
+                                        .substring(0, separatorIndex)
+                                        .removePrefix(File.separator)
+                                        .removeSuffix(File.separator)
+                                else ""
                             val isInnerClass = entry.name.contains("$")
-                            val className = entry.name.substring(separatorIndex + 1)
-                                .removeSuffix(".class")
+                            val className =
+                                if (separatorIndex > -1)
+                                    entry.name.substring(separatorIndex + 1)
+                                        .removeSuffix(".class")
+                                else
+                                    entry.name.removeSuffix(".class")
 
                             val transformClassInfo = TransformClassInfo(
                                 name,
