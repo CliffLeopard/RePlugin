@@ -42,9 +42,11 @@ import com.qihoo360.loader2.CertUtils;
 import com.qihoo360.loader2.DumpUtils;
 import com.qihoo360.loader2.MP;
 import com.qihoo360.loader2.PMF;
+import com.qihoo360.loader2.PluginProcessMain;
 import com.qihoo360.loader2.PluginStatusController;
 import com.qihoo360.mobilesafe.api.AppVar;
 import com.qihoo360.mobilesafe.api.Tasks;
+import com.qihoo360.mobilesafe.core.BuildConfig;
 import com.qihoo360.mobilesafe.svcmanager.QihooServiceManager;
 import com.qihoo360.replugin.base.IPC;
 import com.qihoo360.replugin.base.LocalBroadcastHelper;
@@ -357,14 +359,9 @@ public class RePlugin {
      *
      * @return 版本号，如2.0.0等
      * @since 2.0.0
-     * TODO 获取宿主版本号
      */
     public static String getVersion() {
-
-//        PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-//        String version = pInfo.versionName;//Version Name
-
-        return "12.34";
+        return BuildConfig.VERSION_NAME;
     }
 
     /**
@@ -908,6 +905,25 @@ public class RePlugin {
      */
     public static void dump(FileDescriptor fd, PrintWriter writer, String[] args) {
         DumpUtils.dump(fd, writer, args);
+    }
+
+    /**
+     *
+     * 获取「最近使用」坑 Activity 对应的的插件的实际 Activity 名称。
+     *
+     * 注意：
+     *
+     * 坑Activity是动态分配的。也就是说A插件运行的 Activity分配的坑，在当前 Activity 结束掉之后会分配给其他
+     * B插件(或者 A插件的其他 Activity)使用。
+     * @param pit 坑 class的完整类目
+     */
+    public static String queryActivity(String pit) {
+        try {
+            return PluginProcessMain.getPluginHost().queryActivity(pit);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**

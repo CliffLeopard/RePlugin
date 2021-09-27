@@ -41,6 +41,7 @@ object ClassReWriter {
         val providerVisitor = ProviderClassClassVisitor(broadCastVisitor, context)
         val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
         val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor,context)
+
         classReader.accept(
             constantClassVisitor,
             ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES

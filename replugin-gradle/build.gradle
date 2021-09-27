@@ -6,12 +6,15 @@ plugins {
     id 'com.gradle.plugin-publish' version "${PLUGIN_PUBLISH_VERSION}"
 }
 
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 dependencies {
     implementation platform('org.jetbrains.kotlin:kotlin-bom')
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     implementation "com.android.tools.build:gradle:$GRADLE_PLUGIN"
     implementation "net.dongliu:apk-parser:${APK_PARSER_VERSION}"
-    implementation  "org.redundent:kotlin-xml-builder:1.7.3"
+    implementation "org.redundent:kotlin-xml-builder:1.7.3"
     implementation "org.ow2.asm:asm:$ASM_VERSION"
     implementation "org.ow2.asm:asm-tree:$ASM_VERSION"
     implementation "org.ow2.asm:asm-util:$ASM_VERSION"

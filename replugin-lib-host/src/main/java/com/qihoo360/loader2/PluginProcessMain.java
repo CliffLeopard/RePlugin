@@ -707,6 +707,24 @@ public class PluginProcessMain {
         });
     }
 
+    static String queryActivity(final String name) {
+        return readProcessClientLock(new Action<String>() {
+            @Override
+            public String call() {
+                for (ProcessClientRecord r : ALL.values()) {
+                    if (r.client == null) continue;
+                    try {
+                        final String act = r.client.resolveActivity(name);
+                        if (act != null) return act;
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return null;
+            }
+        });
+    }
+
     private static final void handleBinderDied(ProcessClientRecord p) {
         if (LOG) {
             LogDebug.d(PLUGIN_TAG, "plugin process has died: plugin=" + p.plugin + " index=" + p.index + " pid=" + p.pid);

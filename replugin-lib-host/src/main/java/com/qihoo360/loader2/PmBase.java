@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
 import android.os.Debug;
@@ -29,10 +30,12 @@ import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.qihoo360.i.Factory;
 import com.qihoo360.i.IModule;
 import com.qihoo360.i.IPluginManager;
+import com.qihoo360.mobilesafe.api.Pref;
 import com.qihoo360.mobilesafe.api.Tasks;
 import com.qihoo360.replugin.IHostBinderFetcher;
 import com.qihoo360.replugin.base.LocalBroadcastHelper;
@@ -313,6 +316,18 @@ class PmBase {
         PluginProcessMain.installHost(mHostSvc);
         StubProcessManager.schedulePluginProcessLoop(StubProcessManager.CHECK_STAGE1_DELAY);
 
+        RePlugin.getConfig().getCallbacks().initPnPluginOverride();
+
+        if (HostConfigHelper.PERSISTENT_ENABLE && IPC.isPersistentProcess()) {
+            SharedPreferences sharedPreferences = Pref.getSharedPreferences("plugins_up");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.clear().apply();
+
+            if (RePluginInternal.FOR_DEV) {
+                Log.d("plugins_up", "refreshPluginMap 先清空 plugins_up.xml");
+            }
+        }
+
         // 兼容即将废弃的p-n方案 by Jiongxuan Zhang
         mAll = new Builder.PxAll();
         Builder.builder(mContext, mAll);
@@ -424,6 +439,18 @@ class PmBase {
      * @param plugin 待add插件的Plugin对象
      */
     private void putPluginObject(PluginInfo info, Plugin plugin) {
+        if (HostConfigHelper.PERSISTENT_ENABLE && IPC.isPersistentProcess()) {
+
+            if (RePluginInternal.FOR_DEV) {
+                Log.d("plugins_up", "此时，常驻进程中的：" + info.getName() + "插件，版本号是：" + plugin.mInfo.getVersion());
+            }
+
+            SharedPreferences sharedPreferences = Pref.getSharedPreferences("plugins_up");
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(info.getName(), plugin.mInfo.getVersion());
+            editor.apply();
+        }
+
         if (mPlugins.containsKey(info.getAlias()) || mPlugins.containsKey(info.getPackageName())) {
             if (LOG) {
                 LogDebug.d(PLUGIN_TAG, "当前内置插件列表中已经有" + info.getName() + "，需要看看谁的版本号大。");
@@ -1088,8 +1115,60 @@ class PmBase {
         return loadPlugin(p, Plugin.LOAD_DEX, true);
     }
 
+    private Plugin getNewPlugin(String plugin) {
+        Plugin thePlugin = mPlugins.get(plugin);
+        if (HostConfigHelper.PERSISTENT_ENABLE && !IPC.isPersistentProcess()) {
+            if (thePlugin != null && thePlugin.mInfo != null) {
+
+                SharedPreferences sharedPreferences = Pref.getSharedPreferences("plugins_up");
+                int newPluginVer = sharedPreferences.getInt(plugin, -1);
+
+                int oldPluginVer = thePlugin.mInfo.getVersion();
+                boolean oldPluginExists = thePlugin.mInfo.getApkFile().exists() && thePlugin.mInfo.getDexFile().exists();
+
+                // 说明常驻中有新版本
+                if (newPluginVer > oldPluginVer && !oldPluginExists) {
+
+                    if (RePluginInternal.FOR_DEV) {
+                        Log.d("plugins_up", plugin + "插件，位于本地目录的旧版本已经被删除，且常驻进程下载了新版本，此时，就需要从常驻进程拿到新版本。");
+                        Log.d("plugins_up", plugin + "插件，oldPluginVer:" + oldPluginVer + ", newPluginVer:" + newPluginVer);
+                    }
+
+                    long begin = System.currentTimeMillis();
+                    List<PluginInfo> plugins = null;
+                    try {
+                        plugins = PluginProcessMain.getPluginHost().listPlugins();
+                    } catch (Throwable e) {
+                        if (LOGR) {
+                            LogRelease.e(PLUGIN_TAG, "lst.p: " + e.getMessage(), e);
+                        }
+                    }
+
+                    if (plugins != null) {
+                        for (PluginInfo pluginInfo : plugins) {
+                            if (plugin.equals(pluginInfo.getName())) {
+                                thePlugin.mInfo = pluginInfo;
+                                if (RePluginInternal.FOR_DEV) {
+                                    Log.d("plugins_up", plugin + "插件，新版:" + thePlugin.mInfo);
+                                }
+
+                                break;
+                            }
+                        }
+                    }
+
+                    if (RePluginInternal.FOR_DEV) {
+                        Log.d("plugins_up", "从常驻进程获取新版，耗时:" + (System.currentTimeMillis() - begin));
+                    }
+                }
+            }
+        }
+
+        return thePlugin;
+    }
+
     final Plugin loadAppPlugin(String plugin) {
-        return loadPlugin(mPlugins.get(plugin), Plugin.LOAD_APP, true);
+        return loadPlugin(getNewPlugin(plugin), Plugin.LOAD_APP, true);
     }
 
     // 底层接口
@@ -1108,6 +1187,13 @@ class PmBase {
             if (LOGR) {
                 LogRelease.e(PLUGIN_TAG, "pmb.lp: f to l. lt=" + loadType + "; i=" + p.mInfo);
             }
+
+            String pluginName = p.mInfo != null ? p.mInfo.getName() : "";
+            int pluginVer = p.mInfo != null ? p.mInfo.getVersion() : 0;
+
+            // load 插件失败
+            RePlugin.getConfig().getEventCallbacks().onLoadPluginFailed(pluginName, pluginVer);
+
             return null;
         }
         return p;

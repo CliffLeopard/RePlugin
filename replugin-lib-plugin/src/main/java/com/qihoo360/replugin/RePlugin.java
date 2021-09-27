@@ -1280,8 +1280,8 @@ public class RePlugin {
 
             // 这里的参数类型PluginInfo是主程序ClassLoader中的PluginInfo
             try {
-                Class hostPluginInfo = classLoader.loadClass("com.qihoo360.replugin.model.PluginInfo");
-                preload2 = new MethodInvoker(classLoader, rePlugin, "preload", new Class<?>[]{PluginInfo.class});
+                Class<?> hostPluginInfo = classLoader.loadClass("com.qihoo360.replugin.model.PluginInfo");
+                preload2 = new MethodInvoker(classLoader, rePlugin, "preload", new Class<?>[]{hostPluginInfo});
             } catch (ClassNotFoundException e) {
                 //
             }

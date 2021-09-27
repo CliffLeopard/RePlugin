@@ -668,4 +668,9 @@ class PmHostSvc extends IPluginHost.Stub {
     public String dump() {
         return PluginProcessMain.dump();
     }
+
+    @Override
+    public String queryActivity(String pit) throws RemoteException {
+        return PluginProcessMain.queryActivity(pit);
+    }
 }

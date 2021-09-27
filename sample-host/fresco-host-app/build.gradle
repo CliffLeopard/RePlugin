@@ -28,7 +28,7 @@ android {
 
 apply plugin: 'replugin-host-gradle'
 repluginHostConfig {
-    useAppCompat = true
+    useAppCompat = false
 }
 
 dependencies {

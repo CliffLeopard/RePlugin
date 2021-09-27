@@ -108,6 +108,7 @@ public class PluginServiceServer {
                     ServiceRecord sr = (ServiceRecord)msg.obj;
 
                     if (intent != null && sr != null) {
+                        intent.setExtrasClassLoader(sr.service.getClassLoader());
                         sr.service.onStartCommand(intent, 0, 0);
                     }else{
                         if (LOG) {

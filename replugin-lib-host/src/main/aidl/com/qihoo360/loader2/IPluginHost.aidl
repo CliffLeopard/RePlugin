@@ -116,4 +116,9 @@ interface IPluginHost {
      * dump详细的运行时信息
      */
     String dump();
+
+     /**
+     * 获取当前坑位对应的插件中的真实 Activity 名
+     */
+     String queryActivity(String pit);
 }

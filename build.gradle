@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$GRADLE_PLUGIN"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$KOTLIN_VERSION"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         if(SDK_PUBLISH == "false")
         {
             classpath "com.qihoo360.replugin:replugin-gradle:${RP_VERSION}"

@@ -24,4 +24,3 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -keep class com.qihoo360.replugin.Entry { *; }
--keep class * extends com.qihoo360.replugin.Plugin { *; }

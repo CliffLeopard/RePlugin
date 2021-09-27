@@ -182,6 +182,7 @@ class Loader {
                     if (LOG) {
                         LogDebug.d(PLUGIN_TAG, "get package archive info null");
                     }
+                    RePlugin.getConfig().getEventCallbacks().onLoadPluginFailed(mPluginName, "PackageInfo is null");
                     mPackageInfo = null;
                     return false;
                 }
@@ -283,6 +284,7 @@ class Loader {
                     if (LOG) {
                         LogDebug.d(PLUGIN_TAG, "get resources null");
                     }
+                    RePlugin.getConfig().getEventCallbacks().onLoadPluginFailed(mPluginName, "Resources is null");
                     return false;
                 }
                 if (LOG) {
@@ -335,6 +337,7 @@ class Loader {
                     if (LOG) {
                         LogDebug.d(PLUGIN_TAG, "get dex null");
                     }
+                    RePlugin.getConfig().getEventCallbacks().onLoadPluginFailed(mPluginName, "ClassLoader is null");
                     return false;
                 }
 
@@ -369,6 +372,7 @@ class Loader {
             if (LOGR) {
                 LogRelease.e(PLUGIN_TAG, "p=" + mPath + " m=" + e.getMessage(), e);
             }
+            RePlugin.getConfig().getEventCallbacks().onLoadPluginFailed(mPluginName, e.getMessage());
             return false;
         }
 

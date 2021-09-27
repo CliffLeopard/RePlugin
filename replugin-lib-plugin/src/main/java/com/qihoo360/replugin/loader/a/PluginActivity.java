@@ -17,11 +17,13 @@
 package com.qihoo360.replugin.loader.a;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.qihoo360.replugin.RePluginInternal;
@@ -121,12 +123,37 @@ public abstract class PluginActivity extends Activity {
 
     @Override
     public void startActivityForResult(Intent intent, int requestCode, @Nullable Bundle options) {
-        //
-        if (RePluginInternal.startActivityForResult(this, intent, requestCode,options)) {
-            // 这个地方不需要回调startActivityAfter，因为Factory2最终还是会回调回来，最终还是要走super.startActivityForResult()
-            return;
+        if (!RePluginInternal.startActivityForResult(this, intent, requestCode, options)) {
+            super.startActivityForResult(intent, requestCode, options);
         }
+    }
 
-        super.startActivityForResult(intent, requestCode, options);
+    @Override
+    public void startActivityFromChild(@NonNull Activity child, Intent intent, int requestCode) {
+        if (!RePluginInternal.startActivityFromChild(this, child, intent, requestCode)) {
+            super.startActivityFromChild(child, intent, requestCode);
+        }
+    }
+
+    @Override
+    public void startActivityFromChild(@NonNull Activity child, Intent intent, int requestCode, @Nullable Bundle options) {
+        if (!RePluginInternal.startActivityFromChild(this, child, intent, requestCode, options))
+            super.startActivityFromChild(child, intent, requestCode, options);
+    }
+
+    @Override
+    public void startActivityFromFragment(@NonNull Fragment fragment, Intent intent, int requestCode) {
+        if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode))
+            super.startActivityFromFragment(fragment, intent, requestCode);
+    }
+
+    @Override
+    public void startActivityFromFragment(@NonNull Fragment fragment, Intent intent, int requestCode, @Nullable Bundle options) {
+        if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode, options))
+            super.startActivityFromFragment(fragment, intent, requestCode, options);
+    }
+    @Override
+    public void overridePendingTransition(int enterAnim, int exitAnim) {
+        super.overridePendingTransition(0, 0);
     }
 }

@@ -1,4 +1,3 @@
-
 /*
  * Copyright (C) 2005-2017 Qihoo 360 Inc.
  *
@@ -40,11 +39,29 @@ public class Entry {
         // 初始化Env
         RePluginEnv.init(context, cl, manager);
 
-        return new IPlugin.Stub() {
-            @Override
-            public IBinder query(String name) throws RemoteException {
-                return RePluginServiceManager.getInstance().getService(name);
-            }
-        };
+        IPlugin.Stub plugin = findCustomPlugin();
+        if (plugin == null) {
+            plugin = new IPlugin.Stub() {
+                @Override
+                public IBinder query(String name) throws RemoteException {
+                    return RePluginServiceManager.getInstance().getService(name);
+                }
+            };
+        }
+        return plugin;
     }
+
+    private static final IPlugin.Stub findCustomPlugin() {
+        try {
+            ClassLoader loader = Entry.class.getClassLoader();
+            Class clazz = loader.loadClass("com.qihoo360.replugin.CustomPlugin");
+            Object plugin = clazz.newInstance();
+            if (plugin instanceof IPlugin.Stub) {
+                return (IPlugin.Stub) plugin;
+            }
+        } catch (Exception ignored) {
+        }
+        return null;
+    }
+
 }
