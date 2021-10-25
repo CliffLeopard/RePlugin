@@ -49,7 +49,6 @@ class JarTransformTask(
                     var entry: ZipEntry? = jar.nextEntry
                     while (entry != null) {
                         val outEntry: ZipEntry = copyEntry(entry)
-                        outJar.putNextEntry(outEntry)
                         if (!entry.isDirectory && entry.name.endsWith(".class")) {
                             val name = entry.name.removeSuffix(".class")
                             val separatorIndex = entry.name.lastIndexOf(File.separatorChar)
@@ -74,17 +73,25 @@ class JarTransformTask(
                                 className,
                                 jarInput.file.absolutePath,
                                 out.absolutePath,
+                                jarInput,
                                 true,
                                 isInnerClass
                             )
                             val bytes = IOUtils.toByteArray(jar)
                             val changedBytes = transForm.transformClass(transformClassInfo, bytes)
-                            IOUtils.write(changedBytes ?: bytes, outJar)
-                            if (changedBytes != null)
-                                Log.detail(tag, "TransformedJarClass: ${entry.name}")
-                            else
+                            if (changedBytes == null) {
+                                outJar.putNextEntry(outEntry)
+                                IOUtils.write(bytes, outJar)
                                 Log.detail(tag, "TransformedJarClass:NotChanged: ${entry.name}")
+                            } else if (changedBytes.isNotEmpty()) {
+                                outJar.putNextEntry(outEntry)
+                                IOUtils.write(changedBytes, outJar)
+                                Log.i(tag, "TransformedJarClass: ${entry.name}")
+                            } else {
+                                Log.i(tag, "TransformedJarClass:SkippedClass: ${entry.name}")
+                            }
                         } else {
+                            outJar.putNextEntry(outEntry)
                             IOUtils.copy(jar, outJar)
                         }
                         entry = jar.nextEntry

@@ -1,5 +1,8 @@
 package com.qihoo360.replugin.config
 
+import groovy.lang.Closure
+import org.gradle.api.NamedDomainObjectContainer
+
 /**
  * author:gaoguanling
  * date:2021/7/4
@@ -39,4 +42,14 @@ open class PluginExtension : BaseExtension() {
         "com/qihoo360/replugin/loader/b/PluginLocalBroadcastManager",
         "com/qihoo360/replugin/loader/p/PluginProviderClient"
     )
+    lateinit var excludedClasses: NamedDomainObjectContainer<TargetClass>
+    lateinit var skipClasses: NamedDomainObjectContainer<TargetClass>
+
+    fun excludedClasses(closure: Closure<TargetClass>) {
+        this.excludedClasses.configure(closure)
+    }
+
+    fun skipClasses(closure: Closure<TargetClass>) {
+        this.skipClasses.configure(closure)
+    }
 }

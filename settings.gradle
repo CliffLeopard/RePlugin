@@ -22,3 +22,4 @@ if (SDK_PUBLISH == "false") {
         include ':sample-plugin:fresco-plugin'
     }
 }
+include ':sample:sample-plugin-util'

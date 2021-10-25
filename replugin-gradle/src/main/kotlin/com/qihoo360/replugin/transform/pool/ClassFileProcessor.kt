@@ -100,6 +100,7 @@ object ClassFileProcessor {
                         className,
                         classFile.absolutePath,
                         outFile.absolutePath,
+                        directoryInput,
                         false,
                         isInnerClass
                     )

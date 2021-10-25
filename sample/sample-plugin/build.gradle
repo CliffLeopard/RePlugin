@@ -8,7 +8,7 @@ android {
     buildToolsVersion RP_BuildToolsVersion
 
     defaultConfig {
-        applicationId       "com.cleo.sample_plugin"
+        applicationId       "com.cleo.sample.plugin"
         minSdkVersion       RP_MinSdkVersion
         targetSdkVersion    RP_TargetSdkVersion
         versionCode 1
@@ -38,11 +38,18 @@ repluginPluginConfig {
     pluginName = "sample-plugin"
     hostApplicationId = "com.cleo.sample_host"
     hostAppLauncherActivity = "com.cleo.sample_host.MainActivity"
+    excludedClasses {
+        exclude1 {
+            classNameRegex = "com/cleo/sample/plugin/util/SimplePluginUtil"
+            fromJar = true
+            scope = 0x04
+        }
+    }
 }
 
 dependencies {
-
     implementation project(':replugin-lib-plugin')
+    implementation project(':sample:sample-plugin-util')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"

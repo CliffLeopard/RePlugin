@@ -24,26 +24,42 @@ class FileTransformTask(
             FileInputStream(classInfo.fromPath).use { inputStream ->
                 val bytes = IOUtils.toByteArray(inputStream)
                 val changedBytes = transForm.transformClass(classInfo, bytes)
+                var status = 2
                 FileOutputStream(classInfo.toPath).use { outputStream ->
-                    IOUtils.write(changedBytes ?: bytes, outputStream)
+                    if (changedBytes == null) {
+                        IOUtils.write(bytes, outputStream)
+                        status = 0
+                    } else if (changedBytes.isNotEmpty()) {
+                        IOUtils.write(changedBytes, outputStream)
+                        status = 1
+                    }
                 }
-                printLog(classInfo, changedBytes == null)
+                printLog(classInfo, status)
             }
         }
         return true
     }
 
-    private fun printLog(classInfo: TransformClassInfo, changed: Boolean) {
-        if (changed) {
-            Log.detail(
-                tag,
-                "TransformedClass:${classInfo.className}  Thread:${Thread.currentThread().name}\nFrom:${classInfo.fromPath} \n  To: ${classInfo.toPath}"
-            )
-        } else {
-            Log.detail(
-                tag,
-                "TransformedClass:${classInfo.className}  Thread:${Thread.currentThread().name}\nNotChanged:${classInfo.fromPath}"
-            )
+
+    private fun printLog(classInfo: TransformClassInfo, status: Int) {
+        when (status) {
+            0 ->
+                Log.i(
+                    tag,
+                    "TransformedClass:${classInfo.className}  Thread:${Thread.currentThread().name}\nFrom:${classInfo.fromPath} \n  To: ${classInfo.toPath}"
+                )
+            1 -> {
+                Log.detail(
+                    tag,
+                    "TransformedClass:${classInfo.className}  Thread:${Thread.currentThread().name}\nNotChanged:${classInfo.fromPath}"
+                )
+            }
+            2 -> {
+                Log.i(
+                    tag,
+                    "TransformedClass:${classInfo.className}  Thread:${Thread.currentThread().name}\nSkipped:${classInfo.fromPath}"
+                )
+            }
         }
     }
 }

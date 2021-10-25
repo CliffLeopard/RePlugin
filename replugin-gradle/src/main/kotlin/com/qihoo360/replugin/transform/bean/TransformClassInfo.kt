@@ -1,5 +1,7 @@
 package com.qihoo360.replugin.transform.bean
 
+import com.android.build.api.transform.QualifiedContent
+
 /**
  * author:gaoguanling
  * date:2021/8/4
@@ -13,6 +15,7 @@ data class TransformClassInfo(
     val className: String,
     val fromPath: String,
     val toPath: String,
+    val content:QualifiedContent,
     val fromJar: Boolean = false,
     val isInnerClass: Boolean = false,
 ) {
