@@ -34,7 +34,7 @@ project.ext {
 
 
     RP_GROUP = 'com.qihoo360.replugin'
-    RP_VERSION = '2.3.9-SNAPSHOT'
+    RP_VERSION = '2.4.0-SNAPSHOT'
     RP_VERSION_CODE = 239
 
 
