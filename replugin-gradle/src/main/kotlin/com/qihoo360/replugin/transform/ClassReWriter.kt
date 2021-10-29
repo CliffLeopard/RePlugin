@@ -29,7 +29,7 @@ object ClassReWriter {
         val classWriter = ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
 
         filerClass(context)
-//        filerClassByReader(classReader, context)
+        //filerClassByReader(classReader, context)
 
         if (context.skipClass) {
             Log.detail(tag, "Skip: ${classInfo.name}")

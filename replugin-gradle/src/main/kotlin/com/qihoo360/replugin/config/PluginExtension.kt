@@ -42,13 +42,11 @@ open class PluginExtension : BaseExtension() {
         "com/qihoo360/replugin/loader/b/PluginLocalBroadcastManager",
         "com/qihoo360/replugin/loader/p/PluginProviderClient"
     )
-    lateinit var excludedClasses: NamedDomainObjectContainer<TargetClass>
     lateinit var skipClasses: NamedDomainObjectContainer<TargetClass>
-
+    lateinit var excludedClasses: NamedDomainObjectContainer<TargetClass>
     fun excludedClasses(closure: Closure<TargetClass>) {
         this.excludedClasses.configure(closure)
     }
-
     fun skipClasses(closure: Closure<TargetClass>) {
         this.skipClasses.configure(closure)
     }

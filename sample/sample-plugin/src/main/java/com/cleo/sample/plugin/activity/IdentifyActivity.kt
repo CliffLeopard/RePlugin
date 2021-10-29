@@ -18,7 +18,6 @@ class IdentifyActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        Log.e("GGL", "OnResume")
         val bc = LocalBroadcastTest()
         bc.sendBroadCast(this)
         getId()
