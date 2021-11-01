@@ -29,7 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
