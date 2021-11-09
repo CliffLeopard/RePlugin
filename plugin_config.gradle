@@ -34,8 +34,8 @@ project.ext {
 
 
     RP_GROUP = 'com.qihoo360.replugin'
-    RP_VERSION = '2.4.1-SNAPSHOT'
-    RP_VERSION_CODE = 240
+    RP_VERSION = '2.4.2-SNAPSHOT'
+    RP_VERSION_CODE = 242
 
 
     RP_USER = 'replugin'

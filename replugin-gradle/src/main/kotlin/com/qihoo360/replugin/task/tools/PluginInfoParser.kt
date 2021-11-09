@@ -32,7 +32,7 @@ class PluginInfoParser(pluginFile: File, extension: HostExtension) : DefaultHand
         parser.parse(inputStream, this)
 
         val fullName = pluginFile.name
-        pluginInfo.path = extension.pluginDir + File.separator + fullName
+        pluginInfo.path = extension.pluginDir + '/' + fullName
 
         val postfix: String = extension.pluginFilePostfix
         pluginInfo.name = fullName.substring(0, fullName.length - postfix.length)
