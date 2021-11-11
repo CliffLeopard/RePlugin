@@ -22,6 +22,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -57,12 +58,8 @@ public abstract class PluginActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //
         RePluginInternal.handleActivityCreateBefore(this, savedInstanceState);
-
         super.onCreate(savedInstanceState);
-
-        //
         RePluginInternal.handleActivityCreate(this, savedInstanceState);
     }
 
@@ -152,6 +149,7 @@ public abstract class PluginActivity extends Activity {
         if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode, options))
             super.startActivityFromFragment(fragment, intent, requestCode, options);
     }
+
     @Override
     public void overridePendingTransition(int enterAnim, int exitAnim) {
         super.overridePendingTransition(0, 0);

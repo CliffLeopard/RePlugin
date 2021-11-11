@@ -497,8 +497,8 @@ public class PluginLibraryInternalProxy {
         Intent intent = activity.getIntent();
         if (intent != null) {
             intent.setExtrasClassLoader(activity.getClassLoader());
-            activity.setTheme(getThemeId(activity, intent));
         }
+        activity.setTheme(getThemeId(activity, intent));
     }
 
     /**
@@ -768,7 +768,17 @@ public class PluginLibraryInternalProxy {
         int dynamicThemeId = getDynamicThemeId(activity);
 
         // 插件 manifest 中设置的 ThemeId
-        int manifestThemeId = intent.getIntExtra(PluginCommImpl.INTENT_KEY_THEME_ID, 0);
+
+        int manifestThemeId = 0;
+        if (intent != null) {
+            manifestThemeId = intent.getIntExtra(PluginCommImpl.INTENT_KEY_THEME_ID, 0);
+        } else {
+            try {
+                PluginContext context = (PluginContext) activity.getBaseContext();
+                manifestThemeId = context.getActivityInfo(activity.getClass().getName()).theme;
+            } catch (Exception ignore) {
+            }
+        }
         //如果插件上没有主题则使用Application节点的Theme
         if (manifestThemeId == 0) {
             manifestThemeId = activity.getApplicationInfo().theme;
@@ -781,7 +791,6 @@ public class PluginLibraryInternalProxy {
         }
 
         int themeId;
-
         if (LOG) {
             LogDebug.d("theme", "defaultThemeId = " + defaultThemeId);
             LogDebug.d("theme", "dynamicThemeId = " + dynamicThemeId);
@@ -789,7 +798,7 @@ public class PluginLibraryInternalProxy {
         }
 
         // 通过反射获取主题成功
-        if (dynamicThemeId != -1) {
+        if (dynamicThemeId != -1 && dynamicThemeId != 0) {
             // 如果动态主题是默认主题，说明插件未通过代码设置主题，此时应该使用 AndroidManifest 中设置的主题。
             if (dynamicThemeId == defaultThemeId) {
                 // AndroidManifest 中有声明主题
@@ -829,7 +838,7 @@ public class PluginLibraryInternalProxy {
     private static int getDefaultThemeId() {
         if (HostConfigHelper.ACTIVITY_PIT_USE_APPCOMPAT) {
             try {
-                Class clazz = ReflectUtils.getClass("androidx.appcompat.R$style");
+                Class<?> clazz = ReflectUtils.getClass("androidx.appcompat.R$style");
                 return (int) ReflectUtils.readStaticField(clazz, "Theme_AppCompat");
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();

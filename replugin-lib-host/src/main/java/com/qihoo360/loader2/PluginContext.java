@@ -16,11 +16,16 @@
 
 package com.qihoo360.loader2;
 
+import static com.qihoo360.replugin.helper.LogDebug.LOG;
+import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
+import static com.qihoo360.replugin.helper.LogRelease.LOGR;
+
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
@@ -46,10 +51,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.lang.reflect.Constructor;
-
-import static com.qihoo360.replugin.helper.LogDebug.LOG;
-import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
-import static com.qihoo360.replugin.helper.LogRelease.LOGR;
 
 /**
  * @author RePlugin Team
@@ -579,5 +580,9 @@ public class PluginContext extends ContextThemeWrapper {
             return super.getApplicationInfo();
         }
         return mLoader.mComponents.getApplication();
+    }
+
+    public ActivityInfo getActivityInfo(String className) {
+        return mLoader.mComponents.getActivity(className);
     }
 }
