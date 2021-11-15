@@ -2,7 +2,6 @@ package com.qihoo360.replugin.task.tools
 
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.config.HostExtension
-import org.apache.http.util.TextUtils
 import org.gradle.api.Project
 import java.io.File
 
@@ -15,7 +14,7 @@ import java.io.File
  */
 object FileCreators {
     private fun create(creator: IFileCreator?) {
-        if (creator == null || TextUtils.isEmpty(creator.getFileContent()))
+        if (creator == null || creator.getFileContent().isEmpty())
             return
 
         val dir = creator.getFileDir()

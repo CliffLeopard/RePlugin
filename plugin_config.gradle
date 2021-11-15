@@ -1,7 +1,7 @@
 project.ext {
 
     GRADLE_PLUGIN		 	= 	'4.2.2'
-    KOTLIN_VERSION		 	= 	'1.5.30'
+    KOTLIN_VERSION		 	= 	'1.5.31'
     PLUGIN_PUBLISH_VERSION  =   '0.15.0'
     ASM_VERSION             =   '9.2'
 
@@ -12,6 +12,7 @@ project.ext {
 
     ANDROIDX_APPCOMPAT		= 	'1.3.1'
     ANDROIDX_CORE_KTX		= 	'1.6.0'
+    LIVEDATA_KTX            =   '2.3.1'
     GOOGLE_MATERIAL         =   '1.4.0'
     ANDROIDX_CONSTRAIN      =   '2.1.1'
 
@@ -32,11 +33,9 @@ project.ext {
     JUNIT_VERSION		 	= 	'4.13.2'
     ESPRESSO_VERSION		=    '3.3.0'
 
-
     RP_GROUP = 'com.qihoo360.replugin'
-    RP_VERSION = '2.4.3-SNAPSHOT'
-    RP_VERSION_CODE = 243
-
+    RP_VERSION = '2.4.4-SNAPSHOT'
+    RP_VERSION_CODE = 244
 
     RP_USER = 'replugin'
     RP_REPO = 'replugin'

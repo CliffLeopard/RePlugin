@@ -27,6 +27,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.helper.LogRelease;
 import com.qihoo360.replugin.loader.PluginResource;
@@ -39,10 +40,20 @@ public abstract class PluginExpandableListActivity extends ExpandableListActivit
     private PluginResource pluginResource;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        Context context = RePluginInternal.createActivityContext(this, newBase);
-        pluginResource = new PluginResource(context == null ? newBase : context);
-        super.attachBaseContext(context == null ? newBase : context);
+    protected void attachBaseContext(Context base) {
+        if (RePlugin.isHostInitialized()) {
+            Context pluginContext = RePlugin.getPluginContext();
+            if (base.getClassLoader() == RePlugin.getHostContext().getClassLoader()) {
+                pluginResource = PluginResource.newInstance(base, pluginContext, null);
+                super.attachBaseContext(pluginContext == null ? base : pluginContext);
+            } else {
+                pluginResource = PluginResource.newInstance(RePlugin.getHostContext(), pluginContext, base);
+                super.attachBaseContext(base);
+            }
+        } else {
+            pluginResource = PluginResource.newInstance(null,base,null);
+            super.attachBaseContext(base);
+        }
     }
 
     @Override
@@ -150,6 +161,7 @@ public abstract class PluginExpandableListActivity extends ExpandableListActivit
         if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode, options))
             super.startActivityFromFragment(fragment, intent, requestCode, options);
     }
+
     @Override
     public void overridePendingTransition(int enterAnim, int exitAnim) {
         super.overridePendingTransition(0, 0);

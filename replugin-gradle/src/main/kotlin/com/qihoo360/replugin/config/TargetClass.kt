@@ -10,7 +10,7 @@ import com.android.build.api.transform.QualifiedContent
  * link:
  */
 open class TargetClass(var name: String) {
-    var classNameRegex: String = ""
+    var classNameRegex = mutableListOf<String>()
     var fromJar: Boolean = true
     var scope: Int = 0x04  // 16进制数值
 

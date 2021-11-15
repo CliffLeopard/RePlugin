@@ -40,7 +40,9 @@ repluginPluginConfig {
     hostAppLauncherActivity = "com.cleo.sample_host.MainActivity"
     excludedClasses {
         exclude1 {
-            classNameRegex = "com/cleo/sample/plugin/util/SimplePluginUtil"
+            classNameRegex = [
+                    "com/cleo/sample/plugin/util/SimplePluginUtil"
+            ]
             fromJar = true
             scope = 0x04
         }
@@ -55,8 +57,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
     implementation "com.google.android.material:material:$GOOGLE_MATERIAL"
     implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAIN"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$LIVEDATA_KTX"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIVEDATA_KTX"
     testImplementation "junit:junit:$JUNIT_VERSION"
     androidTestImplementation "androidx.test.ext:junit:$ANDROIDX_JUNIT"
     androidTestImplementation "androidx.test.espresso:espresso-core:$ANDROIDX_ESPRESSO"

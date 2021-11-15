@@ -26,15 +26,32 @@ public class PluginResource extends Resources {
     private final Resources mPluginResource;
     private final Resources mHostResources;
 
-    public PluginResource(Context context) {
-        super(context.getResources().getAssets(), context.getResources().getDisplayMetrics(),
-                context.getResources().getConfiguration());
+    public static PluginResource newInstance(Context hostContext, Context pluginContext, Context childContext) {
+        if (hostContext != null) {
+            PluginResource pluginResource = new PluginResource(pluginContext == null ? hostContext : pluginContext, hostContext.getResources());
+            if (childContext != null) {
+                return new PluginResource(childContext, pluginResource);
+            } else {
+                return pluginResource;
+            }
+        } else {
+            return new PluginResource(pluginContext, null);
+        }
+    }
+
+    public PluginResource(Context context, Resources originResources) {
+        super(context.getResources().getAssets(), context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
         this.mContext = context;
         this.mPluginResource = context.getResources();
-        if (RePlugin.isHostInitialized()) {
-            mHostResources = RePlugin.getHostContext().getResources();
+
+        if (originResources == null) {
+            if (RePlugin.isHostInitialized()) {
+                mHostResources = RePlugin.getHostContext().getResources();
+            } else {
+                mHostResources = mPluginResource;
+            }
         } else {
-            mHostResources = context.getResources();
+            mHostResources = originResources;
         }
     }
 

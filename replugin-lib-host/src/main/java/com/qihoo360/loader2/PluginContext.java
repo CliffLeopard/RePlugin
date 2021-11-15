@@ -85,14 +85,18 @@ public class PluginContext extends ContextThemeWrapper {
         }
     };
 
-    public PluginContext(Context base, int themeres, ClassLoader cl, Resources r, String plugin, Loader loader) {
-        super(base, themeres);
+    public PluginContext(Context base, int themeResId, ClassLoader cl, Resources r, String plugin, Loader loader) {
+        super(PMF.getApplicationContext(), themeResId);
+        if (base == PMF.getApplicationContext()) {
+            mNewClassLoader = cl;
+            mNewResources = r;
+        } else {
+            mNewClassLoader = base.getClassLoader();
+            mNewResources = base.getResources();
+        }
 
-        mNewClassLoader = cl;
-        mNewResources = r;
         mPlugin = plugin;
         mLoader = loader;
-
         mContextInjector = RePlugin.getConfig().getCallbacks().createContextInjector();
     }
 

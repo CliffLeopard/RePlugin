@@ -447,15 +447,6 @@ public class PluginLibraryInternalProxy {
      * 插件的Activity创建成功后通过此方法获取其base context
      */
     public Context createActivityContext(Activity activity, Context newBase) {
-//        PluginContainers.ActivityState state = mPluginMgr.mClient.mACM.lookupLastLoading(activity.getClass().getName());
-//        if (state == null) {
-//            if (LOG) {
-//                LogDebug.w(PLUGIN_TAG, "PACM: createActivityContext: can't found plugin activity: activity=" + activity.getClass().getName());
-//            }
-//            return null;
-//        }
-//        Plugin plugin = mPluginMgr.loadAppPlugin(state.mCN.getPackageName());
-
         // 此时插件必须被加载，因此通过class loader一定能找到对应的PLUGIN对象
         Plugin plugin = mPluginMgr.lookupPlugin(activity.getClass().getClassLoader());
         if (plugin == null) {
@@ -464,7 +455,6 @@ public class PluginLibraryInternalProxy {
             }
             return null;
         }
-
         return plugin.mLoader.createBaseContext(newBase);
     }
 

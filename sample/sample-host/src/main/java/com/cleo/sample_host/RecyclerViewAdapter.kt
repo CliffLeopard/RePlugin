@@ -38,9 +38,7 @@ class RecyclerViewAdapter(
         holder.textView.setOnClickListener {
             RePlugin.startActivity(
                 context,
-                RePlugin.createIntent(
-                    Data.pluginId, case.second
-                )
+                RePlugin.createIntent(Data.pluginId, case.second)
             )
         }
     }

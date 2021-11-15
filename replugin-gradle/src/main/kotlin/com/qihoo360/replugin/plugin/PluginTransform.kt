@@ -23,21 +23,28 @@ open class PluginTransform(appExtension: AppExtension, override val extension: P
     override fun transformClass(classInfo: TransformClassInfo, inputBytes: ByteArray): ByteArray? {
         extension.excludedClasses.forEach { excludeClass ->
             if (classInfo.fromJar == excludeClass.fromJar
-                && Regex(excludeClass.classNameRegex).matches(classInfo.name)
                 && classInfo.content.scopes.contains(excludeClass.getScopeByValue())
             ) {
-                return ByteArray(0)
+                excludeClass.classNameRegex.forEach { regex ->
+                    if (Regex(regex).matches(classInfo.name)) {
+                        return ByteArray(0)
+                    }
+                }
             }
         }
 
         extension.skipClasses.forEach { skipClass ->
             if (classInfo.fromJar == skipClass.fromJar
-                && Regex(skipClass.classNameRegex).matches(classInfo.className)
                 && classInfo.content.scopes.contains(skipClass.getScopeByValue())
             ) {
-                return null
+                skipClass.classNameRegex.forEach { regex ->
+                    if (Regex(regex).matches(classInfo.name)) {
+                        return null
+                    }
+                }
             }
         }
+        
         return ClassReWriter.transform(classInfo, inputBytes, extension)
     }
 }

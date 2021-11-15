@@ -5,7 +5,6 @@ import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.Constants
 import com.qihoo360.replugin.Log
 import com.qihoo360.replugin.config.PluginExtension
-import org.apache.http.util.TextUtils
 import java.io.File
 
 /**
@@ -39,10 +38,10 @@ class PluginDebugger(
             return false
 
         var pluginApkPath = config.phoneStorageDir
-        if (TextUtils.isEmpty(pluginApkPath)) {
+        if (pluginApkPath == null || pluginApkPath.isEmpty()) {
             return false
         }
-        if (!pluginApkPath!!.endsWith("/"))
+        if (!pluginApkPath.endsWith("/"))
             pluginApkPath += "/"
         pluginApkPath += apkFile.name
 
