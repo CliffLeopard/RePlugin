@@ -47,6 +47,48 @@ repluginPluginConfig {
             scope = 0x04
         }
     }
+    hookMethods {
+        callBefore {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "callF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x07
+        }
+
+        callBeforeVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "callVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x07
+        }
+
+        callBeforeStatic {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "callStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0a
+        }
+
+        callBeforeStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "callVoidStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0a
+        }
+
+    }
 }
 
 dependencies {

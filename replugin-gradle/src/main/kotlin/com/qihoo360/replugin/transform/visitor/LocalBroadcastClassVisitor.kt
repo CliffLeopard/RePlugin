@@ -1,5 +1,6 @@
 package com.qihoo360.replugin.transform.visitor
 
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.AnnotationVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.FieldVisitor
@@ -90,7 +91,7 @@ class LocalBroadcastClassVisitor(cv: ClassVisitor?, context: InstrumentationCont
 
     }
 
-    class LocalBroadcastAnnotationVisitor(private val context: InstrumentationContext,av: AnnotationVisitor) : AnnotationVisitor(ASM9, av) {
+    class LocalBroadcastAnnotationVisitor(private val context: InstrumentationContext, av: AnnotationVisitor) : AnnotationVisitor(ASM9, av) {
         override fun visit(name: String?, value: Any?) {
             return if (value != null && value is String) {
                 if(value.contains(originClass))

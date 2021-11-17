@@ -2,11 +2,11 @@ package com.qihoo360.replugin.transform
 
 import com.qihoo360.replugin.Log
 import com.qihoo360.replugin.config.BaseExtension
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
 import com.qihoo360.replugin.transform.visitor.*
 import org.objectweb.asm.ClassReader
 import org.objectweb.asm.ClassWriter
-import org.objectweb.asm.util.CheckClassAdapter
 
 
 /**
@@ -35,15 +35,18 @@ object ClassReWriter {
             Log.detail(tag, "Skip: ${classInfo.name}")
             return null
         }
-        val verifierVisitor = CheckClassAdapter(classWriter)
-        val activityVisitor = ActivityClassVisitor(verifierVisitor, context)
+
+        //        val verifierVisitor = CheckClassAdapter(classWriter)
+        //        val activityVisitor = ActivityClassVisitor(verifierVisitor, context)
+        val activityVisitor = ActivityClassVisitor(classWriter, context)
         val broadCastVisitor = LocalBroadcastClassVisitor(activityVisitor, context)
         val providerVisitor = ProviderClassClassVisitor(broadCastVisitor, context)
         val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
-        val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor,context)
+        val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor, context)
+        val finalVisitor = if (context.hookMethodConfig.isEmpty()) constantClassVisitor else MethodHookClassVisitor(constantClassVisitor, context)
 
         classReader.accept(
-            constantClassVisitor,
+            finalVisitor,
             ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES
         )
         return if (context.classModified) {

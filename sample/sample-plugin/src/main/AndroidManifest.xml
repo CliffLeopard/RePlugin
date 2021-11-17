@@ -3,13 +3,16 @@
     package="com.cleo.sample.plugin">
 
     <application
+        android:name=".PluginApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".PluginApplication"
         android:theme="@style/Theme.Replugin">
+        <activity
+            android:name=".activity.HookActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.CommonTestActivity"
             android:exported="false" />

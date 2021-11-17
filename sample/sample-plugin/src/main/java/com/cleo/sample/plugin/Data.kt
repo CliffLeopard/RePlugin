@@ -1,9 +1,6 @@
 package com.cleo.sample.plugin
 
-import com.cleo.sample.plugin.activity.CFragmentActivity
-import com.cleo.sample.plugin.activity.CommonTestActivity
-import com.cleo.sample.plugin.activity.IdentifyActivity
-import com.cleo.sample.plugin.activity.ProviderActivity
+import com.cleo.sample.plugin.activity.*
 
 /**
  * author:gaoguanling
@@ -17,7 +14,8 @@ object Data {
         "resources.getIdentifier" to IdentifyActivity::class.java.name,
         "Provider" to ProviderActivity::class.java.name,
         "startActivityFromFragment" to CFragmentActivity::class.java.name,
-        "CommonTest" to CommonTestActivity::class.java.name
+        "CommonTest" to CommonTestActivity::class.java.name,
+        "HookTest" to HookActivity::class.java.name
     )
 
     const val pluginId = "com.cleo.sample.plugin"

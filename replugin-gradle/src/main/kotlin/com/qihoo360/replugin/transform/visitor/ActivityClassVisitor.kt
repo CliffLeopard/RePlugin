@@ -1,5 +1,6 @@
 package com.qihoo360.replugin.transform.visitor
 
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -48,6 +49,17 @@ class ActivityClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
         }
     }
 
+    private fun getSuperName(name: String?, superName: String?): String? {
+        if (name.isNullOrEmpty() || superName.isNullOrEmpty())
+            return superName
+
+        if (activities.containsKey(superName) && name != activities[superName]) {
+            context.classModified = true
+            return activities[superName]
+        }
+        return superName
+    }
+
     companion object {
         private val activities = hashMapOf(
             "android/app/Activity" to "com/qihoo360/replugin/loader/a/PluginActivity",
@@ -59,16 +71,5 @@ class ActivityClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
             "android/preference/PreferenceActivity" to "com/qihoo360/replugin/loader/a/PluginPreferenceActivity",
             "android/app/ExpandableListActivity" to "com/qihoo360/replugin/loader/a/PluginExpandableListActivity"
         )
-    }
-
-    private fun getSuperName(name: String?, superName: String?): String? {
-        if (name.isNullOrEmpty() || superName.isNullOrEmpty())
-            return superName
-
-        if (activities.containsKey(superName) && name != activities[superName]) {
-            context.classModified = true
-            return activities[superName]
-        }
-        return superName
     }
 }

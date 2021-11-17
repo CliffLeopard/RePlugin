@@ -1,8 +1,8 @@
-package com.qihoo360.replugin.transform.visitor
+package com.qihoo360.replugin.transform.bean
 
 import com.qihoo360.replugin.Log
 import com.qihoo360.replugin.config.BaseExtension
-import com.qihoo360.replugin.transform.bean.TransformClassInfo
+import com.qihoo360.replugin.config.HookMethodContainer
 import java.util.*
 
 /**
@@ -20,11 +20,12 @@ class InstrumentationContext(
     var superClassName: String? = null
     var classModified: Boolean = false
     var skipClass: Boolean = false
-    
+    val hookMethodConfig = HookMethodContainer.getInstance(extension)
+
     fun addSkippedMethod(name: String, desc: String) {
         Log.i(
             "InstrumentationContext",
-            "Will skip all tracing in method " + classInfo.name + "#" + name + ":" + desc + " as requested"
+            "Will skip all tracing in method  ${classInfo.name}#$name:$desc"
         )
         skippedMethods[classInfo.name + "#" + name] = desc
     }
