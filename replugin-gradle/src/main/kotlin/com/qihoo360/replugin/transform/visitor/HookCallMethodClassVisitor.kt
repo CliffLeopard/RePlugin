@@ -1,8 +1,7 @@
 package com.qihoo360.replugin.transform.visitor
 
+import com.qihoo360.replugin.config.HookMethod
 import com.qihoo360.replugin.config.HookMethodContainer
-import com.qihoo360.replugin.config.MethodInfoDesc
-import com.qihoo360.replugin.config.TargetMethod
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
@@ -18,7 +17,7 @@ import org.objectweb.asm.commons.Method
  * email:gaoguanling@360.cn
  * link: 此类只在方法调用处Hook
  */
-class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
+class HookCallMethodClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
     PluginClassVisitor(cv, context) {
     private lateinit var hookMethods: HookMethodContainer
 
@@ -52,21 +51,21 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
             if (methods == null || methods.isEmpty())
                 return false
             val beforeHook = if (opcode == Opcodes.INVOKESTATIC) {
-                methods[TargetMethod.HookType.CALL_STATIC_BEFORE_METHOD]
+                methods[HookMethod.HookType.CALL_STATIC_BEFORE_METHOD]
             } else {
-                methods[TargetMethod.HookType.CALL_NORMAL_BEFORE_METHOD]
+                methods[HookMethod.HookType.CALL_NORMAL_BEFORE_METHOD]
             }
 
             val afterHook = if (opcode == Opcodes.INVOKESTATIC) {
-                methods[TargetMethod.HookType.CALL_STATIC_AFTER_METHOD]
+                methods[HookMethod.HookType.CALL_STATIC_AFTER_METHOD]
             } else {
-                methods[TargetMethod.HookType.CALL_NORMAL_AFTER_METHOD]
+                methods[HookMethod.HookType.CALL_NORMAL_AFTER_METHOD]
             }
 
             val replaceHook = if (opcode == Opcodes.INVOKESTATIC) {
-                methods[TargetMethod.HookType.CALL_STATIC_REPLACE_METHOD]
+                methods[HookMethod.HookType.CALL_STATIC_REPLACE_METHOD]
             } else {
-                methods[TargetMethod.HookType.CALL_STATIC_REPLACE_METHOD]
+                methods[HookMethod.HookType.CALL_NORMAL_REPLACE_METHOD]
             }
 
             if (isEmpty(beforeHook) && isEmpty(afterHook) && isEmpty(replaceHook))
@@ -84,11 +83,11 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
             if (opcode != Opcodes.INVOKESTATIC)
                 storeLocal(thisObj)
 
-            newMethodInfo(opcode, owner, name, desc, isInterface)
-            val info = newLocal(Type.getType("L${methodInfoDesc.owner}"))
+            HookHelper.newMethodInfo(this, opcode, owner, name, desc, isInterface)
+            val info = newLocal(Type.getType("L${HookHelper.methodInfoDesc.owner}"))
             storeLocal(info)
 
-            val replaceResult = !isEmpty(replaceHook) && replaceHookMethod(afterHook!!, isInterface, locals, thisObj, info)
+            val replaceResult = !isEmpty(replaceHook) && replaceHookMethod(replaceHook!!, isInterface, locals, thisObj, info)
             if (replaceResult)
                 return true
 
@@ -102,7 +101,7 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
         }
 
         private fun beforeHookMethod(
-            methods: List<TargetMethod>, isInterface: Boolean,
+            methods: List<HookMethod>, isInterface: Boolean,
             locals: IntArray, thisObj: Int, info: Int
         ): Boolean {
             methods.forEach { method ->
@@ -113,7 +112,7 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
         }
 
         private fun afterHookMethod(
-            methods: List<TargetMethod>, originMethod: Method, isInterface: Boolean,
+            methods: List<HookMethod>, originMethod: Method, isInterface: Boolean,
             locals: IntArray, thisObj: Int, info: Int
         ): Boolean {
             if (methods.size != 1)
@@ -133,11 +132,12 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
         }
 
         private fun replaceHookMethod(
-            methods: List<TargetMethod>, isInterface: Boolean,
+            methods: List<HookMethod>, isInterface: Boolean,
             locals: IntArray, thisObj: Int, info: Int
         ): Boolean {
-            if (methods.size != 1)
-                return false
+            if (methods.size != 1){
+                throw Exception("replaceHook同一个方法只能定义一个: class:$className  method:$name")
+            }
             loadLocalVariable(locals, thisObj, info, -1)
             super.visitMethodInsn(
                 Opcodes.INVOKESTATIC,
@@ -146,36 +146,11 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
                 methods[0].targetMethodDesc,
                 isInterface
             )
-            return false
+            return true
         }
 
-
-        private fun isEmpty(methods: List<TargetMethod>?): Boolean {
+        private fun isEmpty(methods: List<HookMethod>?): Boolean {
             return methods == null || methods.isEmpty()
-        }
-
-        /**
-         * 创建MethodInfo信息
-         */
-        private fun newMethodInfo(opcode: Int, owner: String, name: String, desc: String, isInterface: Boolean) {
-            visitTypeInsn(Opcodes.NEW, methodInfoDesc.owner)
-            visitInsn(Opcodes.DUP)
-            visitLdcInsn(owner)
-            visitLdcInsn(name)
-            visitLdcInsn(desc)
-            visitIntInsn(Opcodes.SIPUSH, opcode)
-            if (isInterface)
-                visitInsn(Opcodes.ICONST_1)
-            else
-                visitInsn(Opcodes.ICONST_0)
-
-            visitMethodInsn(
-                Opcodes.INVOKESPECIAL,
-                methodInfoDesc.owner,
-                methodInfoDesc.name,
-                methodInfoDesc.desc,
-                methodInfoDesc.isInterface
-            )
         }
 
         private fun loadLocalVariable(locals: IntArray, thisObj: Int = -1, info: Int = -1, result: Int = -1) {
@@ -189,14 +164,5 @@ class MethodHookClassVisitor(cv: ClassVisitor, context: InstrumentationContext) 
                 loadLocal(result)
             }
         }
-    }
-
-    companion object {
-        val methodInfoDesc = MethodInfoDesc(
-            "com/qihoo360/replugin/base/hook/MethodInfo",
-            "<init>",
-            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;IZ)V",
-            false
-        )
     }
 }

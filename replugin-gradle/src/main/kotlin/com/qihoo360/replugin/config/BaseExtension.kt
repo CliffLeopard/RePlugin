@@ -25,10 +25,10 @@ open class BaseExtension {
         )
     }
 
-    lateinit var hookMethods: NamedDomainObjectContainer<TargetMethod>
-    fun hookMethods(closure: Closure<TargetMethod>) {
+    lateinit var hookMethods: NamedDomainObjectContainer<HookMethod>
+    fun hookMethods(closure: Closure<HookMethod>) {
         this.hookMethods.configure(closure)
     }
 
-    val defaultHookMethod: Set<TargetMethod> = setOf()
+    val defaultHookMethod: Set<HookMethod> = setOf()
 }

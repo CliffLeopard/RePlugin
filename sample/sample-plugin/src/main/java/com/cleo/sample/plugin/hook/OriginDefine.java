@@ -2,13 +2,13 @@ package com.cleo.sample.plugin.hook;
 
 /**
  * author:gaoguanling
- * date:2021/11/17
- * time:14:47
+ * date:2021/11/18
+ * time:14:18
  * email:gaoguanling@360.cn
  * link:
- * 方法调用处Hook
+ * 方法定义处Hook
  */
-public class Origin {
+class OriginDefine {
     // before
     public Res beforeF(A a, B b) {
         return new Res("OriginDefine:beforeF");

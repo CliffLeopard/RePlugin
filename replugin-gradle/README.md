@@ -26,12 +26,22 @@ o.f(a,b):R {
     return ...
 }
 
+o.f(a,b):V {
+    H.f(info,o:O,a:A,b:B):V
+    ...
+}
+
 原方法静态:
 
 Origin.s(a,b):R {
     H.f(info,a:A,b:B):V
-    --
+    ...
     return  ...
+}
+
+Origin.s(a,b):V {
+    H.f(info,a:A,b:B):V
+    ...
 }
 ```
 
@@ -44,11 +54,21 @@ o.f(a,b):R {
     return H.f(info,o:O,a:A,b:B,res:R):R
 }
 
+o.f(a,b):V {
+    ....
+    return H.f(info,o:O,a:A,b:B):V
+}
+
 原方法静态:
 
 Origin.s(a,b):R {
     val res = .. // 先执行原有逻辑，将结果作为参数产地给替换者方法
-    return H.f(info,o:O,a:A,b:B,res:R):R
+    return H.f(info,a:A,b:B,res:R):R
+}
+
+Origin.s(a,b):V {
+    ...  // 先执行原有逻辑，将结果作为参数产地给替换者方法
+    return H.f(info,a:A,b:B):V
 }
 ```
 
@@ -60,10 +80,18 @@ o.f(a,b):R {
     return H.f(info,o:O,a:A,b:B):R
 }
 
+o.f(a,b):V {
+    return H.f(info,o:O,a:A,b:B):V
+}
+
 原方法静态:
 
 Origin.s(a,b):R {
     return H.f(info,a:A,b:B):R
+}
+
+Origin.s(a,b):V {
+    return H.f(info,a:A,b:B):V
 }
 
 ```
@@ -75,6 +103,10 @@ Origin.s(a,b):R {
 ```
 {
     o.f(a,b):R
+}
+
+{
+    o.f(a,b):V
 }
 
 ```
@@ -90,10 +122,20 @@ Origin.s(a,b):R {
     o.f(a,b):R
 }
 
+{
+    H.f(info,o:O,a:A,b:B):V
+    o.f(a,b):V
+}
+
 原方法静态:
 
 {
-    H.f(info,a:A,b:B):R
+    H.f(info,a:A,b:B):V
+    Origin.f(a,b):R
+}
+
+{
+    H.f(info,a:A,b:B):V
     Origin.f(a,b):R
 }
 
@@ -110,10 +152,20 @@ Origin.s(a,b):R {
     H.f(info,o:O,a:A,b:B,res:R):R 
 }
 
+{
+    val res = o.f(a,b):V
+    H.f(info,o:O,a:A,b:B):V
+}
+
 原方法静态:
 {
      val res = Origin.f(a,b):R
      H.f(info,a:A,b:B,res:R):R 
+}
+
+{
+     val res = Origin.f(a,b):V
+     H.f(info,a:A,b:B):V
 }
 ```
 
@@ -127,10 +179,18 @@ Origin.s(a,b):R {
     H.f(info,o:O,a:A,b:B):R
 }
 
+{
+    H.f(info,o:O,a:A,b:B):V
+}
+
 原方法静态:
 
 {
     H.f(info,a:A,b:B):R
+}
+
+{
+    H.f(info,a:A,b:B):V
 }
 
 ```

@@ -7,7 +7,7 @@ package com.qihoo360.replugin.config
  * email:gaoguanling@360.cn
  * link:
  */
-open class TargetMethod(var name: String) {
+open class HookMethod(var name: String) {
     var className: String = "com/qihoo360/replugin/base/method/Origin"
     var methodName: String = "f"
     var methodDesc: String = "(Lcom/qihoo360/replugin/base/method/A;Lcom/qihoo360/replugin/base/method/B;)Lcom/qihoo360/replugin/base/method/R"
@@ -41,9 +41,9 @@ open class TargetMethod(var name: String) {
         CALL_NORMAL_BEFORE_METHOD(0x07),
         CALL_NORMAL_AFTER_METHOD(0x08),
         CALL_NORMAL_REPLACE_METHOD(0x09),
-        CALL_STATIC_BEFORE_METHOD(0x0a),
-        CALL_STATIC_AFTER_METHOD(0x0b),
-        CALL_STATIC_REPLACE_METHOD(0x0c)
+        CALL_STATIC_BEFORE_METHOD(0x0A),
+        CALL_STATIC_AFTER_METHOD(0x0B),
+        CALL_STATIC_REPLACE_METHOD(0x0C)
     }
 
     companion object {
@@ -67,11 +67,11 @@ open class TargetMethod(var name: String) {
                     HookType.CALL_NORMAL_AFTER_METHOD
                 0x09 ->
                     HookType.CALL_NORMAL_REPLACE_METHOD
-                0x0a ->
+                0x0A ->
                     HookType.CALL_STATIC_BEFORE_METHOD
-                0x0b ->
+                0x0B ->
                     HookType.CALL_STATIC_AFTER_METHOD
-                0x0c ->
+                0x0C ->
                     HookType.CALL_STATIC_REPLACE_METHOD
                 else ->
                     HookType.DEFINE_NORMAL_BEFORE_METHOD

@@ -43,7 +43,9 @@ object ClassReWriter {
         val providerVisitor = ProviderClassClassVisitor(broadCastVisitor, context)
         val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
         val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor, context)
-        val finalVisitor = if (context.hookMethodConfig.isEmpty()) constantClassVisitor else MethodHookClassVisitor(constantClassVisitor, context)
+        val finalVisitor =
+            if (context.hookMethodConfig.isEmpty()) constantClassVisitor
+            else HookDefineMethodClassVisitor(HookCallMethodClassVisitor(constantClassVisitor, context), context)
 
         classReader.accept(
             finalVisitor,

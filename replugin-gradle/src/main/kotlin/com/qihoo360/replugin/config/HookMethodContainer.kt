@@ -7,17 +7,17 @@ package com.qihoo360.replugin.config
  * email:gaoguanling@360.cn
  * link:
  */
-class HookMethodContainer(targetMethods: Set<TargetMethod>) {
+class HookMethodContainer(hookMethods: Set<HookMethod>) {
 
-    private val methodConfig: Map<String, Map<TargetMethod.HookType, List<TargetMethod>>> = targetMethods
+    private val methodConfig: Map<String, Map<HookMethod.HookType, List<HookMethod>>> = hookMethods
         .groupBy { getMethodKey(it) }
         .map { (methodKey, list) ->
-            Pair(methodKey, list.groupBy { TargetMethod.getHookTypeByValue(it.hookType) })
+            Pair(methodKey, list.groupBy { HookMethod.getHookTypeByValue(it.hookType) })
         }.associate { (first, second) ->
             Pair(first, second)
         }
 
-    fun getMethodConfig(className: String, methodName: String, methodDesc: String): Map<TargetMethod.HookType, List<TargetMethod>>? {
+    fun getMethodConfig(className: String, methodName: String, methodDesc: String): Map<HookMethod.HookType, List<HookMethod>>? {
         return methodConfig[getMethodKey(className, methodName, methodDesc)]
     }
 
@@ -30,8 +30,8 @@ class HookMethodContainer(targetMethods: Set<TargetMethod>) {
             return HookMethodContainer(extension.defaultHookMethod.toSet().plus(extension.hookMethods.toSet()))
         }
 
-        fun getMethodKey(targetMethod: TargetMethod): String {
-            return getMethodKey(targetMethod.className, targetMethod.methodName, targetMethod.methodDesc)
+        fun getMethodKey(hookMethod: HookMethod): String {
+            return getMethodKey(hookMethod.className, hookMethod.methodName, hookMethod.methodDesc)
         }
 
         fun getMethodKey(className: String, methodName: String, methodDesc: String): String {
