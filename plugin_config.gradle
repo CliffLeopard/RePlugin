@@ -34,8 +34,8 @@ project.ext {
     ESPRESSO_VERSION		=    '3.3.0'
 
     RP_GROUP = 'com.qihoo360.replugin'
-    RP_VERSION = '2.4.4-SNAPSHOT'
-    RP_VERSION_CODE = 244
+    RP_VERSION = '2.4.5-SNAPSHOT'
+    RP_VERSION_CODE = 245
 
     RP_USER = 'replugin'
     RP_REPO = 'replugin'
