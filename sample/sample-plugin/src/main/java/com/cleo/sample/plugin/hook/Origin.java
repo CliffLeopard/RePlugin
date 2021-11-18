@@ -11,54 +11,54 @@ package com.cleo.sample.plugin.hook;
 public class Origin {
     // before
     public Res beforeF(A a, B b) {
-        return new Res("OriginDefine:beforeF");
+        return new Res("OriginCall:beforeF");
     }
 
     public void beforeVoidF(A a, B b) {
-        System.out.println("OriginDefine:beforeVoidF");
+        System.out.println("OriginCall:beforeVoidF");
     }
 
     public static Res beforeStaticF(A a, B b) {
-        return new Res("OriginDefine:beforeStaticF");
+        return new Res("OriginCall:beforeStaticF");
     }
 
     public static void beforeStaticVoidF(A a, B b) {
-        new Res("OriginDefine:beforeStaticVoidF").println();
+        new Res("OriginCall:beforeStaticVoidF").println();
     }
 
 
     // after
     public Res afterF(A a, B b) {
-        return new Res("OriginDefine:afterF");
+        return new Res("OriginCall:afterF");
     }
 
     public void afterVoidF(A a, B b) {
-        System.out.println("OriginDefine:afterVoidF");
+        System.out.println("OriginCall:afterVoidF");
     }
 
     public static Res afterStaticF(A a, B b) {
-        return new Res("OriginDefine:afterStaticF");
+        return new Res("OriginCall:afterStaticF");
     }
 
     public static void afterStaticVoidF(A a, B b) {
-        new Res("OriginDefine:afterStaticVoidF").println();
+        new Res("OriginCall:afterStaticVoidF").println();
     }
 
     // replace
 
     public Res replaceF(A a, B b) {
-        return new Res("OriginDefine:replaceF");
+        return new Res("OriginCall:replaceF");
     }
 
     public void replaceVoidF(A a, B b) {
-        System.out.println("OriginDefine:replaceVoidF");
+        System.out.println("OriginCall:replaceVoidF");
     }
 
     public static Res replaceStaticF(A a, B b) {
-        return new Res("OriginDefine:replaceStaticF");
+        return new Res("OriginCall:replaceStaticF");
     }
 
     public static void replaceStaticVoidF(A a, B b) {
-        new Res("OriginDefine:replaceStaticVoidF").println();
+        new Res("OriginCall:replaceStaticVoidF").println();
     }
 }
