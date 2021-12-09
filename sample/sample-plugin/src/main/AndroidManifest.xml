@@ -13,6 +13,7 @@
         <activity
             android:name=".activity.HookActivity"
             android:exported="false" />
+
         <activity
             android:name=".activity.CommonTestActivity"
             android:exported="false" />
@@ -40,6 +41,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".service.ForegroundService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

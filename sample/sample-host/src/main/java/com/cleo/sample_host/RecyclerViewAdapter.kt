@@ -1,5 +1,6 @@
 package com.cleo.sample_host
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -36,6 +37,12 @@ class RecyclerViewAdapter(
         val case = cases[position]
         holder.textView.text = case.first
         holder.textView.setOnClickListener {
+            try {
+                val componentName = ComponentName(Data.hostId,case.second)
+                context.startActivity(Intent().setComponent(componentName))
+            } catch (ignore: Throwable) {
+
+            }
             RePlugin.startActivity(
                 context,
                 RePlugin.createIntent(Data.pluginId, case.second)
