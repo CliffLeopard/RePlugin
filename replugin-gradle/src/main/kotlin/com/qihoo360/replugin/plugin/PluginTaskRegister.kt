@@ -46,7 +46,7 @@ object PluginTaskRegister : TaskRegister<PluginExtension> {
 
         // 重启宿主
         val restartHostTask = project.task(Constants.TASK_RESTART_HOST_APP)
-        startHostTask.doLast {
+        restartHostTask.doLast {
             debugger.stopHost()
             debugger.startHost()
         }

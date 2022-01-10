@@ -7,6 +7,8 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 
 class ForegroundService : Service() {
@@ -32,5 +34,7 @@ class ForegroundService : Service() {
         val notification = builder.build()
         startForeground(9000, notification)
         stopForeground(true)
+        Toast.makeText(this,"成功开启了前台服务",Toast.LENGTH_LONG).show()
+        Log.e("ForegroundService","startForeground and stopForeground success")
     }
 }
