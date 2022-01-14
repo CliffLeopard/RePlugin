@@ -8,6 +8,7 @@ include ':replugin-lib-plugin'
 if (SDK_PUBLISH == "false") {
     include ':sample:sample-host'
     include ':sample:sample-plugin'
+    include ':sample:sample-common'
     include ':sample:sample-plugin-util'
 
     if (SHOW_DEMOS == "true") {
@@ -23,5 +24,3 @@ if (SDK_PUBLISH == "false") {
         include ':sample-plugin:fresco-plugin'
     }
 }
-
-include ':sample:sample-common'
