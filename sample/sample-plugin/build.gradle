@@ -295,6 +295,7 @@ repluginPluginConfig {
 dependencies {
     implementation project(':replugin-lib-plugin')
     implementation project(':sample:sample-plugin-util')
+    implementation project(':sample:sample-common')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
