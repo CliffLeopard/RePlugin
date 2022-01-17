@@ -15,6 +15,7 @@ open class BaseExtension {
     var applicationId: String? = null
     open var libPackages: Set<String>? = setOf()
     open var targetClasses = setOf<String>()
+    open var hookMethods: NamedDomainObjectContainer<HookMethod>? = null
 
     fun isTargetClass(desc: String): Boolean {
         return targetClasses.contains(
@@ -25,9 +26,8 @@ open class BaseExtension {
         )
     }
 
-    lateinit var hookMethods: NamedDomainObjectContainer<HookMethod>
     fun hookMethods(closure: Closure<HookMethod>) {
-        this.hookMethods.configure(closure)
+        this.hookMethods?.configure(closure)
     }
 
     val defaultHookMethod: Set<HookMethod> = setOf()

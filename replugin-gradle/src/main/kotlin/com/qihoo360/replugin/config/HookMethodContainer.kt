@@ -27,7 +27,10 @@ class HookMethodContainer(hookMethods: Set<HookMethod>) {
 
     companion object {
         fun getInstance(extension: BaseExtension): HookMethodContainer {
-            return HookMethodContainer(extension.defaultHookMethod.toSet().plus(extension.hookMethods.toSet()))
+            return if (extension.hookMethods == null)
+                HookMethodContainer(extension.defaultHookMethod.toSet())
+            else
+                HookMethodContainer(extension.defaultHookMethod.toSet().plus(extension.hookMethods!!.toSet()))
         }
 
         fun getMethodKey(hookMethod: HookMethod): String {

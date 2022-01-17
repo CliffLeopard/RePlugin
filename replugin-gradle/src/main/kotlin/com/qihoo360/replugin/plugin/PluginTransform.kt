@@ -21,7 +21,7 @@ open class PluginTransform(appExtension: AppExtension, override val extension: P
     }
 
     override fun transformClass(classInfo: TransformClassInfo, inputBytes: ByteArray): ByteArray? {
-        extension.excludedClasses.forEach { excludeClass ->
+        extension.excludedClasses?.forEach { excludeClass ->
             if (classInfo.fromJar == excludeClass.fromJar
                 && classInfo.content.scopes.contains(excludeClass.getScopeByValue())
             ) {
@@ -33,7 +33,7 @@ open class PluginTransform(appExtension: AppExtension, override val extension: P
             }
         }
 
-        extension.skipClasses.forEach { skipClass ->
+        extension.skipClasses?.forEach { skipClass ->
             if (classInfo.fromJar == skipClass.fromJar
                 && classInfo.content.scopes.contains(skipClass.getScopeByValue())
             ) {

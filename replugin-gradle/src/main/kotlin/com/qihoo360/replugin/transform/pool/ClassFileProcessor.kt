@@ -63,9 +63,7 @@ object ClassFileProcessor {
         } else {
             FileUtils.getAllFiles(directoryInput.file)
                 .asSequence()
-                .filter { file ->
-                    (file != null) && file.exists()
-                }
+                .filter { file -> (file != null) && file.exists() }
         }
 
 
@@ -93,7 +91,6 @@ object ClassFileProcessor {
                     val isInnerClass = classFile.name.contains('$')
                     val className = classFile.name
                         .removeSuffix(".class")
-
                     TransformClassInfo(
                         name,
                         packageName,
