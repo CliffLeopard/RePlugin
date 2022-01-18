@@ -78,17 +78,22 @@ class JarTransformTask(
                                 isInnerClass
                             )
                             val bytes = IOUtils.toByteArray(jar)
-                            val changedBytes = transForm.transformClass(transformClassInfo, bytes)
-                            if (changedBytes == null) {
-                                outJar.putNextEntry(outEntry)
-                                IOUtils.write(bytes, outJar)
-                                Log.detail(tag, "TransformedJarClass:NotChanged: ${entry.name}")
-                            } else if (changedBytes.isNotEmpty()) {
-                                outJar.putNextEntry(outEntry)
-                                IOUtils.write(changedBytes, outJar)
-                                Log.i(tag, "TransformedJarClass: ${entry.name}")
-                            } else {
-                                Log.i(tag, "TransformedJarClass:SkippedClass: ${entry.name}")
+                            try {
+                                val changedBytes = transForm.transformClass(transformClassInfo, bytes)
+                                if (changedBytes == null) {
+                                    outJar.putNextEntry(outEntry)
+                                    IOUtils.write(bytes, outJar)
+                                    Log.detail(tag, "TransformedJarClass:NotChanged: ${entry.name}")
+                                } else if (changedBytes.isNotEmpty()) {
+                                    outJar.putNextEntry(outEntry)
+                                    IOUtils.write(changedBytes, outJar)
+                                    Log.i(tag, "TransformedJarClass: ${entry.name}")
+                                } else {
+                                    Log.i(tag, "TransformedJarClass:SkippedClass: ${entry.name}")
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                Log.e(tag, e.localizedMessage)
                             }
                         } else {
                             outJar.putNextEntry(outEntry)

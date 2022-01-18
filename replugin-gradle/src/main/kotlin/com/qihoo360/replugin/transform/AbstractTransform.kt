@@ -23,7 +23,7 @@ import java.util.concurrent.ForkJoinTask
  * email:precipiceleopard@gmail.com
  * link:
  */
-abstract class AbstractTransform(appExtension: AppExtension, open val extension:BaseExtension) :
+abstract class AbstractTransform(appExtension: AppExtension, open val extension: BaseExtension) :
     Transform() {
 
     private var bootClassPaths = mutableSetOf<URL>()

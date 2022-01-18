@@ -22,19 +22,24 @@ class FileTransformTask(
     override fun compute(): Boolean {
         classInfoList.forEach { classInfo ->
             FileInputStream(classInfo.fromPath).use { inputStream ->
-                val bytes = IOUtils.toByteArray(inputStream)
-                val changedBytes = transForm.transformClass(classInfo, bytes)
-                var status = 2
-                FileOutputStream(classInfo.toPath).use { outputStream ->
-                    if (changedBytes == null) {
-                        IOUtils.write(bytes, outputStream)
-                        status = 0
-                    } else if (changedBytes.isNotEmpty()) {
-                        IOUtils.write(changedBytes, outputStream)
-                        status = 1
+                try {
+                    val bytes = IOUtils.toByteArray(inputStream)
+                    val changedBytes = transForm.transformClass(classInfo, bytes)
+                    var status = 2
+                    FileOutputStream(classInfo.toPath).use { outputStream ->
+                        if (changedBytes == null) {
+                            IOUtils.write(bytes, outputStream)
+                            status = 0
+                        } else if (changedBytes.isNotEmpty()) {
+                            IOUtils.write(changedBytes, outputStream)
+                            status = 1
+                        }
                     }
+                    printLog(classInfo, status)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    Log.e(tag, e.localizedMessage)
                 }
-                printLog(classInfo, status)
             }
         }
         return true

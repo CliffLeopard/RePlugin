@@ -9,7 +9,7 @@ package com.qihoo360.replugin
  */
 object Log {
     private const val showDetail = false
-    private const val publish = false
+    private const val publish = true
     fun i(tag: String, msg: String) {
         if (!publish)
             println("[$tag] $msg")
