@@ -1,6 +1,5 @@
 package com.qihoo360.replugin.transform.pool
 
-import java.util.concurrent.Executors
 import java.util.concurrent.ForkJoinPool
 import java.util.concurrent.ForkJoinTask
 
