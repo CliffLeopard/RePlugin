@@ -15,7 +15,7 @@ import org.apache.commons.codec.digest.DigestUtils
  * link:
  */
 object TransformTaskCreator {
-    private const val FILE_NUM_PEAR_TASK = 10 // 默认一个TASK 顺序处理10个class文件
+    private const val FILE_NUM_PEAR_TASK = 5 // 默认一个TASK 顺序处理10个class文件
     private const val JAR_NUM_PEAR_TASK = 2 // 默认一个TASK顺序处理2个jar文件
     private const val tag = "TransformTaskCreator"
 

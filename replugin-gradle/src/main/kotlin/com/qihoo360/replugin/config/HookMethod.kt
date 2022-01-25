@@ -8,12 +8,12 @@ package com.qihoo360.replugin.config
  * link:
  */
 open class HookMethod(var name: String) {
-    var className: String = "com/qihoo360/replugin/base/method/Origin"
-    var methodName: String = "f"
-    var methodDesc: String = "(Lcom/qihoo360/replugin/base/method/A;Lcom/qihoo360/replugin/base/method/B;)Lcom/qihoo360/replugin/base/method/R"
-    var targetClassName: String = "com/qihoo360/replugin/base/method/Target"
-    var targetMethodName: String = "f"
-    var targetMethodDesc: String = "(Lcom/qihoo360/replugin/base/method/A;Lcom/qihoo360/replugin/base/method/B;)Lcom/qihoo360/replugin/base/method/R"
+    var className: String = ""
+    var methodName: String = ""
+    var methodDesc: String = ""
+    var targetClassName: String = ""
+    var targetMethodName: String = ""
+    var targetMethodDesc: String = ""
     var hookType: Int = HookType.DEFINE_NORMAL_BEFORE_METHOD.value
 
     constructor(
