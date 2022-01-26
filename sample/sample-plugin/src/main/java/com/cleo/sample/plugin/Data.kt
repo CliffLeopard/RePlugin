@@ -1,6 +1,7 @@
 package com.cleo.sample.plugin
 
 import com.cleo.sample.plugin.activity.*
+import com.cleo.sample.plugin.hook.lam.LambdaOriginActivity
 
 /**
  * author:gaoguanling
@@ -15,7 +16,8 @@ object Data {
         "Provider" to ProviderActivity::class.java.name,
         "startActivityFromFragment" to CFragmentActivity::class.java.name,
         "CommonTest" to CommonTestActivity::class.java.name,
-        "HookTest" to HookActivity::class.java.name
+        "HookTest" to HookActivity::class.java.name,
+        "LambdaCases" to LambdaOriginActivity::class.java.name
     )
 
     const val pluginId = "com.cleo.sample.plugin"

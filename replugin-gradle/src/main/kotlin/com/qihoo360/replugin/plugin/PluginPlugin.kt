@@ -3,6 +3,7 @@ package com.qihoo360.replugin.plugin
 import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.AbstractPlugin
 import com.qihoo360.replugin.Constants
+import com.qihoo360.replugin.config.HookLambda
 import com.qihoo360.replugin.config.PluginExtension
 import com.qihoo360.replugin.config.TargetClass
 import com.qihoo360.replugin.config.HookMethod
@@ -30,6 +31,7 @@ open class PluginPlugin : AbstractPlugin<PluginExtension>() {
             extension!!.excludedClasses = project.container(TargetClass::class.java)
             extension!!.skipClasses = project.container(TargetClass::class.java)
             extension!!.hookMethods = project.container(HookMethod::class.java)
+            extension!!.hookLambdas = project.container(HookLambda::class.java)
         }
     }
 

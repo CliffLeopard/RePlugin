@@ -6,6 +6,7 @@ import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
 import com.qihoo360.replugin.transform.visitor.*
 import org.objectweb.asm.ClassReader
+import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.ClassWriter
 
 
@@ -36,25 +37,28 @@ object ClassReWriter {
             return null
         }
 
-        //        val verifierVisitor = CheckClassAdapter(classWriter)
-        //        val activityVisitor = ActivityClassVisitor(verifierVisitor, context)
-        val activityVisitor = ActivityClassVisitor(classWriter, context)
-        val broadCastVisitor = LocalBroadcastClassVisitor(activityVisitor, context)
-        val providerVisitor = ProviderClassClassVisitor(broadCastVisitor, context)
-        val identifierClassVisitor = IdentifierClassVisitor(providerVisitor, context)
-        val constantClassVisitor = ConstantClassVisitor(identifierClassVisitor, context)
-        val finalVisitor =
-            if (context.hookMethodConfig.isEmpty()) constantClassVisitor
-            else HookDefineMethodClassVisitor(HookCallMethodClassVisitor(constantClassVisitor, context), context)
+        //        val visitor = CheckClassAdapter(classWriter)
+        var visitor: ClassVisitor = ActivityClassVisitor(classWriter, context)
+        visitor = LocalBroadcastClassVisitor(visitor, context)
+        visitor = ProviderClassClassVisitor(visitor, context)
+        visitor = IdentifierClassVisitor(visitor, context)
+        visitor = ConstantClassVisitor(visitor, context)
+        if (!context.hookMethodConfig.isEmpty())
+            visitor = HookDefineMethodClassVisitor(HookCallMethodClassVisitor(visitor, context), context)
+
+        val lambdaConfig = context.hookLambdaConfig.findByClassName(context.classInfo.name)
+        if (!lambdaConfig.isEmpty())
+            visitor = HookLambdaClassVisitor(visitor, context,lambdaConfig)
+
 
         classReader.accept(
-            finalVisitor,
+            visitor,
             ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES
         )
         return if (context.classModified) {
             Log.i(
                 tag,
-                "ChangedClass:\n      class:${context.classInfo.name}\n      fromJar:${context.classInfo.fromJar}\n      toPath:${context.classInfo.toPath}"
+                "ChangedClass:\n class:${context.classInfo.name}\n fromJar:${context.classInfo.fromJar}\n toPath:${context.classInfo.toPath}"
             )
             classWriter.toByteArray()
         } else

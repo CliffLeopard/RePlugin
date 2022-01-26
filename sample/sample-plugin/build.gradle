@@ -47,6 +47,74 @@ repluginPluginConfig {
             scope = 0x04
         }
     }
+    hookLambdas {
+        callBefore {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action1"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetBefore"
+            hookType = 0x01
+        }
+
+        callAfter {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action2"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetAfter"
+            hookType = 0x02
+        }
+
+        callReplace {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action3"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetReplace"
+            hookType = 0x03
+        }
+
+        action4ABefore {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetBefore"
+            hookType = 0x01
+        }
+
+        action4After {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetAfter"
+            hookType = 0x02
+        }
+
+        action4Replace {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetReplace"
+            hookType = 0x03
+        }
+
+    }
     hookMethods {
         // 方法调用时Hook
         callBefore {

@@ -16,6 +16,7 @@ open class BaseExtension {
     open var libPackages: Set<String>? = setOf()
     open var targetClasses = setOf<String>()
     open var hookMethods: NamedDomainObjectContainer<HookMethod>? = null
+    open var hookLambdas: NamedDomainObjectContainer<HookLambda>? = null
 
     fun isTargetClass(desc: String): Boolean {
         return targetClasses.contains(
@@ -30,5 +31,10 @@ open class BaseExtension {
         this.hookMethods?.configure(closure)
     }
 
+    fun hookLambdas(closure: Closure<HookLambda>) {
+        this.hookLambdas?.configure(closure)
+    }
+
     val defaultHookMethod: Set<HookMethod> = setOf()
+    val defaultHookLambda: Set<HookLambda> = setOf()
 }

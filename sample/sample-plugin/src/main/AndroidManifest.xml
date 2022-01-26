@@ -11,9 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Replugin">
         <activity
+            android:name=".hook.lam.LambdaOriginActivity"
+            android:exported="false" />
+        <activity
             android:name=".activity.HookActivity"
             android:exported="false" />
-
         <activity
             android:name=".activity.CommonTestActivity"
             android:exported="false" />
@@ -41,10 +43,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <service
             android:name=".service.ForegroundService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
     </application>
 
 </manifest>

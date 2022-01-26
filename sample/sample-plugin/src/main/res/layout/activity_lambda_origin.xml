@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".hook.lam.LambdaOriginActivity">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/before"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="BEFORE" />
+
+            <Button
+                android:id="@+id/after"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="AFTER" />
+
+            <Button
+                android:id="@+id/replace"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="REPLACE" />
+
+            <Button
+                android:id="@+id/both"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:text="REPLACE" />
+        </LinearLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

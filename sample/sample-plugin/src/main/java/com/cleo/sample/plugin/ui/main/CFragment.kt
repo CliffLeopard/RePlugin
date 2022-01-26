@@ -63,10 +63,10 @@ class CFragment : Fragment() {
         ).show()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
+/*    override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-    }
+        // viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+    }*/
 
 
 }
