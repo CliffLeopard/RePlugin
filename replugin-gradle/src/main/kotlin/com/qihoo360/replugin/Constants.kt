@@ -9,7 +9,7 @@ package com.qihoo360.replugin
  */
 object Constants {
     //版本号:不要手动修改,当发布时，会根据rp-config.gradle中的RP_VERSION自动替换
-    private const val VER = "2.4.5-SNAPSHOT"
+    private const val VER = "2.4.6-SNAPSHOT"
 
     /** 打印信息时候的前缀 */
     const val HOST_TAG = "< replugin-host-$VER >"
