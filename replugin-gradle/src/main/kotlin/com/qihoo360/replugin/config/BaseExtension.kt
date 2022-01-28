@@ -1,9 +1,5 @@
 package com.qihoo360.replugin.config
 
-import groovy.lang.Closure
-import org.gradle.api.NamedDomainObjectContainer
-import java.io.File
-
 /**
  * author:gaoguanling
  * date:2021/9/3
@@ -13,28 +9,4 @@ import java.io.File
  */
 open class BaseExtension {
     var applicationId: String? = null
-    open var libPackages: Set<String>? = setOf()
-    open var targetClasses = setOf<String>()
-    open var hookMethods: NamedDomainObjectContainer<HookMethod>? = null
-    open var hookLambdas: NamedDomainObjectContainer<HookLambda>? = null
-
-    fun isTargetClass(desc: String): Boolean {
-        return targetClasses.contains(
-            if (desc.contains(".")) desc.replace(
-                '.',
-                File.separatorChar
-            ) else desc
-        )
-    }
-
-    fun hookMethods(closure: Closure<HookMethod>) {
-        this.hookMethods?.configure(closure)
-    }
-
-    fun hookLambdas(closure: Closure<HookLambda>) {
-        this.hookLambdas?.configure(closure)
-    }
-
-    val defaultHookMethod: Set<HookMethod> = setOf()
-    val defaultHookLambda: Set<HookLambda> = setOf()
 }

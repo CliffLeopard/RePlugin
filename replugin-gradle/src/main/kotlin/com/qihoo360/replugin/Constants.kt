@@ -16,6 +16,7 @@ object Constants {
 
     /** 外部用户配置信息 */
     const val HOST_CONFIG = "repluginHostConfig"
+    const val HOOK_CONFIG = "hookConfig"
 
     /** 用户Task组 */
     const val HOST_TASKS_GROUP = "replugin-host"

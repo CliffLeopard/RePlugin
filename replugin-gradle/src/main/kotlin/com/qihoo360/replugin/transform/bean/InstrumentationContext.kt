@@ -2,8 +2,6 @@ package com.qihoo360.replugin.transform.bean
 
 import com.qihoo360.replugin.Log
 import com.qihoo360.replugin.config.BaseExtension
-import com.qihoo360.replugin.config.HookLambdaContainer
-import com.qihoo360.replugin.config.HookMethodContainer
 import java.util.*
 
 /**
@@ -13,16 +11,14 @@ import java.util.*
  * email:gaoguanling@360.cn
  * link:
  */
-class InstrumentationContext(
+open class InstrumentationContext(
     val classInfo: TransformClassInfo,
-    val extension: BaseExtension
+    open val extension: BaseExtension
 ) {
     private val skippedMethods: HashMap<String, String> = hashMapOf()
     var superClassName: String? = null
     var classModified: Boolean = false
     var skipClass: Boolean = false
-    val hookMethodConfig = HookMethodContainer.getInstance(extension)
-    val hookLambdaConfig = HookLambdaContainer.getInstance(extension)
 
     fun addSkippedMethod(name: String, desc: String) {
         Log.i(

@@ -34,6 +34,7 @@ abstract class AbstractPlugin<T : BaseExtension> : Plugin<Project>, TaskRegister
         createExtension(project)
         val android: AppExtension = project.extensions.getByType(AppExtension::class.java)
         initExtension(project, android)
+        configExtension(project, android)
         getTransform(project, android)?.let { transform ->
             android.registerTransform(transform)
         }
@@ -44,6 +45,10 @@ abstract class AbstractPlugin<T : BaseExtension> : Plugin<Project>, TaskRegister
 
     private fun registerLibraryPlugin(project: Project) {
         val library: LibraryExtension = project.extensions.getByType(LibraryExtension::class.java)
+    }
+
+    open fun configExtension(project: Project, android: AppExtension) {
+        extension?.applicationId = android.defaultConfig.applicationId
     }
 
     open fun isApplicationPlugin() = true

@@ -26,7 +26,7 @@ class HookMethodContainer(hookMethods: Set<HookMethod>) {
     }
 
     companion object {
-        fun getInstance(extension: BaseExtension): HookMethodContainer {
+        fun getInstance(extension: HookExtension): HookMethodContainer {
             return if (extension.hookMethods == null)
                 HookMethodContainer(extension.defaultHookMethod.toSet())
             else

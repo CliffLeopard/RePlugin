@@ -1,7 +1,6 @@
 package com.qihoo360.replugin.config
 
-import groovy.lang.Closure
-import org.gradle.api.NamedDomainObjectContainer
+import java.io.File
 
 /**
  * author:gaoguanling
@@ -10,7 +9,7 @@ import org.gradle.api.NamedDomainObjectContainer
  * email:gaoguanling@360.cn
  * link:
  */
-open class PluginExtension : BaseExtension() {
+open class PluginExtension : HookExtension() {
     /** 编译的 App Module 的名称 */
     var appModule = ":app"
 
@@ -36,18 +35,14 @@ open class PluginExtension : BaseExtension() {
     var hostAppLauncherActivity: String? = null
 
     /** 旧代码lib包里的代码和module的packageName无关，是混乱的，为了兼容，唉。。 **/
-    override var libPackages:Set<String>? = setOf("Lcom/qihoo360/replugin")
-    override var targetClasses = setOf(
+    var libPackages: Set<String> = setOf("Lcom/qihoo360/replugin")
+    var targetClasses = setOf(
         "com/qihoo360/replugin/loader/a/PluginActivity",
         "com/qihoo360/replugin/loader/b/PluginLocalBroadcastManager",
         "com/qihoo360/replugin/loader/p/PluginProviderClient"
     )
-    var skipClasses: NamedDomainObjectContainer<TargetClass>? = null
-    var excludedClasses: NamedDomainObjectContainer<TargetClass>? = null
-    fun excludedClasses(closure: Closure<TargetClass>) {
-        this.excludedClasses?.configure(closure)
-    }
-    fun skipClasses(closure: Closure<TargetClass>) {
-        this.skipClasses?.configure(closure)
+
+    fun isTargetClass(desc: String): Boolean {
+        return targetClasses.contains(desc.replace('.', File.separatorChar))
     }
 }

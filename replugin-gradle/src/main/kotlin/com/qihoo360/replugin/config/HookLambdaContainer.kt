@@ -9,7 +9,7 @@ package com.qihoo360.replugin.config
  */
 class HookLambdaContainer(private val hookLambdas: Set<HookLambda>) {
     companion object {
-        fun getInstance(extension: BaseExtension): HookLambdaContainer {
+        fun getInstance(extension: HookExtension): HookLambdaContainer {
             return if (extension.hookLambdas == null)
                 HookLambdaContainer(extension.defaultHookLambda.toSet())
             else

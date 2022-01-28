@@ -7,7 +7,7 @@ package com.qihoo360.replugin.config
  * email:gaoguanling@360.cn
  * link:
  */
-open class HostExtension : BaseExtension() {
+open class HostExtension : HookExtension() {
     /** 自定义进程的数量(除 UI 和 Persistent 进程) */
     var countProcess = 3
 

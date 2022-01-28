@@ -2,9 +2,11 @@ package com.qihoo360.replugin.plugin
 
 import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.config.PluginExtension
-import com.qihoo360.replugin.transform.AbstractTransform
-import com.qihoo360.replugin.transform.ClassReWriter
+import com.qihoo360.replugin.hook.HookTransform
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
+import com.qihoo360.replugin.transform.visitor.*
+import org.objectweb.asm.ClassVisitor
 
 /**
  * author:CliffLeopard
@@ -14,37 +16,23 @@ import com.qihoo360.replugin.transform.bean.TransformClassInfo
  * link:
  */
 open class PluginTransform(appExtension: AppExtension, override val extension: PluginExtension) :
-    AbstractTransform(appExtension, extension) {
+    HookTransform(appExtension, extension) {
 
     override fun isIncremental(): Boolean {
         return true
     }
 
-    override fun transformClass(classInfo: TransformClassInfo, inputBytes: ByteArray): ByteArray? {
-        extension.excludedClasses?.forEach { excludeClass ->
-            if (classInfo.fromJar == excludeClass.fromJar
-                && classInfo.content.scopes.contains(excludeClass.getScopeByValue())
-            ) {
-                excludeClass.classNameRegex.forEach { regex ->
-                    if (Regex(regex).matches(classInfo.name)) {
-                        return ByteArray(0)
-                    }
-                }
-            }
-        }
+    override fun isSkipClass(classInfo: TransformClassInfo): Boolean {
+        return super.isSkipClass(classInfo) || extension.isTargetClass(classInfo.name)
+    }
 
-        extension.skipClasses?.forEach { skipClass ->
-            if (classInfo.fromJar == skipClass.fromJar
-                && classInfo.content.scopes.contains(skipClass.getScopeByValue())
-            ) {
-                skipClass.classNameRegex.forEach { regex ->
-                    if (Regex(regex).matches(classInfo.name)) {
-                        return null
-                    }
-                }
-            }
-        }
-        
-        return ClassReWriter.transform(classInfo, inputBytes, extension)
+    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor? {
+        var classVisitor = super.transformVisitor(visitor, context) ?: visitor
+        classVisitor = ActivityClassVisitor(classVisitor, context)
+        classVisitor = LocalBroadcastClassVisitor(classVisitor, context)
+        classVisitor = ProviderClassClassVisitor(classVisitor, context)
+        classVisitor = IdentifierClassVisitor(classVisitor, context)
+        classVisitor = ConstantClassVisitor(classVisitor, context)
+        return classVisitor
     }
 }

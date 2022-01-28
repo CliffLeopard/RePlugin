@@ -18,13 +18,11 @@ import org.objectweb.asm.commons.Method
  * email:gaoguanling@360.cn
  * link:
  */
-class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
+class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationContext, private val hookMethods: HookMethodContainer) :
     PluginClassVisitor(cv, context) {
-    private lateinit var hookMethods: HookMethodContainer
     override fun visit(version: Int, access: Int, name: String?, signature: String?, superName: String?, interfaces: Array<out String>?) {
         super.visit(version, access, name, signature, superName, interfaces)
         className = name
-        hookMethods = HookMethodContainer.getInstance(context.extension)
     }
 
     override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor? {
@@ -32,7 +30,7 @@ class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationCon
         if (className == null || name == null || name.isEmpty() || descriptor == null || descriptor.isEmpty())
             return superVisitor
 
-        val methods = context.hookMethodConfig.getMethodConfig(className!!, name, descriptor)
+        val methods = hookMethods.getMethodConfig(className!!, name, descriptor)
         if (methods == null || methods.isEmpty())
             return superVisitor
 

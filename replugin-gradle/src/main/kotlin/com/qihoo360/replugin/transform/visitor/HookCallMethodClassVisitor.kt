@@ -17,14 +17,12 @@ import org.objectweb.asm.commons.Method
  * email:gaoguanling@360.cn
  * link: 此类只在方法调用处Hook
  */
-class HookCallMethodClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
+class HookCallMethodClassVisitor(cv: ClassVisitor, context: InstrumentationContext, val hookMethods: HookMethodContainer) :
     PluginClassVisitor(cv, context) {
-    private lateinit var hookMethods: HookMethodContainer
 
     override fun visit(version: Int, access: Int, name: String?, signature: String?, superName: String?, interfaces: Array<out String>?) {
         super.visit(version, access, name, signature, superName, interfaces)
         className = name
-        hookMethods = HookMethodContainer.getInstance(context.extension)
     }
 
     override fun visitMethod(access: Int, name: String, descriptor: String, signature: String?, exceptions: Array<out String>?): MethodVisitor {
@@ -47,7 +45,7 @@ class HookCallMethodClassVisitor(cv: ClassVisitor, context: InstrumentationConte
         }
 
         private fun hookMethod(opcode: Int, owner: String, name: String, desc: String, isInterface: Boolean): Boolean {
-            val methods = context.hookMethodConfig.getMethodConfig(owner, name, desc)
+            val methods = hookMethods.getMethodConfig(owner, name, desc)
             if (methods == null || methods.isEmpty())
                 return false
             val beforeHook = if (opcode == Opcodes.INVOKESTATIC) {
@@ -135,7 +133,7 @@ class HookCallMethodClassVisitor(cv: ClassVisitor, context: InstrumentationConte
             methods: List<HookMethod>, isInterface: Boolean,
             locals: IntArray, thisObj: Int, info: Int
         ): Boolean {
-            if (methods.size != 1){
+            if (methods.size != 1) {
                 throw Exception("replaceHook同一个方法只能定义一个: class:$className  method:$name")
             }
             loadLocalVariable(locals, thisObj, info, -1)
