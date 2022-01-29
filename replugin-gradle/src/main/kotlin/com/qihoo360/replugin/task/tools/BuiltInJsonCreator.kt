@@ -38,7 +38,7 @@ class BuiltInJsonCreator(
         return fileName
     }
 
-    override fun getFileContent(): String {
+    override fun createFileContent(): String {
         //查找插件文件并抽取信息,如果没有就直接返回null
         val pluginDirFile = File(fileDir.absolutePath + File.separator + extension.pluginDir)
         if (!pluginDirFile.exists()) {

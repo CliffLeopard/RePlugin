@@ -14,14 +14,12 @@ import java.io.File
  */
 object FileCreators {
     private fun create(creator: IFileCreator?) {
-        if (creator == null || creator.getFileContent().isEmpty())
+        val fileContent = creator?.createFileContent()
+        if (fileContent.isNullOrEmpty())
             return
-
         val dir = creator.getFileDir()
         if (!dir.exists()) dir.mkdirs()
-
         val targetFile = File(dir, creator.getFileName())
-        val fileContent = creator.getFileContent()
         targetFile.writeText(fileContent, Charsets.UTF_8)
     }
 
@@ -52,5 +50,5 @@ interface IFileCreator {
     /**
      * 要生成的文件内容
      */
-    fun getFileContent(): String
+    fun createFileContent(): String
 }

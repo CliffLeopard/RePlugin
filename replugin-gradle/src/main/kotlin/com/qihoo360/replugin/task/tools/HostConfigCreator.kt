@@ -33,7 +33,7 @@ class HostConfigCreator(
         return fileDir
     }
 
-    override fun getFileContent(): String {
+    override fun createFileContent(): String {
         return """
             
 package com.qihoo360.replugin.gen;
