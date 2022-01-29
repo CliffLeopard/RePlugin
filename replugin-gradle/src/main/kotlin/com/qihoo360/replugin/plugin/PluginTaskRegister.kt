@@ -3,7 +3,6 @@ package com.qihoo360.replugin.plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.Constants
-import com.qihoo360.replugin.config.PluginExtension
 import com.qihoo360.replugin.task.TaskRegister
 import com.qihoo360.replugin.task.tools.PluginDebugger
 import org.gradle.api.Project

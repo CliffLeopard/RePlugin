@@ -10,6 +10,7 @@ package com.cleo.sample_host
 object Data {
     val cases = listOf(
         "PluginMainActivity" to "com.cleo.sample.plugin.activity.MainActivity",
+        "ShowActivityInfo" to "com.cleo.sample_host.InfoActivity",
         "ServiceTest" to "com.cleo.sample_host.ServiceTestActivity"
     )
 

@@ -1,10 +1,9 @@
 package com.qihoo360.replugin.transform.visitor
 
-import com.qihoo360.replugin.config.HookMethod
-import com.qihoo360.replugin.config.MethodInfoDesc
+import com.qihoo360.replugin.hook.HookMethod
+import com.qihoo360.replugin.hook.MethodInfoDesc
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
-import org.objectweb.asm.Type
 import org.objectweb.asm.commons.Method
 
 /**

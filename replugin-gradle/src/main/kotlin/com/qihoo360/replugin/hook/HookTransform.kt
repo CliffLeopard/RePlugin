@@ -1,9 +1,6 @@
 package com.qihoo360.replugin.hook
 
 import com.android.build.gradle.AppExtension
-import com.qihoo360.replugin.config.HookExtension
-import com.qihoo360.replugin.config.HookLambdaContainer
-import com.qihoo360.replugin.config.HookMethodContainer
 import com.qihoo360.replugin.transform.AbstractTransform
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
@@ -51,15 +48,15 @@ open class HookTransform(appExtension: AppExtension, override val extension: Hoo
         return false
     }
 
-    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor? {
-        var classVisitor: ClassVisitor? = null
+    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor {
+        var classVisitor: ClassVisitor = visitor
         val hookConfig = HookMethodContainer.getInstance(extension)
         if (!hookConfig.isEmpty())
-            classVisitor = HookDefineMethodClassVisitor(HookCallMethodClassVisitor(visitor, context, hookConfig), context, hookConfig)
+            classVisitor = HookDefineMethodClassVisitor(HookCallMethodClassVisitor(classVisitor, context, hookConfig), context, hookConfig)
 
         val lambdaConfig = HookLambdaContainer.getInstance(extension).findByClassName(context.classInfo.name)
         if (!lambdaConfig.isEmpty()) {
-            classVisitor = classVisitor?.let { HookLambdaClassVisitor(it ?: visitor, context, lambdaConfig) }
+            classVisitor = HookLambdaClassVisitor(classVisitor, context, lambdaConfig)
         }
         return classVisitor
     }

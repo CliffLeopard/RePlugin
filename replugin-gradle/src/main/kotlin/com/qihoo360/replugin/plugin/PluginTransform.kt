@@ -1,7 +1,6 @@
 package com.qihoo360.replugin.plugin
 
 import com.android.build.gradle.AppExtension
-import com.qihoo360.replugin.config.PluginExtension
 import com.qihoo360.replugin.hook.HookTransform
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
@@ -26,8 +25,8 @@ open class PluginTransform(appExtension: AppExtension, override val extension: P
         return super.isSkipClass(classInfo) || extension.isTargetClass(classInfo.name)
     }
 
-    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor? {
-        var classVisitor = super.transformVisitor(visitor, context) ?: visitor
+    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor {
+        var classVisitor = super.transformVisitor(visitor, context)
         classVisitor = ActivityClassVisitor(classVisitor, context)
         classVisitor = LocalBroadcastClassVisitor(classVisitor, context)
         classVisitor = ProviderClassClassVisitor(classVisitor, context)

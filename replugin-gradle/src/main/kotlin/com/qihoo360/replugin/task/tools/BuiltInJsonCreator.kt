@@ -4,7 +4,7 @@ import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.android.builder.dexing.isJarFile
 import com.qihoo360.replugin.Constants
 import com.qihoo360.replugin.Log
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import groovy.json.JsonOutput
 import java.io.File
 

@@ -4,7 +4,7 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.Constants
 import com.qihoo360.replugin.Log
-import com.qihoo360.replugin.config.PluginExtension
+import com.qihoo360.replugin.plugin.PluginExtension
 import java.io.File
 
 /**

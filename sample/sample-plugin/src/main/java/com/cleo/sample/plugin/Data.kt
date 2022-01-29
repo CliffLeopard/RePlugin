@@ -17,7 +17,8 @@ object Data {
         "startActivityFromFragment" to CFragmentActivity::class.java.name,
         "CommonTest" to CommonTestActivity::class.java.name,
         "HookTest" to HookActivity::class.java.name,
-        "LambdaCases" to LambdaOriginActivity::class.java.name
+        "LambdaCases" to LambdaOriginActivity::class.java.name,
+        "ShowActivityInfo" to ShowInfoActivity::class.java.name
     )
 
     const val pluginId = "com.cleo.sample.plugin"

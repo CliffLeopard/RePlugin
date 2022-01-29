@@ -4,7 +4,6 @@ import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.Constants
 import com.qihoo360.replugin.Log
-import com.qihoo360.replugin.config.HostExtension
 import com.qihoo360.replugin.task.TaskRegister
 import com.qihoo360.replugin.task.tools.ComponentCreator
 import com.qihoo360.replugin.task.tools.FileCreators

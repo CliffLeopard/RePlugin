@@ -11,6 +11,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Replugin">
         <activity
+            android:name=".InfoActivity"
+            android:exported="false" />
+        <activity
             android:name=".ServiceTestActivity"
             android:exported="false" />
         <activity

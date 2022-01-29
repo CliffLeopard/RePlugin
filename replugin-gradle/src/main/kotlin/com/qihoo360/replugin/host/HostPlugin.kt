@@ -2,8 +2,7 @@ package com.qihoo360.replugin.host
 
 import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.Constants
-import com.qihoo360.replugin.config.HookExtension
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.hook.HookExtension
 import com.qihoo360.replugin.hook.HookAbstractPlugin
 import org.gradle.api.Project
 

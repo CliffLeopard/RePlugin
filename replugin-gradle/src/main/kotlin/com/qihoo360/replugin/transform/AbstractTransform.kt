@@ -98,7 +98,7 @@ abstract class AbstractTransform(appExtension: AppExtension, open val extension:
 
     abstract fun isSkipClass(classInfo: TransformClassInfo): Boolean
     abstract fun isExcludeClass(classInfo: TransformClassInfo): Boolean
-    abstract fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor?
+    abstract fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor
 
     /**
      * 单个Class文件的转化,
@@ -119,7 +119,10 @@ abstract class AbstractTransform(appExtension: AppExtension, open val extension:
         val context = InstrumentationContext(classInfo, extension)
         val classReader = ClassReader(inputBytes)
         val classWriter = ClassWriter(classReader, ClassWriter.COMPUTE_MAXS)
-        val visitor = transformVisitor(classWriter, context) ?: return null
+        val visitor = transformVisitor(classWriter, context)
+        if (visitor == classWriter) {
+            return null
+        }
         classReader.accept(
             visitor,
             ClassReader.SKIP_FRAMES or ClassReader.EXPAND_FRAMES

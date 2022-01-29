@@ -2,9 +2,6 @@ package com.qihoo360.replugin.hook
 
 import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.Constants
-import com.qihoo360.replugin.config.HookExtension
-import com.qihoo360.replugin.config.HookLambdaContainer
-import com.qihoo360.replugin.config.HookMethodContainer
 import com.qihoo360.replugin.transform.AbstractTransform
 import org.gradle.api.Project
 
