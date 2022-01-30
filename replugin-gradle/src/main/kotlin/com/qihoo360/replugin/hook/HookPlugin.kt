@@ -13,7 +13,6 @@ import org.gradle.api.Project
  * link:
  */
 open class HookPlugin : HookAbstractPlugin<HookExtension>() {
-
     override fun createExtension(project: Project) {
         project.extensions.create(Constants.HOOK_CONFIG, HookExtension::class.java)
     }
@@ -29,13 +28,7 @@ open class HookPlugin : HookAbstractPlugin<HookExtension>() {
     }
 
     override fun getTransform(project: Project, android: AppExtension): AbstractTransform? {
-        val hookExtension = extension as HookExtension
-        return if (HookMethodContainer.getInstance(hookExtension).isEmpty()
-            && HookLambdaContainer.getInstance(hookExtension).isEmpty()
-        ) {
-            null
-        } else
-            HookTransform(android, extension!!)
+        return HookTransform(android, extension!!)
     }
 
 }

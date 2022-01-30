@@ -47,7 +47,7 @@ gradlePlugin {
             id = 'replugin-hook-gradle'
             displayName = 'replugin-hook-gradle'
             description = rootProject.ext.RP_DESC
-            implementationClass = 'com.qihoo360.replugin.plugin.HookPlugin'
+            implementationClass = 'com.qihoo360.replugin.hook.HookPlugin'
         }
     }
 }

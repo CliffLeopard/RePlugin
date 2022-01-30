@@ -18,7 +18,7 @@ import org.gradle.api.Project
  * link:
  */
 abstract class AbstractPlugin<T : BaseExtension> : Plugin<Project>, TaskRegister<T>, TransformSupporter {
-    protected var extension: T? = null
+    protected open var extension: T? = null
     override fun apply(project: Project) {
         beforeApply(project)
         if (isApplicationPlugin() == project.plugins.hasPlugin(AppPlugin::class.java)) {
