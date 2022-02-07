@@ -58,7 +58,7 @@ class HostEventCallbacks(context: Context) : RePluginEventCallbacks(context) {
     override fun onActivityDestroyed(activity: Activity) {
         Log.e(
             TAG,
-            if ("onActivityDestroyed:$activity" == null) "" else activity.javaClass.simpleName
+            activity.javaClass.simpleName
         )
         super.onActivityDestroyed(activity)
     }

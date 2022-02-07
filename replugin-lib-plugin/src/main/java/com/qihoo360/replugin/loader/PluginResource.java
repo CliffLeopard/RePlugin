@@ -1,5 +1,6 @@
 package com.qihoo360.replugin.loader;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.AssetFileDescriptor;
@@ -21,19 +22,36 @@ import java.io.InputStream;
 
 public class PluginResource extends Resources {
 
-    private Context mContext;
-    private Resources mPluginResource;
-    private Resources mHostResources;
+    private final Context mContext;
+    private final Resources mPluginResource;
+    private final Resources mHostResources;
 
-    public PluginResource(Context context) {
-        super(context.getResources().getAssets(), context.getResources().getDisplayMetrics(),
-                context.getResources().getConfiguration());
+    public static PluginResource newInstance(Context hostContext, Context pluginContext, Context childContext) {
+        if (hostContext != null) {
+            PluginResource pluginResource = new PluginResource(pluginContext == null ? hostContext : pluginContext, hostContext.getResources());
+            if (childContext != null) {
+                return new PluginResource(childContext, pluginResource);
+            } else {
+                return pluginResource;
+            }
+        } else {
+            return new PluginResource(pluginContext, null);
+        }
+    }
+
+    public PluginResource(Context context, Resources originResources) {
+        super(context.getResources().getAssets(), context.getResources().getDisplayMetrics(), context.getResources().getConfiguration());
         this.mContext = context;
         this.mPluginResource = context.getResources();
-        if (RePlugin.isHostInitialized()) {
-            mHostResources = RePlugin.getHostContext().getResources();
+
+        if (originResources == null) {
+            if (RePlugin.isHostInitialized()) {
+                mHostResources = RePlugin.getHostContext().getResources();
+            } else {
+                mHostResources = mPluginResource;
+            }
         } else {
-            mHostResources = context.getResources();
+            mHostResources = originResources;
         }
     }
 
@@ -41,8 +59,7 @@ public class PluginResource extends Resources {
     public CharSequence getText(int id) throws NotFoundException {
         try {
             return mPluginResource.getText(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getText(id);
         }
     }
@@ -51,8 +68,7 @@ public class PluginResource extends Resources {
     public CharSequence getQuantityText(int id, int quantity) throws NotFoundException {
         try {
             return mPluginResource.getQuantityText(id, quantity);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getQuantityText(id, quantity);
         }
     }
@@ -61,8 +77,7 @@ public class PluginResource extends Resources {
     public String getString(int id) throws NotFoundException {
         try {
             return mPluginResource.getString(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getString(id);
         }
     }
@@ -71,8 +86,7 @@ public class PluginResource extends Resources {
     public String getString(int id, Object... formatArgs) throws NotFoundException {
         try {
             return mPluginResource.getString(id, formatArgs);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getString(id, formatArgs);
         }
     }
@@ -82,8 +96,7 @@ public class PluginResource extends Resources {
             throws NotFoundException {
         try {
             return mPluginResource.getQuantityString(id, quantity, formatArgs);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getQuantityString(id, quantity, formatArgs);
         }
     }
@@ -92,8 +105,8 @@ public class PluginResource extends Resources {
     public String getQuantityString(int id, int quantity) throws NotFoundException {
         try {
             return mPluginResource.getQuantityString(id, quantity);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getQuantityString(id, quantity);
         }
     }
@@ -103,7 +116,7 @@ public class PluginResource extends Resources {
         try {
             return mPluginResource.getText(id, def);
         } catch (Exception e) {
-            e.printStackTrace();
+
             return mHostResources.getText(id, def);
         }
     }
@@ -112,8 +125,8 @@ public class PluginResource extends Resources {
     public CharSequence[] getTextArray(int id) throws NotFoundException {
         try {
             return mPluginResource.getTextArray(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getTextArray(id);
         }
     }
@@ -122,8 +135,8 @@ public class PluginResource extends Resources {
     public String[] getStringArray(int id) throws NotFoundException {
         try {
             return mPluginResource.getStringArray(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getStringArray(id);
         }
     }
@@ -132,8 +145,8 @@ public class PluginResource extends Resources {
     public int[] getIntArray(int id) throws NotFoundException {
         try {
             return mPluginResource.getIntArray(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getIntArray(id);
         }
     }
@@ -142,8 +155,8 @@ public class PluginResource extends Resources {
     public TypedArray obtainTypedArray(int id) throws NotFoundException {
         try {
             return mPluginResource.obtainTypedArray(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.obtainTypedArray(id);
         }
     }
@@ -152,8 +165,8 @@ public class PluginResource extends Resources {
     public float getDimension(int id) throws NotFoundException {
         try {
             return mPluginResource.getDimension(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getDimension(id);
         }
     }
@@ -162,8 +175,8 @@ public class PluginResource extends Resources {
     public int getDimensionPixelOffset(int id) throws NotFoundException {
         try {
             return mPluginResource.getDimensionPixelOffset(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getDimensionPixelOffset(id);
         }
     }
@@ -172,11 +185,11 @@ public class PluginResource extends Resources {
     public int getDimensionPixelSize(int id) throws NotFoundException {
         try {
             return mPluginResource.getDimensionPixelSize(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             try {
                 return mHostResources.getDimensionPixelSize(id);
-            } catch (NotFoundException e1) {
+            } catch (NotFoundException ignore1) {
                 return 0;
             }
         }
@@ -188,28 +201,29 @@ public class PluginResource extends Resources {
         try {
             return mPluginResource.getFraction(id, base, pbase);
         } catch (Exception e) {
-            e.printStackTrace();
+
             return mHostResources.getFraction(id, base, pbase);
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @Override
     public Drawable getDrawable(int id) throws NotFoundException {
         try {
             return mPluginResource.getDrawable(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
             return mHostResources.getDrawable(id);
         }
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     @Override
     public Drawable getDrawable(int id, Theme theme) throws NotFoundException {
         try {
             return mPluginResource.getDrawable(id, theme);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getDrawable(id, theme);
         }
     }
@@ -219,8 +233,8 @@ public class PluginResource extends Resources {
     public Drawable getDrawableForDensity(int id, int density) throws NotFoundException {
         try {
             return mPluginResource.getDrawableForDensity(id, density);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getDrawableForDensity(id, density);
         }
     }
@@ -230,8 +244,8 @@ public class PluginResource extends Resources {
     public Drawable getDrawableForDensity(int id, int density, Theme theme) {
         try {
             return mPluginResource.getDrawableForDensity(id, density);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getDrawableForDensity(id, density);
         }
     }
@@ -240,8 +254,8 @@ public class PluginResource extends Resources {
     public Movie getMovie(int id) throws NotFoundException {
         try {
             return mPluginResource.getMovie(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getMovie(id);
         }
     }
@@ -250,18 +264,19 @@ public class PluginResource extends Resources {
     public int getColor(int id) throws NotFoundException {
         try {
             return mPluginResource.getColor(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getColor(id);
         }
     }
 
+    @SuppressLint("UseCompatLoadingForColorStateLists")
     @Override
     public ColorStateList getColorStateList(int id) throws NotFoundException {
         try {
             return mPluginResource.getColorStateList(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getColorStateList(id);
         }
     }
@@ -271,8 +286,8 @@ public class PluginResource extends Resources {
     public boolean getBoolean(int id) throws NotFoundException {
         try {
             return mPluginResource.getBoolean(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getBoolean(id);
         }
     }
@@ -281,8 +296,8 @@ public class PluginResource extends Resources {
     public int getInteger(int id) throws NotFoundException {
         try {
             return mPluginResource.getInteger(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getInteger(id);
         }
     }
@@ -291,8 +306,8 @@ public class PluginResource extends Resources {
     public XmlResourceParser getLayout(int id) throws NotFoundException {
         try {
             return mPluginResource.getLayout(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getLayout(id);
         }
     }
@@ -301,8 +316,8 @@ public class PluginResource extends Resources {
     public XmlResourceParser getAnimation(int id) throws NotFoundException {
         try {
             return mPluginResource.getAnimation(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getAnimation(id);
         }
     }
@@ -311,8 +326,8 @@ public class PluginResource extends Resources {
     public XmlResourceParser getXml(int id) throws NotFoundException {
         try {
             return mPluginResource.getXml(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getXml(id);
         }
     }
@@ -321,8 +336,8 @@ public class PluginResource extends Resources {
     public InputStream openRawResource(int id) throws NotFoundException {
         try {
             return mPluginResource.openRawResource(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.openRawResource(id);
         }
     }
@@ -332,8 +347,8 @@ public class PluginResource extends Resources {
     public InputStream openRawResource(int id, TypedValue value) throws NotFoundException {
         try {
             return mPluginResource.openRawResource(id, value);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.openRawResource(id, value);
         }
     }
@@ -342,8 +357,8 @@ public class PluginResource extends Resources {
     public AssetFileDescriptor openRawResourceFd(int id) throws NotFoundException {
         try {
             return mPluginResource.openRawResourceFd(id);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.openRawResourceFd(id);
 
         }
@@ -354,8 +369,8 @@ public class PluginResource extends Resources {
             throws NotFoundException {
         try {
             mPluginResource.getValue(id, outValue, resolveRefs);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             mHostResources.getValue(id, outValue, resolveRefs);
         }
     }
@@ -366,8 +381,8 @@ public class PluginResource extends Resources {
             throws NotFoundException {
         try {
             mPluginResource.getValueForDensity(id, density, outValue, resolveRefs);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             mHostResources.getValueForDensity(id, density, outValue, resolveRefs);
 
         }
@@ -377,8 +392,8 @@ public class PluginResource extends Resources {
     public String getResourceName(int resid) throws NotFoundException {
         try {
             return mPluginResource.getResourceName(resid);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getResourceName(resid);
         }
     }
@@ -387,8 +402,8 @@ public class PluginResource extends Resources {
     public String getResourcePackageName(int resid) throws NotFoundException {
         try {
             return mPluginResource.getResourcePackageName(resid);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getResourcePackageName(resid);
 
         }
@@ -398,8 +413,8 @@ public class PluginResource extends Resources {
     public String getResourceTypeName(int resid) throws NotFoundException {
         try {
             return mPluginResource.getResourceTypeName(resid);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getResourceTypeName(resid);
         }
     }
@@ -408,8 +423,8 @@ public class PluginResource extends Resources {
     public String getResourceEntryName(int resid) throws NotFoundException {
         try {
             return mPluginResource.getResourceEntryName(resid);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
+        } catch (NotFoundException ignore) {
+
             return mHostResources.getResourceEntryName(resid);
         }
     }

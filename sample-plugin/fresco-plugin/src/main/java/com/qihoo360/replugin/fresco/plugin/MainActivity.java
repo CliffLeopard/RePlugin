@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.e("GGL","ClassLoader:"+this.getClass().getClassLoader().getClass().getSimpleName());
-        Log.e("GGL","ClassLoader:"+this.getClassLoader().getClass().getSimpleName());
 //        RePlugin.registerHookingClass("com.facebook.drawee.view.SimpleDraweeView", RePlugin.createComponentName("com.qihoo360.replugin.fresco.host", "com.facebook.drawee.view.SimpleDraweeView"), null);
         setContentView(R.layout.activity_main);
         SimpleDraweeView simpleDraweeView = (SimpleDraweeView) findViewById(R.id.image);

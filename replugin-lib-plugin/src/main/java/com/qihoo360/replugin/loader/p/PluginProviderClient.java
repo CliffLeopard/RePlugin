@@ -29,7 +29,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.os.ParcelFileDescriptor;
-import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -109,7 +108,6 @@ public class PluginProviderClient {
      * @see android.content.ContentResolver#insert(Uri, ContentValues)
      */
     public static Uri insert(ContentResolver resolver, Uri uri, ContentValues values) {
-        Log.e("GGL", "INSERT");
         init();
         if (!RePluginFramework.mHostInitialized) {
             return resolver.insert(uri, values);
@@ -131,7 +129,6 @@ public class PluginProviderClient {
      */
     @RequiresApi(api = Build.VERSION_CODES.R)
     public static Uri insert(ContentResolver resolver, Uri uri, ContentValues values, Bundle extras) {
-        Log.e("GGL", "INSERT");
         init();
         if (!RePluginFramework.mHostInitialized) {
             return resolver.insert(uri, values, extras);

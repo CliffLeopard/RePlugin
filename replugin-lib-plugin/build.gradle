@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-    implementation project(':replugin-lib-base')
+    api project(':replugin-lib-base')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:${ANDROIDX_CORE_KTX}"
     implementation "androidx.appcompat:appcompat:${ANDROIDX_APPCOMPAT}"

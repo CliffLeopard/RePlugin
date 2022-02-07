@@ -1,6 +1,6 @@
 package com.qihoo360.replugin.task.tools
 
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import net.dongliu.apk.parser.ApkFile
 import org.xml.sax.Attributes
 import org.xml.sax.helpers.DefaultHandler
@@ -32,7 +32,7 @@ class PluginInfoParser(pluginFile: File, extension: HostExtension) : DefaultHand
         parser.parse(inputStream, this)
 
         val fullName = pluginFile.name
-        pluginInfo.path = extension.pluginDir + File.separator + fullName
+        pluginInfo.path = extension.pluginDir + '/' + fullName
 
         val postfix: String = extension.pluginFilePostfix
         pluginInfo.name = fullName.substring(0, fullName.length - postfix.length)

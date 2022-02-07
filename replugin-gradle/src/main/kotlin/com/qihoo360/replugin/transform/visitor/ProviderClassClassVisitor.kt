@@ -1,5 +1,6 @@
 package com.qihoo360.replugin.transform.visitor
 
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 

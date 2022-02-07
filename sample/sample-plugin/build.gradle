@@ -8,7 +8,7 @@ android {
     buildToolsVersion RP_BuildToolsVersion
 
     defaultConfig {
-        applicationId       "com.cleo.sample_plugin"
+        applicationId       "com.cleo.sample.plugin"
         minSdkVersion       RP_MinSdkVersion
         targetSdkVersion    RP_TargetSdkVersion
         versionCode 1
@@ -38,18 +38,339 @@ repluginPluginConfig {
     pluginName = "sample-plugin"
     hostApplicationId = "com.cleo.sample_host"
     hostAppLauncherActivity = "com.cleo.sample_host.MainActivity"
+    excludedClasses {
+        exclude1 {
+            classNameRegex = [
+                    "com/cleo/sample/plugin/util/SimplePluginUtil"
+            ]
+            fromJar = true
+            scope = 0x04
+        }
+    }
+    hookLambdas {
+        callBefore {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action1"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetBefore"
+            hookType = 0x01
+        }
+
+        callAfter {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action2"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetAfter"
+            hookType = 0x02
+        }
+
+        callReplace {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action3"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetReplace"
+            hookType = 0x03
+        }
+
+        action4ABefore {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetBefore"
+            hookType = 0x01
+        }
+
+        action4After {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetAfter"
+            hookType = 0x02
+        }
+
+        action4Replace {
+            className  = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+            methodName = "action4"
+            methodDesc = "()V"
+            lambdaMethodName = "onClick"
+            lambdaMethodDesc = "(Landroid/view/View;)V"
+            targetClass      = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+            targetMethod     = "targetReplace"
+            hookType = 0x03
+        }
+
+    }
+    hookMethods {
+        // 方法调用时Hook
+        callBefore {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "beforeF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x07
+        }
+
+        callBeforeVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "beforeVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x07
+        }
+
+        callBeforeStatic {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "beforeStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0A
+        }
+
+        callBeforeStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "beforeStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callBeforeStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0A
+        }
+
+        callAfter {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "afterF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callAfterF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;Lcom/cleo/sample/plugin/hook/Res;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x08
+        }
+
+        callAfterVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "afterVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callAfterVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x08
+        }
+
+        callAfterStatic {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "afterStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callAfterStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;Lcom/cleo/sample/plugin/hook/Res;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x0B
+        }
+
+        callAfterStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "afterStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callAfterStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0B
+        }
+
+        callReplace {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "replaceF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callReplaceF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x09
+        }
+
+        callReplaceVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "replaceVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callReplaceVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x09
+        }
+
+        callReplaceStatic {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "replaceStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callReplaceStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x0C
+        }
+
+        callReplaceStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/Origin"
+            methodName = "replaceStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "callReplaceStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x0C
+        }
+
+        // 方法定义时Hook
+        defineBefore {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "beforeF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineBeforeF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x01
+        }
+
+        defineBeforeVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "beforeVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineBeforeVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x01
+        }
+
+        defineBeforeStatic {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "beforeStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineBeforeStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x04
+        }
+
+        defineBeforeStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "beforeStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineBeforeStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x04
+        }
+
+        defineAfter {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "afterF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineAfterF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;Lcom/cleo/sample/plugin/hook/Res;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x02
+        }
+
+        defineAfterVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "afterVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineAfterVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x02
+        }
+
+        defineAfterStatic {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "afterStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineAfterStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;Lcom/cleo/sample/plugin/hook/Res;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x05
+        }
+
+        defineAfterStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "afterStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineAfterStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x05
+        }
+
+        defineReplace {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "replaceF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineReplaceF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x03
+        }
+
+        defineReplaceVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "replaceVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineReplaceVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x03
+        }
+
+        defineReplaceStatic {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "replaceStaticF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineReplaceStaticF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+            hookType = 0x06
+        }
+
+        defineReplaceStaticVoid {
+            className  = "com/cleo/sample/plugin/hook/OriginDefine"
+            methodName = "replaceStaticVoidF"
+            methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            targetClassName  = "com/cleo/sample/plugin/hook/Target"
+            targetMethodName = "defineReplaceStaticVoidF"
+            targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+            hookType = 0x06
+        }
+    }
 }
 
 dependencies {
-
     implementation project(':replugin-lib-plugin')
+    implementation project(':sample:sample-plugin-util')
+    implementation project(':sample:sample-common')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"
     implementation "com.google.android.material:material:$GOOGLE_MATERIAL"
     implementation "androidx.constraintlayout:constraintlayout:$ANDROIDX_CONSTRAIN"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1'
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$LIVEDATA_KTX"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$LIVEDATA_KTX"
     testImplementation "junit:junit:$JUNIT_VERSION"
     androidTestImplementation "androidx.test.ext:junit:$ANDROIDX_JUNIT"
     androidTestImplementation "androidx.test.espresso:espresso-core:$ANDROIDX_ESPRESSO"

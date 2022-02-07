@@ -1,10 +1,11 @@
 package com.qihoo360.replugin.plugin
 
 import com.android.build.gradle.AppExtension
-import com.qihoo360.replugin.config.BaseExtension
-import com.qihoo360.replugin.transform.AbstractTransform
-import com.qihoo360.replugin.transform.ClassReWriter
+import com.qihoo360.replugin.hook.HookTransform
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
+import com.qihoo360.replugin.transform.visitor.*
+import org.objectweb.asm.ClassVisitor
 
 /**
  * author:CliffLeopard
@@ -13,14 +14,24 @@ import com.qihoo360.replugin.transform.bean.TransformClassInfo
  * email:precipiceleopard@gmail.com
  * link:
  */
-open class PluginTransform(appExtension: AppExtension, extension: BaseExtension) :
-    AbstractTransform(appExtension, extension) {
+open class PluginTransform(appExtension: AppExtension, override val extension: PluginExtension) :
+    HookTransform(appExtension, extension) {
 
     override fun isIncremental(): Boolean {
         return true
     }
 
-    override fun transformClass(classInfo: TransformClassInfo, inputBytes: ByteArray): ByteArray? {
-        return ClassReWriter.transform(classInfo, inputBytes, extension)
+    override fun isSkipClass(classInfo: TransformClassInfo): Boolean {
+        return super.isSkipClass(classInfo) || extension.isTargetClass(classInfo.name)
+    }
+
+    override fun transformVisitor(visitor: ClassVisitor, context: InstrumentationContext): ClassVisitor {
+        var classVisitor = super.transformVisitor(visitor, context)
+        classVisitor = ActivityClassVisitor(classVisitor, context)
+        classVisitor = LocalBroadcastClassVisitor(classVisitor, context)
+        classVisitor = ProviderClassClassVisitor(classVisitor, context)
+        classVisitor = IdentifierClassVisitor(classVisitor, context)
+        classVisitor = ConstantClassVisitor(classVisitor, context)
+        return classVisitor
     }
 }

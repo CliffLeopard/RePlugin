@@ -40,6 +40,7 @@ repluginHostConfig {
 
 dependencies {
     implementation project(':replugin-lib-host')
+    implementation project(':sample:sample-common')
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$KOTLIN_VERSION"
     implementation "androidx.core:core-ktx:$ANDROIDX_CORE_KTX"
     implementation "androidx.appcompat:appcompat:$ANDROIDX_APPCOMPAT"

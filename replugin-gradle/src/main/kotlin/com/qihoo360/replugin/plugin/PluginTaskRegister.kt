@@ -3,7 +3,6 @@ package com.qihoo360.replugin.plugin
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.qihoo360.replugin.Constants
-import com.qihoo360.replugin.config.PluginExtension
 import com.qihoo360.replugin.task.TaskRegister
 import com.qihoo360.replugin.task.tools.PluginDebugger
 import org.gradle.api.Project
@@ -46,7 +45,7 @@ object PluginTaskRegister : TaskRegister<PluginExtension> {
 
         // 重启宿主
         val restartHostTask = project.task(Constants.TASK_RESTART_HOST_APP)
-        startHostTask.doLast {
+        restartHostTask.doLast {
             debugger.stopHost()
             debugger.startHost()
         }

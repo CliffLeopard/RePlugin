@@ -1,7 +1,7 @@
 package com.qihoo360.replugin.task.tools
 
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import org.gradle.api.Project
 import java.io.File
 
@@ -33,7 +33,7 @@ class HostConfigCreator(
         return fileDir
     }
 
-    override fun getFileContent(): String {
+    override fun createFileContent(): String {
         return """
             
 package com.qihoo360.replugin.gen;

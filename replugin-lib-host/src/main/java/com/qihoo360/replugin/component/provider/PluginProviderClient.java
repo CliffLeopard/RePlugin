@@ -16,6 +16,10 @@
 
 package com.qihoo360.replugin.component.provider;
 
+import static com.qihoo360.replugin.helper.LogDebug.LOG;
+import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
+import static com.qihoo360.replugin.helper.LogRelease.LOGR;
+
 import android.annotation.TargetApi;
 import android.content.ContentProviderClient;
 import android.content.ContentValues;
@@ -33,6 +37,7 @@ import android.util.Log;
 import com.qihoo360.i.Factory;
 import com.qihoo360.i.IPluginManager;
 import com.qihoo360.replugin.RePlugin;
+import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.component.ComponentList;
 import com.qihoo360.replugin.component.process.PluginProcessHost;
 import com.qihoo360.replugin.component.utils.PluginClientHelper;
@@ -41,10 +46,6 @@ import com.qihoo360.replugin.helper.LogRelease;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import static com.qihoo360.replugin.helper.LogDebug.LOG;
-import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
-import static com.qihoo360.replugin.helper.LogRelease.LOGR;
 
 /**
  * 一种能够对【插件】的Provider做增加、删除、改变、查询的接口。
@@ -58,14 +59,17 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#acquireContentProviderClient(String)
      */
     public static ContentProviderClient acquireContentProviderClient(Context c, String name) {
         // fixme 如何判断应该使用哪个进程的 provider 呢？
         return c.getContentResolver().acquireContentProviderClient(PluginPitProviderP0.AUTHORITY);
     }
+
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#query(Uri, String[], String, String[], String)
      */
     public static Cursor query(Context c, Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
@@ -75,6 +79,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#query(Uri, String[], String, String[], String, CancellationSignal)
      */
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -85,6 +90,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#getType(Uri)
      */
     public static String getType(Context c, Uri uri) {
@@ -94,6 +100,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#insert(Uri, ContentValues)
      */
     public static Uri insert(Context c, Uri uri, ContentValues values) {
@@ -103,6 +110,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#bulkInsert(Uri, ContentValues[])
      */
     public static int bulkInsert(Context c, Uri uri, ContentValues[] values) {
@@ -112,6 +120,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#delete(Uri, String, String[])
      */
     public static int delete(Context c, Uri uri, String selection, String[] selectionArgs) {
@@ -121,6 +130,7 @@ public class PluginProviderClient {
 
     /**
      * 调用插件里的Provider
+     *
      * @see android.content.ContentResolver#update(Uri, ContentValues, String, String[])
      */
     public static int update(Context c, Uri uri, ContentValues values, String selection, String[] selectionArgs) {
@@ -264,7 +274,14 @@ public class PluginProviderClient {
         if (pn == null) {
             return uri;
         }
-        return toCalledUri(c, pn, uri, IPluginManager.PROCESS_AUTO);
+
+        String hostPackageName = RePluginInternal.getAppContext().getApplicationInfo().packageName;
+        String pluginPackageName = RePlugin.getPluginInfo(pn).getPackageName();
+        String strUri = uri.toString();
+        if (uri.getAuthority().startsWith(hostPackageName)) {
+            strUri = strUri.replace(hostPackageName, pluginPackageName);
+        }
+        return toCalledUri(c, pn, Uri.parse(strUri), IPluginManager.PROCESS_AUTO);
     }
 
     /**

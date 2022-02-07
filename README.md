@@ -19,7 +19,7 @@
 * 将支持项目发布到本地:
     * `gradle.properties`中修改配置`SDK_PUBLISH=true`
     * `gradle.properties`中修改配置`android.useAndroidX=true` `android.enableJetifier=true`
-    * 版本号见`rp-config.gradle`: 默认版本号为:`2.3.8-SNAPSHOT-androix`
+    * 版本号见`rp-config.gradle`: 默认版本号为:`2.4.7-SNAPSHOT-androix`
     * 执行工程Task的`publishToMavenLocal`
 
 * 发布到个人部署的Maven仓库:
@@ -39,6 +39,11 @@
     * 项目已经发布到本地maven
     * `gradle.properties`中修改配置`SDK_PUBLISH=false`
     * `gradle.properties`中修改配置`android.useAndroidX=true` `android.enableJetifier=true`
+    
+### Gradle和Hook相关
+
+* [MethodHookReadMe](./replugin-gradle/README.md)
+* [LambdaHookReadMe](./replugin-gradle/LambdaHook.md)
 
 ### 关于Android限制访问隐藏API的说明
 

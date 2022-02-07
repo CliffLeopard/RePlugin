@@ -9,9 +9,11 @@ package com.cleo.sample_host
  */
 object Data {
     val cases = listOf(
-        "PluginMainActivity" to "com.cleo.sample_plugin.activity.MainActivity"
+        "PluginMainActivity" to "com.cleo.sample.plugin.activity.MainActivity",
+        "ShowActivityInfo" to "com.cleo.sample_host.InfoActivity",
+        "ServiceTest" to "com.cleo.sample_host.ServiceTestActivity"
     )
 
-    const val pluginId = "com.cleo.sample_plugin"
+    const val pluginId = "com.cleo.sample.plugin"
     const val hostId = "com.cleo.sample_host"
 }

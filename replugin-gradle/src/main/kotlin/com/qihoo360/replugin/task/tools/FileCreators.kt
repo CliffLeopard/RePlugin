@@ -1,8 +1,7 @@
 package com.qihoo360.replugin.task.tools
 
 import com.android.build.gradle.internal.api.ApplicationVariantImpl
-import com.qihoo360.replugin.config.HostExtension
-import org.apache.http.util.TextUtils
+import com.qihoo360.replugin.host.HostExtension
 import org.gradle.api.Project
 import java.io.File
 
@@ -15,14 +14,12 @@ import java.io.File
  */
 object FileCreators {
     private fun create(creator: IFileCreator?) {
-        if (creator == null || TextUtils.isEmpty(creator.getFileContent()))
+        val fileContent = creator?.createFileContent()
+        if (fileContent.isNullOrEmpty())
             return
-
         val dir = creator.getFileDir()
         if (!dir.exists()) dir.mkdirs()
-
         val targetFile = File(dir, creator.getFileName())
-        val fileContent = creator.getFileContent()
         targetFile.writeText(fileContent, Charsets.UTF_8)
     }
 
@@ -53,5 +50,5 @@ interface IFileCreator {
     /**
      * 要生成的文件内容
      */
-    fun getFileContent(): String
+    fun createFileContent(): String
 }

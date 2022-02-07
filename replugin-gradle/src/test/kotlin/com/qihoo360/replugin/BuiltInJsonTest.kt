@@ -1,6 +1,6 @@
 package com.qihoo360.replugin
 
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import com.qihoo360.replugin.task.tools.PluginInfoParser
 import org.junit.Test
 import java.io.File

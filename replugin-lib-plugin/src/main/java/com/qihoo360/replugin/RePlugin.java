@@ -82,7 +82,6 @@ public class RePlugin {
         if (!RePluginFramework.mHostInitialized) {
             return null;
         }
-
         try {
             Object obj = ProxyRePluginVar.install.call(null, path);
             if (obj != null) {

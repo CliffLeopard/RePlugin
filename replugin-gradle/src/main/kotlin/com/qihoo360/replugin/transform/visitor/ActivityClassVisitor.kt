@@ -1,6 +1,9 @@
 package com.qihoo360.replugin.transform.visitor
 
+import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.ClassVisitor
+import org.objectweb.asm.MethodVisitor
+import org.objectweb.asm.Opcodes
 
 /**
  * author:gaoguanling
@@ -11,6 +14,11 @@ import org.objectweb.asm.ClassVisitor
  */
 class ActivityClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
     PluginClassVisitor(cv, context) {
+
+    private var originSuperClass: String? = null
+    private var newSuperClass: String? = null
+    private var hook = false
+
     override fun visit(
         version: Int,
         access: Int,
@@ -20,7 +28,25 @@ class ActivityClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
         interfaces: Array<out String>?
     ) {
         className = name
-        super.visit(version, access, name, signature, getSuperName(name, superName), interfaces)
+        originSuperClass = superName
+        newSuperClass = getSuperName(name, superName)
+        if (originSuperClass != newSuperClass)
+            hook = true
+        super.visit(version, access, name, signature, newSuperClass, interfaces)
+    }
+
+    override fun visitMethod(access: Int, name: String?, descriptor: String?, signature: String?, exceptions: Array<out String>?): MethodVisitor {
+        return if (hook)
+            ActivityMethodVisitor(className, super.visitMethod(access, name, descriptor, signature, exceptions))
+        else
+            super.visitMethod(access, name, descriptor, signature, exceptions)
+    }
+
+    inner class ActivityMethodVisitor(val className: String?, mv: MethodVisitor?) : MethodVisitor(Opcodes.ASM9, mv) {
+        override fun visitMethodInsn(opcode: Int, owner: String?, name: String?, descriptor: String?, isInterface: Boolean) {
+            val newOwner = if (owner == originSuperClass) newSuperClass else owner
+            super.visitMethodInsn(opcode, newOwner, name, descriptor, isInterface)
+        }
     }
 
     private fun getSuperName(name: String?, superName: String?): String? {
@@ -31,7 +57,6 @@ class ActivityClassVisitor(cv: ClassVisitor, context: InstrumentationContext) :
             context.classModified = true
             return activities[superName]
         }
-
         return superName
     }
 

@@ -4,7 +4,7 @@ import com.android.build.gradle.internal.api.ApplicationVariantImpl
 import com.android.builder.dexing.isJarFile
 import com.qihoo360.replugin.Constants
 import com.qihoo360.replugin.Log
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import groovy.json.JsonOutput
 import java.io.File
 
@@ -38,7 +38,7 @@ class BuiltInJsonCreator(
         return fileName
     }
 
-    override fun getFileContent(): String {
+    override fun createFileContent(): String {
         //查找插件文件并抽取信息,如果没有就直接返回null
         val pluginDirFile = File(fileDir.absolutePath + File.separator + extension.pluginDir)
         if (!pluginDirFile.exists()) {

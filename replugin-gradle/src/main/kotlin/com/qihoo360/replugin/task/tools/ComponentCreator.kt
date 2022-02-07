@@ -1,6 +1,6 @@
 package com.qihoo360.replugin.task.tools
 
-import com.qihoo360.replugin.config.HostExtension
+import com.qihoo360.replugin.host.HostExtension
 import org.redundent.kotlin.xml.xml
 
 /**

@@ -1,9 +1,9 @@
 package com.qihoo360.replugin.plugin
 
 import com.android.build.gradle.AppExtension
-import com.qihoo360.replugin.AbstractPlugin
 import com.qihoo360.replugin.Constants
-import com.qihoo360.replugin.config.PluginExtension
+import com.qihoo360.replugin.hook.HookExtension
+import com.qihoo360.replugin.hook.HookAbstractPlugin
 import com.qihoo360.replugin.transform.AbstractTransform
 import org.gradle.api.Project
 
@@ -14,7 +14,7 @@ import org.gradle.api.Project
  * email:precipiceleopard@gmail.com
  * link:
  */
-open class PluginPlugin : AbstractPlugin<PluginExtension>() {
+open class PluginPlugin : HookAbstractPlugin<PluginExtension>() {
     override fun createExtension(project: Project) {
         project.extensions.create(Constants.PLUGIN_CONFIG, PluginExtension::class.java)
     }
@@ -23,19 +23,17 @@ open class PluginPlugin : AbstractPlugin<PluginExtension>() {
         extension = project.extensions.getByName(Constants.PLUGIN_CONFIG) as PluginExtension
         if (extension == null)
             throw Exception("请在build.gradle 文件中配置 repluginPluginConfig!!")
-        else
-            extension!!.applicationId = android.defaultConfig.applicationId
     }
 
     override fun registerProjectTask(
         project: Project,
         android: AppExtension,
-        extension: PluginExtension
+        extension: HookExtension
     ) {
-        PluginTaskRegister.registerProjectTask(project, android, extension)
+        PluginTaskRegister.registerProjectTask(project, android, extension as PluginExtension)
     }
 
     override fun getTransform(project: Project, android: AppExtension): AbstractTransform {
-        return PluginTransform(android, extension!!)
+        return PluginTransform(android, extension as PluginExtension)
     }
 }

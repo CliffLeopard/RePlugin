@@ -1,7 +1,5 @@
 package com.qihoo360.replugin.config
 
-import java.io.File
-
 /**
  * author:gaoguanling
  * date:2021/9/3
@@ -11,14 +9,4 @@ import java.io.File
  */
 open class BaseExtension {
     var applicationId: String? = null
-    open var libPackages: Set<String>? = setOf()
-    open var targetClasses = setOf<String>()
-    fun isTargetClass(desc: String): Boolean {
-        return targetClasses.contains(
-            if (desc.contains(".")) desc.replace(
-                '.',
-                File.separatorChar
-            ) else desc
-        )
-    }
 }

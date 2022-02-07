@@ -16,6 +16,11 @@
 
 package com.qihoo360.replugin.component.service.server;
 
+import static com.qihoo360.replugin.helper.LogDebug.LOG;
+import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
+import static com.qihoo360.replugin.helper.LogRelease.LOGR;
+
+import android.annotation.SuppressLint;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -23,6 +28,7 @@ import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.pm.ServiceInfo;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -54,10 +60,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.Callable;
-
-import static com.qihoo360.replugin.helper.LogDebug.LOG;
-import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
-import static com.qihoo360.replugin.helper.LogRelease.LOGR;
 
 /**
  * 负责Server端的服务调度、提供等工作，是服务的提供方，核心类之一
@@ -105,12 +107,12 @@ public class PluginServiceServer {
                     Bundle data = msg.getData();
                     Intent intent = data.getParcelable("intent");
 
-                    ServiceRecord sr = (ServiceRecord)msg.obj;
+                    ServiceRecord sr = (ServiceRecord) msg.obj;
 
                     if (intent != null && sr != null) {
                         intent.setExtrasClassLoader(sr.service.getClassLoader());
                         sr.service.onStartCommand(intent, 0, 0);
-                    }else{
+                    } else {
                         if (LOG) {
                             LogDebug.e(PLUGIN_TAG, "pss.onStartCommand fail.");
                         }
@@ -444,7 +446,7 @@ public class PluginServiceServer {
 
         // 只复写Context，别的都不做
         try {
-            attachBaseContextLocked(s, plgc);
+            attachBaseContextLocked(s, plgc, sr);
         } catch (Throwable e) {
             if (LOGR) {
                 LogRelease.e(PLUGIN_TAG, "psm.is: abc e", e);
@@ -528,19 +530,62 @@ public class PluginServiceServer {
     }
 
     // 通过反射调用Service.attachBaseContext方法（Protected的）
-    private void attachBaseContextLocked(ContextWrapper cw, Context c) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
+    @SuppressLint("DiscouragedPrivateApi")
+    private void attachBaseContextLocked(ContextWrapper cw, Context c, ServiceRecord sr) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, NoSuchFieldException {
         if (mAttachBaseContextMethod == null) {
             mAttachBaseContextMethod = ContextWrapper.class.getDeclaredMethod("attachBaseContext", Context.class);
             mAttachBaseContextMethod.setAccessible(true);
         }
         mAttachBaseContextMethod.invoke(cw, c);
 
-        // init Application
-        Field applicationField = Service.class.getDeclaredField("mApplication");
-        if (applicationField != null) {
-            applicationField.setAccessible(true);
-            applicationField.set(cw, c.getApplicationContext());
+        try {
+            setField("mApplication", cw, c.getApplicationContext());
+        } catch (Throwable ignore) {
+            LogDebug.d(TAG, "Service attach mApplication failed");
         }
+
+        try {
+            ClassLoader loader = c.getClass().getClassLoader();
+            assert loader != null;
+            setField("mThread", cw, readStaticMethod(loader, "android.app.ActivityThread", "currentActivityThread"));
+        } catch (Throwable ignore) {
+            LogDebug.d(TAG, "Service attach mThread failed");
+        }
+
+        try {
+            ClassLoader loader = c.getClass().getClassLoader();
+            assert loader != null;
+            setField("mActivityManager", cw, readStaticMethod(loader, "android.app.ActivityManager", "getService"));
+        } catch (Throwable ignore) {
+            LogDebug.d(TAG, "Service attach mThread failed");
+        }
+
+        try {
+            setField("mClassName", cw, sr.serviceInfo.name);
+        } catch (Throwable ignore) {
+            LogDebug.d(TAG, "Service attach mClassName failed");
+        }
+        try {
+            setField("mStartCompatibility", cw, c.getApplicationInfo().targetSdkVersion < Build.VERSION_CODES.ECLAIR);
+        } catch (Throwable ignore) {
+            LogDebug.d(TAG, "Service attach mStartCompatibility failed");
+        }
+//        Field mToken = Service.class.getDeclaredField("mToken");
+    }
+
+    @SuppressLint("PrivateApi")
+    private Object readStaticMethod(ClassLoader loader, String className, String methodName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Class<?> clz = loader.loadClass(className);
+        Method method = clz.getMethod(methodName);
+        method.setAccessible(true);
+        return method.invoke(null);
+    }
+
+    @SuppressLint("DiscouragedPrivateApi")
+    private void setField(String fieldName, Object obj, Object fieldValue) throws NoSuchFieldException, IllegalAccessException {
+        Field field = Service.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(obj, fieldValue);
     }
 
     class Stub extends IPluginServiceServer.Stub {

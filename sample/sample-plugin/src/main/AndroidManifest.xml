@@ -1,14 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.cleo.sample_plugin">
+    package="com.cleo.sample.plugin">
 
     <application
+        android:name=".PluginApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Replugin">
+        <activity
+            android:name=".activity.ShowInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".hook.lam.LambdaOriginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.HookActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activity.CommonTestActivity"
+            android:exported="false" />
         <activity
             android:name=".activity.DealActivity"
             android:exported="true" />
@@ -33,6 +46,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".service.ForegroundService"
+            android:enabled="true"
+            android:exported="true" />
     </application>
 
 </manifest>

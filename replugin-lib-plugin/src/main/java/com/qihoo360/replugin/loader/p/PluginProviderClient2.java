@@ -101,7 +101,6 @@ public class PluginProviderClient2 {
      * @see android.content.ContentResolver#insert(Uri, ContentValues)
      */
     public static Uri insert(Context c, Uri uri, ContentValues values) {
-        Log.e("GGL","INSERT");
         if (c == null) {
             return null;
         }
