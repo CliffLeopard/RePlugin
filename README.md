@@ -39,6 +39,11 @@
     * 项目已经发布到本地maven
     * `gradle.properties`中修改配置`SDK_PUBLISH=false`
     * `gradle.properties`中修改配置`android.useAndroidX=true` `android.enableJetifier=true`
+    
+### Gradle和Hook相关
+
+* [MethodHookReadMe](./replugin-gradle/README.md)
+* [LambdaHookReadMe](./replugin-gradle/LambdaHook.md)
 
 ### 关于Android限制访问隐藏API的说明
 
