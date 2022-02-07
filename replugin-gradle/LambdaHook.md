@@ -43,6 +43,7 @@ Lambda表达式Hook,支持如下情况
 
 * 根目录build.gradle引入`classpath "com.qihoo360.replugin:replugin-gradle:2.4.7"`
 * module build.gradle引入`apply plugin: 'replugin-hook-gradle' `
+* module build.gradle引入依赖`implementation "com.qihoo360.replugin:replugin-lib-base:2.4.7-SNAPSHOT" `  
 * 引入配置,如:
 
  ```groovy
