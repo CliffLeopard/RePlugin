@@ -38,3 +38,38 @@ Lambda表达式Hook,支持如下情况
 * Hook类与Target类:
     * `com.cleo.sample.plugin.hook.lam.LambdaOriginActivity`
     * `com.cleo.sample.plugin.hook.lamLambdaTarget`
+  
+### 单独使用HookPlugin插件
+
+* 根目录build.gradle引入`classpath "com.qihoo360.replugin:replugin-gradle:2.4.7"`
+* module build.gradle引入`apply plugin: 'replugin-hook-gradle' `
+* 引入配置,如:
+
+ ```groovy
+hookConfig {
+  hookLambdas {
+    callBefore {
+      className = "com/cleo/sample/plugin/hook/lam/LambdaOriginActivity"
+      methodName = "action1"
+      methodDesc = "()V"
+      lambdaMethodName = "onClick"
+      lambdaMethodDesc = "(Landroid/view/View;)V"
+      targetClass = "com/cleo/sample/plugin/hook/lam/LambdaTarget"
+      targetMethod = "targetBefore"
+      hookType = 0x01
+    }
+  }
+  hookMethods {
+    // 方法调用时Hook
+    callBefore {
+      className = "com/cleo/sample/plugin/hook/Origin"
+      methodName = "beforeF"
+      methodDesc = "(Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)Lcom/cleo/sample/plugin/hook/Res;"
+      targetClassName = "com/cleo/sample/plugin/hook/Target"
+      targetMethodName = "callBeforeF"
+      targetMethodDesc = "(Lcom/qihoo360/replugin/base/hook/MethodInfo;Ljava/lang/Object;Lcom/cleo/sample/plugin/hook/A;Lcom/cleo/sample/plugin/hook/B;)V"
+      hookType = 0x07
+    }
+  }
+}
+```
