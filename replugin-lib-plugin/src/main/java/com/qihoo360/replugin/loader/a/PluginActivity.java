@@ -53,7 +53,7 @@ public abstract class PluginActivity extends Activity {
                 super.attachBaseContext(base);
             }
         } else {
-            pluginResource = PluginResource.newInstance(null,base,null);
+            pluginResource = PluginResource.newInstance(null, base, null);
             super.attachBaseContext(base);
         }
     }
@@ -158,6 +158,16 @@ public abstract class PluginActivity extends Activity {
     public void startActivityFromFragment(@NonNull Fragment fragment, Intent intent, int requestCode, @Nullable Bundle options) {
         if (!RePluginInternal.startActivityFromFragment(this, fragment, intent, requestCode, options))
             super.startActivityFromFragment(fragment, intent, requestCode, options);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        try {
+            outState.remove("android:support:fragments");
+            outState.remove("android:fragments");
+        } catch (Throwable ignore) {
+        }
     }
 
     @Override

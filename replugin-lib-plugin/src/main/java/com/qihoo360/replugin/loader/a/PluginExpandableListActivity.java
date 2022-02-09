@@ -166,4 +166,14 @@ public abstract class PluginExpandableListActivity extends ExpandableListActivit
     public void overridePendingTransition(int enterAnim, int exitAnim) {
         super.overridePendingTransition(0, 0);
     }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        try {
+            outState.remove("android:support:fragments");
+            outState.remove("android:fragments");
+        } catch (Throwable ignore) {
+        }
+    }
 }
