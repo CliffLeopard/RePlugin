@@ -476,6 +476,7 @@ public class PluginLibraryInternalProxy {
             //
             try {
                 savedInstanceState.remove("android:support:fragments");
+                savedInstanceState.remove("android:fragments");
             } catch (Throwable e) {
                 if (LOGR) {
                     LogRelease.e(PLUGIN_TAG, "a.c.b1: " + e.getMessage(), e);
