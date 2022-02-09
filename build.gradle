@@ -3,11 +3,13 @@ buildscript {
     apply from: './plugin_config.gradle'
     repositories {
         maven {
+            url "http://s3.qbuild.corp.qihoo.net:8360/nexus/content/repositories/360zhushou_Snapshot/"
+        }
+        maven {
             url "https://plugins.gradle.org/m2/"
         }
         google()
         mavenCentral()
-        mavenLocal()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:$GRADLE_PLUGIN"
@@ -22,6 +24,9 @@ buildscript {
 
 allprojects {
     repositories {
+        maven {
+            url "http://s3.qbuild.corp.qihoo.net:8360/nexus/content/repositories/360zhushou_Snapshot/"
+        }
         google()
         mavenCentral()
         mavenLocal()
