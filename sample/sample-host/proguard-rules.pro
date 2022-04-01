@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+#-keep class com.qihoo360.replugin.**{*;}
+#-keep class com.qihoo360.loader2.**{*;}
+# 必须配置的，否则useappCompact=true使用有问题
+-keep class androidx.appcompat.R$style{*;}

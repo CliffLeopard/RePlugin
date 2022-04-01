@@ -46,5 +46,6 @@ project.ext {
     RP_GIT_URL = 'https://github.com/Qihoo360/RePlugin'
     RP_LICENSES_URL = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
     RP_LICENSES_NAME = 'Apache-2.0'
+    keystore = rootDir.path + '/replugin.keystore'
 
 }
