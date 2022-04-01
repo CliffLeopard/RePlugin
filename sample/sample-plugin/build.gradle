@@ -30,6 +30,34 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+
+    signingConfigs {
+        debug {
+            storeFile file(rootProject.ext.keystore)
+            keyAlias "replugin"
+            keyPassword "replugin"
+            storePassword "replugin"
+        }
+        release {
+            storeFile file(rootProject.ext.keystore)
+            keyAlias "replugin"
+            keyPassword "replugin"
+            storePassword "replugin"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
+        }
+    }
 }
 
 apply plugin: 'replugin-plugin-gradle'

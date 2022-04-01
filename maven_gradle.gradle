@@ -65,9 +65,9 @@ publishing {
     }
 }
 
-signing {
-    sign publishing.publications.release
-}
+//signing {
+//    sign publishing.publications.release
+//}
 
 
 javadoc {
