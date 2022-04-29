@@ -281,6 +281,9 @@ public class PluginProviderClient {
         if (uri.getAuthority().startsWith(hostPackageName)) {
             strUri = strUri.replace(hostPackageName, pluginPackageName);
         }
+        LogDebug.i(TAG + "Uri转换", "\nBefore: " + uri.toString() +
+                "\nAfter:  " + strUri
+        );
         return toCalledUri(c, pn, Uri.parse(strUri), IPluginManager.PROCESS_AUTO);
     }
 
@@ -330,6 +333,9 @@ public class PluginProviderClient {
         // from => content://                                                  com.qihoo360.contacts.abc/people?id=9
         // to   => content://com.qihoo360.mobilesafe.Plugin.NP.UIP/plugin_name/com.qihoo360.contacts.abc/people?id=9
         String newUri = String.format("content://%s/%s/%s", au, plugin, uri.toString().replace("content://", ""));
+        LogDebug.i(TAG + "最终Uri转换", "\nBefore: " + uri.toString() +
+                "\nAfter:  " + newUri
+        );
         return Uri.parse(newUri);
     }
 
