@@ -20,6 +20,7 @@ import com.qihoo360.replugin.helper.LogDebug;
 import com.qihoo360.replugin.utils.ReflectUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 /**
  * method-invoker的封装
@@ -70,15 +71,50 @@ public class MethodInvoker {
 
         if (mMethod != null) {
             try {
-                return ReflectUtils.invokeMethod(mMethod, methodReceiver, methodParamValues);
+                LogDebug.i(TAG + "-反射调用函数", "开始:" + mMethodName);
+                Object result = ReflectUtils.invokeMethod(mMethod, methodReceiver, methodParamValues);
+                LogDebug.i(TAG + "-反射调用函数", "\nloader           : " + mLoader.getClass().getName() + "  className:" + mClassName + "  methodName:" + mMethodName +
+                        "\nparamTypes       : " + getParamTypes(mParamTypes) +
+                        "\nmethodParamValues: " + getParamValues(mParamTypes, methodParamValues) +
+                        "\nresult:            " + (result == null ? "null" : result.toString())
+                );
+                return result;
             } catch (Exception e) {
-                if (LogDebug.LOG) {
-                    LogDebug.d(TAG, "invoker method error !!! (Maybe the version of replugin-host-lib is too low)", e);
-                }
+                LogDebug.i(TAG + "-反射调用函数", "异常:" +
+                        "\nmethodParamValues: " + getParamValues(mParamTypes, methodParamValues));
             }
         }
 
         return null;
+    }
+
+
+    private String getParamTypes(Class<?>[] paramTypes) {
+        StringBuilder result = new StringBuilder();
+        for (Class<?> paramValue : paramTypes) {
+            result.append(paramValue.getSimpleName()).append(",");
+        }
+        return result.toString();
+    }
+
+    private String getParamValues(Class<?>[] paramTypes, Object... methodParamValues) {
+        StringBuilder result = new StringBuilder("");
+        for (int i = 0; i < paramTypes.length; i++) {
+            Class<?> type = paramTypes[i];
+            Object value = methodParamValues[i];
+            if (type.isArray()) {
+                try {
+                    result.append(Arrays.toString((Object[]) value)).append(";");
+                } catch (Exception ignored) {
+                }
+            } else {
+                try {
+                    result.append(value == null ? "null" : value.toString()).append(";");
+                } catch (Exception ignored) {
+                }
+            }
+        }
+        return result.toString();
     }
 
     public ClassLoader getClassLoader() {
