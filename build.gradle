@@ -2,7 +2,6 @@
 buildscript {
     apply from: './plugin_config.gradle'
     repositories {
-        mavenLocal()
         maven {
             url "http://s3.qbuild.corp.qihoo.net:8360/nexus/content/repositories/360zhushou_Snapshot/"
         }
@@ -25,7 +24,6 @@ buildscript {
 
 allprojects {
     repositories {
-        mavenLocal()
         maven {
             url "http://s3.qbuild.corp.qihoo.net:8360/nexus/content/repositories/360zhushou_Snapshot/"
         }
