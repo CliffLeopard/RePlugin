@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.res.AssetManager;
 import android.text.TextUtils;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,6 +46,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
+import java.util.Enumeration;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * 一些和文件操作相关的类。大部分摘自 Apache IO Library
@@ -754,5 +758,65 @@ public class FileUtils {
             return "";
         }
         return (filePosi >= extPosi) ? "" : filePath.substring(extPosi + 1);
+    }
+
+    private static boolean mkdir(String path) {
+        File file = new File(path);
+        if (!file.exists()) {
+            return file.mkdirs();
+        }
+        return true;
+    }
+
+    public static boolean unZipFile(File zipFile, String ad, String folderPath, String arch) throws IOException {
+        boolean bRet = true;
+        InputStream in = null;
+        OutputStream out = null;
+        try {
+            if (!mkdir(folderPath)) return false;
+            ZipFile zf = new ZipFile(zipFile);
+            for (Enumeration<?> entries = zf.entries(); entries.hasMoreElements(); ) {
+                ZipEntry entry = ((ZipEntry) entries.nextElement());
+                String entryName = entry.getName();
+                if (!entryName.contains(arch) || !entryName.endsWith(ad) || entryName.contains("../")) {
+                    continue;
+                }
+                in = zf.getInputStream(entry);
+                File desFile = new File(folderPath + File.separator + ad);
+                boolean createSuccess = false;
+                if (!desFile.exists()) {
+                    if (!mkdir(desFile.getParentFile().getParent())) return false;
+                    createSuccess = desFile.createNewFile();
+                }
+
+                if (createSuccess) {
+                    out = new FileOutputStream(desFile);
+                    byte[] buffer = new byte[1024 * 1024];
+                    int realLength;
+                    while ((realLength = in.read(buffer)) > 0) {
+                        out.write(buffer, 0, realLength);
+                    }
+                }
+                break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            bRet = false;
+        } finally {
+            closeQuietly(in);
+            closeQuietly(out);
+        }
+        return bRet;
+    }
+    public static void closeQuietly(Closeable in) {
+        if (in != null) {
+            try {
+                in.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (Error e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

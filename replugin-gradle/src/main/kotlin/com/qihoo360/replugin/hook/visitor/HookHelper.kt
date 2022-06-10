@@ -1,4 +1,4 @@
-package com.qihoo360.replugin.transform.visitor
+package com.qihoo360.replugin.hook.visitor
 
 import com.qihoo360.replugin.hook.HookMethod
 import com.qihoo360.replugin.hook.MethodInfoDesc

@@ -4,9 +4,9 @@ import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.transform.AbstractTransform
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
-import com.qihoo360.replugin.transform.visitor.HookCallMethodClassVisitor
-import com.qihoo360.replugin.transform.visitor.HookDefineMethodClassVisitor
-import com.qihoo360.replugin.transform.visitor.HookLambdaClassVisitor
+import com.qihoo360.replugin.hook.visitor.HookCallMethodClassVisitor
+import com.qihoo360.replugin.hook.visitor.HookDefineMethodClassVisitor
+import com.qihoo360.replugin.hook.visitor.HookLambdaClassVisitor
 import org.objectweb.asm.ClassVisitor
 
 /**
