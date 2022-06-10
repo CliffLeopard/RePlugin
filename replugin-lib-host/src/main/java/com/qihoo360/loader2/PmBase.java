@@ -16,6 +16,11 @@
 
 package com.qihoo360.loader2;
 
+import static com.qihoo360.replugin.helper.LogDebug.LOG;
+import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
+import static com.qihoo360.replugin.helper.LogRelease.LOGR;
+import static com.qihoo360.replugin.packages.PluginInfoUpdater.ACTION_UNINSTALL_PLUGIN;
+
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -25,7 +30,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.ProviderInfo;
 import android.content.pm.ServiceInfo;
-import android.os.Debug;
 import android.os.IBinder;
 import android.os.Parcelable;
 import android.os.RemoteException;
@@ -38,11 +42,11 @@ import com.qihoo360.i.IPluginManager;
 import com.qihoo360.mobilesafe.api.Pref;
 import com.qihoo360.mobilesafe.api.Tasks;
 import com.qihoo360.replugin.IHostBinderFetcher;
-import com.qihoo360.replugin.base.LocalBroadcastHelper;
 import com.qihoo360.replugin.RePlugin;
 import com.qihoo360.replugin.RePluginConstants;
 import com.qihoo360.replugin.RePluginInternal;
 import com.qihoo360.replugin.base.IPC;
+import com.qihoo360.replugin.base.LocalBroadcastHelper;
 import com.qihoo360.replugin.component.activity.DynamicClassProxyActivity;
 import com.qihoo360.replugin.component.dummy.DummyActivity;
 import com.qihoo360.replugin.component.dummy.DummyProvider;
@@ -54,20 +58,25 @@ import com.qihoo360.replugin.helper.LogDebug;
 import com.qihoo360.replugin.helper.LogRelease;
 import com.qihoo360.replugin.model.PluginInfo;
 import com.qihoo360.replugin.packages.PluginManagerProxy;
+import com.qihoo360.replugin.utils.CloseableUtils;
+import com.qihoo360.replugin.utils.FileUtils;
 import com.qihoo360.replugin.utils.ReflectUtils;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static com.qihoo360.replugin.helper.LogDebug.LOG;
-import static com.qihoo360.replugin.helper.LogDebug.PLUGIN_TAG;
-import static com.qihoo360.replugin.helper.LogRelease.LOGR;
-import static com.qihoo360.replugin.packages.PluginInfoUpdater.ACTION_UNINSTALL_PLUGIN;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * @author RePlugin Team
@@ -347,6 +356,7 @@ class PmBase {
                 LogRelease.e(PLUGIN_TAG, "lst.p: " + e.getMessage(), e);
             }
         }
+        settleNativeLibraryForPlugin();
     }
 
     /**
@@ -398,6 +408,151 @@ class PmBase {
         if (updatedPlugins != null) {
             refreshPluginMap(updatedPlugins);
         }
+    }
+
+    private static boolean nativeLibraryCleaned = false;
+
+    private void settleNativeLibraryForPlugin() {
+        if (nativeLibraryCleaned) return;
+        nativeLibraryCleaned = true;
+        boolean host64 = VMRuntimeCompat.is64Bit();
+        List<PluginInfo> unInstallPlugins = new ArrayList<>();
+        for (String pluginName : mPlugins.keySet()) {
+            Plugin p = mPlugins.get(pluginName);
+            if (p != null && p.mInfo != null && p.mInfo.getType() != PluginInfo.TYPE_BUILTIN && p.mInfo.getNativeLibsDir() != null) {
+                File libDir = p.mInfo.getNativeLibsDir();
+                String[] children = libDir.list();
+                if (libDir.exists() && children != null && children.length > 0) {
+                    ZipFile pluginZipApk = null;
+                    Map<String, ZipEntry> nameToEntry = new HashMap<>();
+                    Map<String, Set<String>> soToName = new HashMap<>();
+                    boolean shouldReplace = false;
+                    boolean replaced = false;
+                    for (String lib : children) {
+                        if (lib.endsWith(".so")) {
+                            File libFile = new File(libDir, lib);
+                            if (libFile.exists()) {
+                                boolean plugin64 = soIs64(libFile);
+                                if (host64 != plugin64) {
+                                    // 宿主与插件的abi不一致，需要更新
+                                    shouldReplace = true;
+                                    replaced = false;
+                                    if (pluginZipApk == null) {
+                                        try {
+                                            pluginZipApk = new ZipFile(p.mInfo.getPath());
+                                            for (ZipEntry entry : Collections.list(pluginZipApk.entries())) {
+                                                String name = entry.getName();
+                                                if (name.endsWith(".so")) {
+                                                    String soName = name.substring(name.lastIndexOf("/") + 1);
+                                                    if ((host64 && name.contains("arm64")) || (!host64 && name.contains("armeabi"))) {
+                                                        nameToEntry.put(name, entry);
+                                                        Set<String> nameSet = soToName.get(soName);
+                                                        if (nameSet == null) {
+                                                            nameSet = new HashSet<>();
+                                                            soToName.put(soName, nameSet);
+                                                        }
+                                                        nameSet.add(name);
+                                                    }
+                                                }
+                                            }
+                                        } catch (IOException ignored) {
+                                        }
+                                    }
+
+                                    Set<String> names = soToName.get(lib);
+                                    String targetName = null;
+                                    ZipEntry targetEntry = null;
+                                    if (names != null) {
+                                        for (String name : names) {
+                                            if (host64 && name.contains("arm64")) {
+                                                targetName = name;
+                                                break;
+                                            }
+                                            if (!host64 && name.contains("armeabi")) {
+                                                targetName = name;
+                                                break;
+                                            }
+                                        }
+                                        if (targetName != null) {
+                                            targetEntry = nameToEntry.get(targetName);
+                                        }
+                                    }
+                                    replaced = replacePluginSo(pluginName, pluginZipApk, targetEntry, libFile, lib, host64);
+                                    if (!replaced) {
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (shouldReplace && !replaced) {
+                        LogDebug.i(TAG, "so不匹配且更换失败,插件:" + pluginName);
+                        unInstallPlugins.add(p.mInfo);
+                    }
+                }
+            }
+        }
+        for (PluginInfo pi : unInstallPlugins) {
+            LogDebug.i(TAG, "卸载不适配插件:" + pi.getName());
+            try {
+                PluginProcessMain.getPluginHost().pluginUninstalled(pi);
+                LogDebug.i(TAG, "卸载成功:" + pi.getName());
+            } catch (RemoteException e) {
+                LogDebug.i(TAG, "卸载失败" + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private boolean replacePluginSo(String pluginName, ZipFile zipFile, ZipEntry ze, File outFile, String soName, boolean hostAbiIs64) {
+        if (ze == null || outFile == null) {
+            // 插件中不存在，尝试使用宿主中的so
+            LogDebug.i(TAG, "插件中不存在，尝试使用宿主中的so. 插件:" + pluginName + "  so:" + soName);
+            String hostLibPath = mContext.getApplicationInfo().nativeLibraryDir;
+            File hostLibDir = new File(hostLibPath);
+            String[] children = hostLibDir.list();
+            if (hostLibDir.exists() && children != null) {
+                for (String child : children) {
+                    if (child.equals(soName)) {
+                        File hostLibFile = new File(hostLibDir, child);
+                        if (hostLibFile.exists()) {
+                            try {
+                                FileUtils.deleteQuietly(outFile);
+                                FileUtils.copyFile(hostLibFile, outFile);
+                                LogDebug.i(TAG, "插件中不存在，使用宿主替换成功 插件:" + pluginName + "  so:" + soName);
+                                return true;
+                            } catch (IOException ignore) {
+                            }
+                        }
+                    }
+                }
+            }
+            LogDebug.i(TAG, "插件中不存在，使用宿主替换失败 插件:" + pluginName + "  so:" + soName);
+        } else {
+            InputStream in = null;
+            try {
+                String path = outFile.getAbsolutePath();
+                in = zipFile.getInputStream(ze);
+                FileUtils.deleteQuietly(outFile);
+                FileUtils.copyInputStreamToFile(in, outFile);
+                if (outFile.exists()) {
+                    LogDebug.i(TAG, "异常插件SO: 替换成功: 插件:" + pluginName + " so:" + outFile.getAbsolutePath());
+                    return true;
+                } else {
+                    LogDebug.i(TAG, "异常插件SO: 替换失败,将.so删除: 插件:" + pluginName + "  so:" + path);
+                }
+
+            } catch (IOException e) {
+                LogDebug.i(TAG, "文件复制错误:" + e.getMessage());
+            } finally {
+                CloseableUtils.closeQuietly(in);
+            }
+        }
+        return false;
+    }
+
+    private boolean soIs64(File soFile) {
+        return ShellExecutor.execute("file " + soFile.getAbsolutePath()).contains("64-bit");
     }
 
     /**

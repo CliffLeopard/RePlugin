@@ -1,4 +1,4 @@
-package com.qihoo360.replugin.transform.visitor
+package com.qihoo360.replugin.plugin.visitor
 
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import org.objectweb.asm.MethodVisitor

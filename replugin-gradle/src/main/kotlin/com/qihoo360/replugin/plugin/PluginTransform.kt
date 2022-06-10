@@ -2,9 +2,9 @@ package com.qihoo360.replugin.plugin
 
 import com.android.build.gradle.AppExtension
 import com.qihoo360.replugin.hook.HookTransform
+import com.qihoo360.replugin.plugin.visitor.*
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
 import com.qihoo360.replugin.transform.bean.TransformClassInfo
-import com.qihoo360.replugin.transform.visitor.*
 import org.objectweb.asm.ClassVisitor
 
 /**

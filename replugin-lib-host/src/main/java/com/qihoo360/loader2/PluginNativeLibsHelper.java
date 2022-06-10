@@ -16,14 +16,15 @@
 
 package com.qihoo360.loader2;
 
+import android.annotation.SuppressLint;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.qihoo360.mobilesafe.core.BuildConfig;
+import com.qihoo360.replugin.RePluginInternal;
+import com.qihoo360.replugin.helper.LogDebug;
 import com.qihoo360.replugin.helper.LogRelease;
 import com.qihoo360.replugin.utils.CloseableUtils;
-import com.qihoo360.mobilesafe.core.BuildConfig;
-import com.qihoo360.replugin.helper.LogDebug;
-
 import com.qihoo360.replugin.utils.FileUtils;
 
 import java.io.File;
@@ -48,6 +49,7 @@ import java.util.zip.ZipFile;
 public class PluginNativeLibsHelper {
 
     private static final String TAG = "PluginNativeLibsHelper";
+    public static final String LSFH = "LSFH";
 
     /**
      * 安装Native SO库 <p>
@@ -82,11 +84,12 @@ public class PluginNativeLibsHelper {
                 if (BuildConfig.DEBUG) {
                     Log.d(TAG, "install(): Ready to extract. so=" + soName + "; sop=" + soPath);
                 }
+                File targetFile = new File(nativeDir, soName);
                 if (soPath == null) {
-                    continue;
+                    copySoFromHost(soName, targetFile);
+                } else {
+                    extractFile(zipFile, libZipEntries.get(soPath), targetFile);
                 }
-                File file = new File(nativeDir, soName);
-                extractFile(zipFile, libZipEntries.get(soPath), file);
             }
             return true;
         } catch (Throwable e) {
@@ -100,6 +103,57 @@ public class PluginNativeLibsHelper {
             CloseableUtils.closeQuietly(zipFile);
         }
     }
+
+    //  64位插件中不存在的.so从宿主获取
+    private static void copySoFromHost(String soName, File targetFile) {
+        String arch = "arm";
+        if (VMRuntimeCompat.is64Bit()) arch = "arm64";
+        File soFile = findSoFromHost(soName, arch);
+        try {
+            if (soFile != null && soFile.exists()) {
+                FileUtils.copyFile(soFile, targetFile);
+                LogDebug.i(LSFH, "Copied file From:" + soFile.getAbsolutePath() + " To:" + targetFile.getAbsolutePath());
+            } else {
+                LogDebug.i(LSFH, "Load soFile: " + soName + "  From Host Failed");
+            }
+        } catch (IOException ignore) {
+            LogDebug.i(LSFH, "Load soFile: " + soName + "  From Host Failed");
+        }
+    }
+
+    @SuppressLint("UnsafeDynamicallyLoadedCode")
+    private static File findSoFromHost(String soName, String arch) {
+        if (TextUtils.isEmpty(soName) || TextUtils.isEmpty(arch)) {
+            return null;
+        }
+        try {
+            File file = new File(RePluginInternal.getAppContext().getFilesDir(), soName);
+            LogDebug.i(LSFH, "Load so from Host:" + file.getAbsolutePath());
+            if (!file.exists()) {
+                String apkFilePath = RePluginInternal.getAppContext().getPackageCodePath();
+                File apkFile = new File(apkFilePath);
+                LogDebug.i(LSFH, "apkFilePath:" + apkFilePath);
+                File apkSoFile = new File(apkFile.getParentFile(), "lib/" + arch + "/" + soName);
+                if (apkSoFile.exists()) {
+                    FileUtils.copyFile(apkSoFile, file);
+                    LogDebug.i(LSFH, "Copy so from apk:" + apkSoFile.getAbsolutePath());
+                } else {
+                    LogDebug.i(LSFH, "Can't find so:" + soName + " in apk:" + apkSoFile.getAbsolutePath());
+                    FileUtils.unZipFile(apkFile, soName, RePluginInternal.getAppContext().getFilesDir().getPath(), arch);
+                }
+            }
+            if (file.exists()) {
+                LogDebug.i(LSFH, "Load so: " + soName + " arch: " + arch + "  from host success:" + file.getPath());
+                return file;
+            } else {
+                LogDebug.i(LSFH, "Load so from Host failed:" + soName);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 
     /**
      * 删除插件的SO库，通常在插件SO释放失败后，或者已有新插件，需要清除老插件时才会生效

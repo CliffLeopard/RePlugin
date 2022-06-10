@@ -1,8 +1,9 @@
-package com.qihoo360.replugin.transform.visitor
+package com.qihoo360.replugin.hook.visitor
 
 import com.qihoo360.replugin.hook.HookMethod
 import com.qihoo360.replugin.hook.HookMethodContainer
 import com.qihoo360.replugin.transform.bean.InstrumentationContext
+import com.qihoo360.replugin.transform.visitor.PluginClassVisitor
 import org.objectweb.asm.ClassVisitor
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes
@@ -87,7 +88,13 @@ class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationCon
     ) : GeneratorAdapter(Opcodes.ASM9, null, access, name, descriptor) {
         override fun visitCode() {
             methodVisitor.visitCode()
-            HookHelper.prepareTargetMethodParam(methodVisitor, access, access and Opcodes.ACC_STATIC > 0, hookMethod, false)
+            HookHelper.prepareTargetMethodParam(
+                methodVisitor,
+                access,
+                access and Opcodes.ACC_STATIC > 0,
+                hookMethod,
+                false
+            )
             HookHelper.callTargetMethod(methodVisitor, hookMethod, false)
             methodVisitor.visitInsn(Type.getReturnType(hookMethod.methodDesc).getOpcode(Opcodes.IRETURN))
             context.classModified = true
@@ -113,7 +120,13 @@ class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationCon
         override fun onMethodEnter() {
             if (!isEmpty(beforeMethods)) {
                 for (hookMethod in beforeMethods!!) {
-                    HookHelper.prepareTargetMethodParam(this, access, access and Opcodes.ACC_STATIC > 0, hookMethod, false)
+                    HookHelper.prepareTargetMethodParam(
+                        this,
+                        access,
+                        access and ACC_STATIC > 0,
+                        hookMethod,
+                        false
+                    )
                     HookHelper.callTargetMethod(this, hookMethod, false)
                     context.classModified = true
                 }
@@ -125,7 +138,13 @@ class HookDefineMethodClassVisitor(cv: ClassVisitor, context: InstrumentationCon
                 val resultObj = if (Type.VOID_TYPE != originMethod.returnType) newLocal(originMethod.returnType) else -1
                 if (resultObj != -1)
                     storeLocal(resultObj)
-                HookHelper.prepareTargetMethodParam(this, access, access and Opcodes.ACC_STATIC > 0, afterMethod, false)
+                HookHelper.prepareTargetMethodParam(
+                    this,
+                    access,
+                    access and ACC_STATIC > 0,
+                    afterMethod,
+                    false
+                )
                 if (resultObj != -1)
                     loadLocal(resultObj, originMethod.returnType)
                 HookHelper.callTargetMethod(this, afterMethod, false)

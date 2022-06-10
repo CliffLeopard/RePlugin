@@ -1,7 +1,7 @@
-package com.qihoo360.replugin.transform.visitor
+package com.qihoo360.replugin.plugin.visitor
 
-import com.qihoo360.replugin.transform.visitor.LocalBroadcastClassVisitor.Companion.originClass
-import com.qihoo360.replugin.transform.visitor.LocalBroadcastClassVisitor.Companion.targetClass
+import com.qihoo360.replugin.plugin.visitor.LocalBroadcastClassVisitor.Companion.originClass
+import com.qihoo360.replugin.plugin.visitor.LocalBroadcastClassVisitor.Companion.targetClass
 import org.objectweb.asm.Label
 import org.objectweb.asm.MethodVisitor
 import org.objectweb.asm.Opcodes.ASM9
