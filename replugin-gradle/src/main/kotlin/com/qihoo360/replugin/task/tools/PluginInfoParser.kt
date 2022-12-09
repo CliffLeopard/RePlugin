@@ -55,7 +55,7 @@ class PluginInfoParser(pluginFile: File, extension: HostExtension) : DefaultHand
                 tagVersionLow -> pluginInfo.low = attributes.getValue(androidValue).toLong()
                 tagVersionHigh -> pluginInfo.height = attributes.getValue(androidValue).toLong()
                 tagVersionVer -> pluginInfo.ver = attributes.getValue(androidValue).toLong()
-                tagFrameWorkVer -> pluginInfo.from = attributes.getValue(androidValue).toLong()
+                tagFrameWorkVer -> pluginInfo.frm = attributes.getValue(androidValue).toLong()
             }
 
         } else if ("manifest" == qName) {

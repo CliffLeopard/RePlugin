@@ -4,13 +4,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion RP_CompileSdkVersion
-    buildToolsVersion RP_BuildToolsVersion
+    compileSdk RP_CompileSdk
 
     defaultConfig {
+        minSdkVersion       RP_MinSdk
+        targetSdkVersion    RP_TargetSdk
         applicationId "com.cleo.sample_host"
-        minSdkVersion RP_MinSdkVersion
-        targetSdkVersion RP_TargetSdkVersion
         versionCode 1
         versionName "1.0"
 

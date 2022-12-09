@@ -7,12 +7,11 @@
 
 ### 更新内容
 
+* 使用Kotlin重构Gradle-plugin
+* 使用并发Transform和InstantRun提升编译速度。插件构建不需要clean
 * gradle-plugin 更新至4.2.2
 * gradle 更新至6.7.1
 * 仅支持AndroidX，不再支持Support包
-* 使用Kotlin重构Gradle-plugin
-* 使用并发Transform和InstantRun提升编译速度。插件构建不需要clean
-* 重构还未经过严格测试。稳定版本请使用[Master](https://github.com/CliffLeopard/RePlugin/tree/master)
 
 ### 配置
 

@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 android {
-    compileSdkVersion RP_CompileSdkVersion
-    buildToolsVersion RP_BuildToolsVersion
+    compileSdk RP_CompileSdk
+
     defaultConfig {
-        minSdkVersion RP_MinSdkVersion
-        targetSdkVersion RP_TargetSdkVersion
+        minSdkVersion       RP_MinSdk
+        targetSdkVersion    RP_TargetSdk
 
         applicationId "com.qihoo360.replugin.fresco.host"
         versionCode 1

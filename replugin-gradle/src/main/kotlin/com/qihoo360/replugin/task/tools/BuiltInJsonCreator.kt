@@ -97,6 +97,6 @@ class PluginInfo {
     var ver: Long = -1
 
     /** 框架版本号 */
-    var from: Long = -1
+    var frm: Long = -1
 
 }

@@ -24,14 +24,19 @@ public class ShellExecutor {
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(process.getOutputStream()));
             StringBuilder result = new StringBuilder();
-            String line = reader.readLine();
-            while (line != null) {
-                result.append(line);
-                line = reader.readLine();
+            try {
+                String line = reader.readLine();
+                while (line != null) {
+                    result.append(line);
+                    line = reader.readLine();
+                }
+                return result.toString();
+            } catch (IOException ignore) {
+                LogDebug.e(TAG, "Error shell:" + cmd);
+            } finally {
+                writer.close();
+                reader.close();
             }
-            writer.close();
-            reader.close();
-            return result.toString();
         } catch (IOException ignore) {
             LogDebug.e(TAG, "Error shell:" + cmd);
         }

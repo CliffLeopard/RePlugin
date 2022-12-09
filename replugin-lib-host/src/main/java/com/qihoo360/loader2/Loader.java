@@ -166,7 +166,7 @@ class Loader {
     }
 
     final Context createBaseContext(Context newBase) {
-        return new PluginContext(newBase, android.R.style.Theme, mClassLoader, mPkgResources, mPluginName, this);
+        return mPkgContext == null ? new PluginContext(newBase, android.R.style.Theme, mClassLoader, mPkgResources, mPluginName, this) : mPkgContext;
     }
 
     final boolean loadDex(ClassLoader parent, int load) {

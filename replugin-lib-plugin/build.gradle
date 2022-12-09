@@ -6,12 +6,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion RP_CompileSdkVersion
-    buildToolsVersion RP_BuildToolsVersion
+    compileSdk RP_CompileSdk
 
     defaultConfig {
-        minSdkVersion       RP_MinSdkVersion
-        targetSdkVersion    RP_TargetSdkVersion
+        minSdkVersion       RP_MinSdk
+        targetSdkVersion    RP_TargetSdk
         versionCode         RP_VERSION_CODE
         versionName         RP_VERSION
 
